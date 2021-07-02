@@ -3,6 +3,6 @@ const Router = express.Router();
 
 const gloriafoodController = require('../controllers/gloriaController');
 
-Router.post('/integration/gloriafood', gloriafoodController.postNewOrderGloriaFood);
+Router.post('/gloriafood', gloriafoodController.postNewOrderGloriaFood);
 
 module.exports = Router;

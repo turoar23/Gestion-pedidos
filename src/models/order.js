@@ -1,17 +1,45 @@
-const fs = require('fs');
+const moogose = require('mongoose');
+const Schema = moogose.Schema;
 
-//TODO: Conectar a una base de datos o al menos a un archivo del sistema :/
-const orders = [];
+const orderSchema = new Schema({
+    gloriaId: {
+        type: Number,
+        required: true
+    },
+    client: {
+        type: Object,
+        required: true
+    },
+    address:{
+        type: Object,
+        required: true
+    },
+    restaurant: {
+        type: String,
+        required: true
+    },
+    times: [{
+        _id: false,
+        by: {
+            type: Number,
+            required: true,
+        },
+        action: {
+            type: String,
+            required: true
+        }
+    }],
+    // rider: {
+    //     name:{
+    //         type: String,
+    //         required: true
+    //     },
+    //     userId: {
+    //         type: Schema.Types.ObjectId,
+    //         required: true,
+    //         ref: 'Rider'
+    //     }
+    // }
+})
 
-module.exports = class Order {
-    constructor(_id, _data) {
-        this.id = _id;
-        this.data = _data;
-    }
-    save() {
-        orders.push(this);
-    }
-    static findById(_id){
-        return orders.filter(order => order.id === _id);
-    }
-}
+module.exports = moogose.model('Order', orderSchema)
