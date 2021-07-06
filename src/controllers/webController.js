@@ -9,6 +9,6 @@ exports.getIndex = (req, res, next) => {
     res.render('index');
 };
 
-exports.getIndexPwa = (req, res, next) => {
-    res.render('pwa/index');
+exports.getIndexOrders = (req, res, next) => {
+    res.render('orders');
 }

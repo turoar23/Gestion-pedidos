@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>Actives orders</title>
+
+    <link rel="stylesheet" href="css/orders.css">
+</head>
+
+<body>
+    <div id="orders_body">
+        <div class="order headers">
+            <div class="id">ID</div>
+            <div class="address">Direccion</div>
+            <div class="restaurant">Restaurante</div>
+            <div class="payment">Método de pago</div>
+            <div class="rider">Repartidor/a</div>
+        </div>
+        <div id="orders"></div>
+    </div>
+
+    <template id="order_template">
+        <div class="order">
+            <div class="id"></div>
+            <div class="address"></div>
+            <div class="restaurant"></div>
+            <div class="payment"></div>
+            <div class="rider"></div>
+        </div>
+    </template>
+
+    <script type='text/javascript' src='/js/jquery-3.5.1.min.js'></script>
+
+    <script src="/js/core.js"></script>
+    <script src="/js/functions.js"></script>
+
+    <script>
+        // Update automatic the DOM when is complety loaded
+        $(function () {
+            update();
+        })
+    </script>
+</body>
+
+</html>

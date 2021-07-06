@@ -6,7 +6,7 @@ const webController = require('../controllers/webController');
 // Define the main page of the app
 Router.get('/', webController.getIndex);
 
-Router.get('/pwa/', webController.getIndexPwa);
+Router.get('/orders', webController.getIndexOrders);
 
 
 module.exports = Router;

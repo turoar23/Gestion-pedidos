@@ -43,7 +43,9 @@ exports.postNewOrderGloriaFood = (req, res, next) => {
                             by: Date.parse(order['fulfill_at']),
                             action: 'fulfill_at'
                         }
-                    ]
+                    ],
+                    payment: order['payment'],
+                    status: 'Active'
                 });
                 ord.save();
             }

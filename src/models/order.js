@@ -4,7 +4,7 @@ const Schema = moogose.Schema;
 const orderSchema = new Schema({
     gloriaId: {
         type: Number,
-        required: true
+        required: false
     },
     client: {
         type: Object,
@@ -29,6 +29,16 @@ const orderSchema = new Schema({
             required: true
         }
     }],
+    payment: {
+        type: String,
+        required: true,
+        default: null
+    },
+    status: {
+        type: String,
+        required: true,
+        default: 'Completed' // Can be: Active, Canceled, Completed
+    }
     // rider: {
     //     name:{
     //         type: String,

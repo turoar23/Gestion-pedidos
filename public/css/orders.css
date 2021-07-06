@@ -1,0 +1,10 @@
+#orders_body{
+    flex-wrap: wrap;
+    width: 100%;
+}
+.order{
+    display: flex;
+}
+.order div{
+    flex: 1;
+}
