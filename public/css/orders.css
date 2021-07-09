@@ -8,3 +8,9 @@
 .order div{
     flex: 1;
 }
+.active{
+    color:orange;
+}
+.delivering{
+    color: green;
+}
