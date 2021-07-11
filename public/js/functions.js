@@ -10,10 +10,6 @@ async function update() {
     let orders = await getActiveOrders();
     var template = document.querySelector('#order_template');
 
-    // if (!equals(orders, local_orders)) {
-    // $('.orders').empty();
-    // $('.orders-making').empty();
-
     let ordersToAdd = [];
 
     if (orders.length > 0) {
@@ -28,7 +24,7 @@ async function update() {
             clone.querySelector('.address').textContent = orders[i].address.street;
             clone.querySelector('.restaurant').textContent = orders[i].restaurant;
             clone.querySelector('.payment').textContent = orders[i].payment;
-            clone.querySelector('.rider').textContent = "--";
+            clone.querySelector('.rider').textContent = orders[i].rider.name || "--";
             clone.querySelector('.status').textContent = orders[i].status;
             clone.querySelector('.status').className += ` ${status}`;
 
@@ -41,11 +37,10 @@ async function update() {
             }
             ordersToAdd.push(clone);
         }
-        $('#orders').empty();
-        $('#orders').append(ordersToAdd);
-        //local_orders = orders;
     }
-    // }
+
+    $('#orders').empty();
+    $('#orders').append(ordersToAdd);
 }
 /**
  * Añade una nueva orden basandose en los valores del formulario del pedido
@@ -85,8 +80,60 @@ function updateStatus(element) {
             if (result.err)
                 throw result.err
             update();
+            console.log('Updated');
         })
         .catch(err => {
             alert(err);
+        })
+}
+
+function showOrderDetails(element) {
+    let _id = $(element.parentNode).find('._id').val();
+
+    getOrder(_id)
+        .then(order => {
+            let modal = $('#showDetailOrder');
+
+            modal.find('h5').text(`Order: ${order.gloriaId || "Sin ID"}`);
+            modal.find('#address').val(order.address.street);
+            modal.find('#cp').val(order.address.zipcode);
+            modal.find('#city').val(order.address.city);
+            modal.find('#restaurant').val(order.restaurant);
+            modal.find('#payment').val(order.payment);
+            modal.find('#status').val(order.status);
+            modal.find('#orderId').val(order._id);
+
+            myModal.show();
+        })
+        .catch(err => {
+            alert(err);
+        })
+}
+function modifyOrder() {
+    let modal = $('#showDetailOrder');
+    let order = {
+        _id: modal.find('#orderId').val(),
+        address: {
+            street: modal.find('#address').val(),
+            zipcode: modal.find('#cp').val(),
+            city: modal.find('#city').val(),
+        },
+        // restaurant: modal.find('#restaurant').val(),
+        payment: modal.find('#payment').val(),
+        status: modal.find('#status').val(),
+    }
+
+    updateOrder(order)
+        .then(result => {
+            console.log(result);
+            return result.json;
+        })
+        .then(result => {
+            if (result.err)
+                throw result.err
+            console.log(result.result);
+        })
+        .catch(err => {
+            console.log(err);
         })
 }

@@ -13,10 +13,14 @@ Router.get('/getActiveOrders', ordersController.getActiveOrders);
 
 Router.get('/getOrders', ordersController.getOrders);
 
+Router.get('/getOrder/:orderId', ordersController.getOrder);
+
 Router.post('/modifyOrder', ordersController.modifyOrder);
 
 Router.post('/updateStatusOrder', ordersController.updateStatusOrder);
 
 Router.post('/addTimeOrder', ordersController.addTimeOrder);
+
+Router.post('/assingRiderOrder', ordersController.addRider);
 
 module.exports = Router;

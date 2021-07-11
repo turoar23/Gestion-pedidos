@@ -10,7 +10,7 @@ const orderSchema = new Schema({
         type: Object,
         required: true
     },
-    address:{
+    address: {
         type: Object,
         required: true
     },
@@ -38,18 +38,16 @@ const orderSchema = new Schema({
         type: String,
         required: true,
         default: 'Completed' // Can be: Active, Canceled, Completed
-    }
+    },
     // rider: {
     //     name:{
-    //         type: String,
-    //         required: true
+    //         type: String
     //     },
-    //     userId: {
-    //         type: Schema.Types.ObjectId,
-    //         required: true,
-    //         ref: 'Rider'
-    //     }
-    // }
+    rider: {
+        type: Schema.Types.ObjectId,
+        ref: 'Rider'
+        // }
+    }
 })
 
 module.exports = moogose.model('Order', orderSchema)

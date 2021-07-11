@@ -6,8 +6,8 @@ const GLOBAL_HEADERS = {
 
 const url_base = window.location.origin;
 
-async function getActiveOrders() {
-	const url = url_base + '/getActiveOrders/';
+async function getActiveOrders(id) {
+	const url = url_base + '/getActiveRiderOrders/' + id;
 
 	request = {
 		method: "GET",
@@ -28,27 +28,27 @@ async function getActiveOrders() {
 	}
 }
 
-async function getOrder(_id) {
-	const url = url_base + `/getOrder/${_id}`;
+// async function getOrder(_id) {
+// 	const url = url_base + `/getOrder/${_id}`;
 
-	request = {
-		method: "GET",
-		headers: GLOBAL_HEADERS,
-	};
+// 	request = {
+// 		method: "GET",
+// 		headers: GLOBAL_HEADERS,
+// 	};
 
-	try {
-		let peticion = await fetch(url, request);
-		let r = await peticion.json();
-		//alert(mensajes);
+// 	try {
+// 		let peticion = await fetch(url, request);
+// 		let r = await peticion.json();
+// 		//alert(mensajes);
 
-		if (r.result) {
-			return r.result;
-		}
-	}
-	catch (error) {
-		console.log(error);
-	}
-}
+// 		if (r.result) {
+// 			return r.result;
+// 		}
+// 	}
+// 	catch (error) {
+// 		console.log(error);
+// 	}
+// }
 
 async function updateOrderStatus(_id, status, action) {
 	const url = url_base + '/updateStatusOrder/';

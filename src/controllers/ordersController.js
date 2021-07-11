@@ -1,25 +1,53 @@
 const Order = require('../models/order');
+const Rider = require('../models/rider');
 
 exports.getOrders = (req, res, next) => {
     Order.find()
         .then(orders => {
-            if (orders.length > 0)
-                res.send({ result: orders, err: null });
-            else
-                res.send({ result: [], err: null });
+            return Order
+                .populate(orders, {
+                    path: "rider",
+                    select: 'name'
+                })
+        })
+        .then(orders => {
+            res.send({ result: orders, err: null });
         })
         .catch(err => {
             console.log(err);
             res.send({ result: null, err: "Can't get orders" });
         })
 }
+
+exports.getOrder = (req, res, next) => {
+    const _id = req.params.orderId;
+    Order.findById(_id)
+        .then(orders => {
+            return Order
+                .populate(orders, {
+                    path: "rider",
+                    select: 'name'
+                })
+        })
+        .then(order => {
+            res.send({ result: order, err: null });
+        })
+        .catch(err => {
+            console.log(err);
+            res.send({ result: null, err: "Can't get the order" });
+        })
+}
 exports.getActiveOrders = (req, res, next) => {
     Order.find({ $or: [{ status: 'Active' }, { status: 'Delivering' }] })
         .then(orders => {
-            if (orders.length > 0)
-                res.send({ result: orders, err: null });
-            else
-                res.send({ result: [], err: null });
+            return Order
+                .populate(orders, {
+                    path: "rider",
+                    select: 'name'
+                })
+        })
+        .then(orders => {
+            res.send({ result: orders, err: null });
         })
         .catch(err => {
             console.log(err);
@@ -50,9 +78,9 @@ exports.modifyOrder = (req, res, next) => {
 
 }
 exports.updateStatusOrder = (req, res, next) => {
-    let gloriaId = req.body.gloriaId;
+    let id = req.body._id;
 
-    Order.findOne({ gloriaId: gloriaId })
+    Order.findOne({ _id: id })
         .then(order => {
             order.status = req.body.status || order.status;
             order.times.push(
@@ -142,5 +170,35 @@ exports.postNewOrder = (req, res, next) => {
         .catch(err => {
             console.log(err);
             res.send({ result: null, error: "An error ocurred, can't add the new order" });
+        })
+}
+
+exports.addRider = (req, res, next) => {
+    const riderId = req.body.riderId;
+    const orderId = req.body.orderId;
+
+    Order.findById(orderId)
+        .then(order => {
+            Rider.findById(riderId)
+                .then(rider => {
+                    // order.rider = {
+                    //     name: rider.name,
+                    //     riderId: rider
+                    // }
+                    order.riderId = rider;
+                    return order.save();
+                })
+                .then(result => {
+                    console.log(result);
+                    res.send({ result: 'Rider assigned', err: null })
+                })
+                .catch(err => {
+                    console.log(err);
+                    res.send({ result: null, err: err })
+                })
+        })
+        .catch(err => {
+            console.log(err);
+            res.send({ result: null, err: err })
         })
 }
