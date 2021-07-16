@@ -1,4 +1,4 @@
-exports.parseStreet = function(_street) {
+parseStreet = function(_street) {
     let parts = _street.split(" ");
     var find = false;
     var i = 0
@@ -34,14 +34,10 @@ function getNumberFromString (_string) {
     return parseInt(number);
 }
 
-exports.checkIfNewOrder = function (order) {
-    return checkIfEqual(orders, order);
-}
-function checkIfEqual(arr1, arr2) {
-    var find = false;
+function getUrlGoogleMaps(street) {
+    const url_base = "https://www.google.com/maps/dir/?api=1&";
+    const restaurante = 'origin=Avenida+Periodista+Rodolfo+Salazar+29,+Alicante&';
+    const destination = `destination=${parseStreet(street).replace(/ /g, "+")}`;
 
-    for (var i = 0; i < arr1.length && !find; i++) {
-        find = arr1[i]['id'] == arr2['id'];
-    }
-    return find;
+    return url_base + restaurante + destination;
 }

@@ -1,6 +1,7 @@
 #orders_body{
     flex-wrap: wrap;
-    width: 100%;
+    width: 95%;
+    margin: auto;
 }
 .order{
     display: flex;
@@ -8,9 +9,9 @@
 .order div{
     flex: 1;
 }
-.active{
+.order .active{
     color:orange;
 }
-.delivering{
+.order .delivering{
     color: green;
 }

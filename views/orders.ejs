@@ -65,18 +65,71 @@
             </div>
         </div>
     </div>
-    <!-- -->
-    <div id="orders_body">
-        <div class="order headers">
-            <div class="id">ID</div>
-            <div class="address">Direccion</div>
-            <div class="restaurant">Restaurante</div>
-            <div class="payment">Método de pago</div>
-            <div class="rider">Rider</div>
-            <div class="status">Estado</div>
-            <div class="actions">Actions</div>
+    <!-- Assign rider -->
+    <div class="modal" id="assignRider">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Repartidores</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ol class="list-group" id="riderList">
+                    </ol>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        onclick="unassignRider()">Unassign</button>
+                </div>
+                <input type="hidden" id="idOrder">
+            </div>
         </div>
-        <div id="orders"></div>
+    </div>
+    <!-- -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
+                role="tab" aria-controls="home" aria-selected="true">Pedidos</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button"
+                role="tab" aria-controls="profile" aria-selected="false" onclick="updateHistory()">Histórico</button>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <!-- Active orders -->
+            <div id="orders_body">
+                <div class="order headers">
+                    <div class="id">ID</div>
+                    <div class="address">Direccion</div>
+                    <div class="restaurant">Restaurante</div>
+                    <div class="payment">Método de pago</div>
+                    <div class="rider">Rider</div>
+                    <div class="status">Estado</div>
+                    <div class="actions">Actions</div>
+                </div>
+                <div id="orders"></div>
+            </div>
+            <!-- -->
+        </div>
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <!-- History orders -->
+            <div id="orders_body">
+                <div class="order headers">
+                    <div class="id">ID</div>
+                    <div class="address">Direccion</div>
+                    <div class="restaurant">Restaurante</div>
+                    <div class="payment">Método de pago</div>
+                    <div class="rider">Rider</div>
+                    <div class="status">Estado</div>
+                    <div class="actions">Actions</div>
+                </div>
+                <div id="ordersHistory"></div>
+            </div>
+            <!-- -->
+        </div>
     </div>
 
     <template id="order_template">
@@ -87,7 +140,8 @@
             <div class="payment"></div>
             <div class="rider"></div>
             <div class="status" onclick="updateStatus(this)"></div>
-            <div>
+            <div class="actions">
+                <i class="fas fa-motorcycle" onclick="showRiderList(this.parentNode)"></i>
                 <i class="far fa-edit" onclick="showOrderDetails(this.parentNode)"></i>
             </div>
             <input type="hidden" class="_id">
@@ -101,14 +155,19 @@
 
     <script src="/js/core.js"></script>
     <script src="/js/functions.js"></script>
+    <script src="/js/utils.js"></script>
 
     <script>
         // Update automatic the DOM when is complety loaded
         $(function () {
             update();
+            updateListRiders();
         })
 
         var myModal = new bootstrap.Modal(document.getElementById('showDetailOrder'), {
+            keyboard: false
+        })
+        var riderList = new bootstrap.Modal(document.getElementById('assignRider'), {
             keyboard: false
         })
     </script>

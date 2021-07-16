@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Pedidos</title>
 
     <link rel="stylesheet" href="css/orders.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -29,10 +29,13 @@
             <div class="card-body">
                 <h5 class="card-title" id="status"></h5>
                 <p class="card-text" id="client"></p>
-                <p class="card-text" id="phone"></p>
-                <p class="card-text" id="direccion"></p>
+                <p>
+                    <a href="" class="card-text" id="phone"></a>
+                </p>
+                <p class="card-text" id="address" onclick="openGoogle(this)"></p>
+                <p class="card-text" id="payment"></p>
                 <input type="hidden" id="orderId">
-                <div class="btn btn-primary" onclick="updateStatus(this)">Siguiente</div>
+                <button type="button" class="btn btn-primary" onclick="updateStatus(this)">Siguiente</button>
             </div>
         </div>
     </template>
@@ -43,6 +46,8 @@
 
     <script src="/js/core_riders.js"></script>
     <script src="/js/functions_riders.js"></script>
+    <script src="/js/utils.js"></script>
+
     <script>
         const riderId = "<%= rider._id %>";
 

@@ -181,21 +181,31 @@ exports.addRider = (req, res, next) => {
         .then(order => {
             Rider.findById(riderId)
                 .then(rider => {
-                    // order.rider = {
-                    //     name: rider.name,
-                    //     riderId: rider
-                    // }
-                    order.riderId = rider;
+                    order.rider = rider;
                     return order.save();
                 })
                 .then(result => {
-                    console.log(result);
+                    // console.log(result);
                     res.send({ result: 'Rider assigned', err: null })
                 })
                 .catch(err => {
                     console.log(err);
                     res.send({ result: null, err: err })
                 })
+        })
+        .catch(err => {
+            console.log(err);
+            res.send({ result: null, err: err })
+        })
+}
+
+exports.removeRider = (req, res, next) => {
+    const orderId = req.body.orderId;
+
+    Order.updateOne({ _id: orderId }, { rider: undefined })
+        .then(result => {
+            console.log(result);
+            res.send({ result: "Rider desassigned", err: null })
         })
         .catch(err => {
             console.log(err);

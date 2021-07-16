@@ -9,6 +9,10 @@ const riderSchema = new Schema({
     vehicle:{
         type: String,
         required: true
+    },
+    code: {
+        type: Number,
+        required: true
     }
 })
 

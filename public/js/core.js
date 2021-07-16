@@ -27,6 +27,27 @@ async function getActiveOrders() {
 		console.log(error);
 	}
 }
+async function getCompleteOrders() {
+	const url = url_base + '/getOrders/';
+
+	request = {
+		method: "GET",
+		headers: GLOBAL_HEADERS,
+	};
+
+	try {
+		let peticion = await fetch(url, request);
+		let r = await peticion.json();
+		//alert(mensajes);
+
+		if (r.result) {
+			return r.result.filter(order => {return order.status == "Completed"});
+		}
+	}
+	catch (error) {
+		console.log(error);
+	}
+}
 
 async function getOrder(_id) {
 	const url = url_base + `/getOrder/${_id}`;
@@ -73,6 +94,57 @@ async function updateOrder(order) {
 
 	let payload = {
 		...order
+	}
+	request = {
+		method: "POST",
+		body: JSON.stringify(payload),
+		headers: GLOBAL_HEADERS,
+	};
+
+	return fetch(url, request);
+}
+
+async function getRiders() {
+	const url = url_base + '/getRiders/';
+
+	request = {
+		method: "GET",
+		headers: GLOBAL_HEADERS,
+	};
+
+	try {
+		let peticion = await fetch(url, request);
+		let r = await peticion.json();
+
+		if (r.result) {
+			return r.result;
+		}
+	}
+	catch (error) {
+		console.log(error);
+	}
+}
+async function assignRiderToOrder(orderId, riderId) {
+	const url = url_base + '/assignRiderOrder/';
+
+	let payload = {
+		riderId: riderId,
+		orderId: orderId
+	}
+	request = {
+		method: "POST",
+		body: JSON.stringify(payload),
+		headers: GLOBAL_HEADERS,
+	};
+
+	return fetch(url, request);
+}
+
+async function removeRiderFromOrder(orderId) {
+	const url = url_base + '/removeRiderOrder/';
+
+	let payload = {
+		orderId: orderId
 	}
 	request = {
 		method: "POST",

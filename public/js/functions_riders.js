@@ -11,8 +11,9 @@ async function update() {
             clone.querySelector('#status').textContent = orders[i].status;
             clone.querySelector('#client').textContent = orders[i].client.name;
             clone.querySelector('#phone').textContent = orders[i].client.phone;
-            clone.querySelector('#direccion').textContent = orders[i].address.street;
-            // clone.querySelector('#order').textContent = orders[i]._id;
+            clone.querySelector('#phone').setAttribute('href', "tel:" + orders[i].client.phone);
+            clone.querySelector('#address').textContent = orders[i].address.street;
+            clone.querySelector('#payment').textContent = orders[i].payment;
             clone.querySelector('#orderId').value = orders[i]._id;
 
             if (clone.querySelector('#remove') != null) {
@@ -57,4 +58,10 @@ function updateStatus(element) {
         .catch(err => {
             alert(err);
         })
+}
+
+function openGoogle(element) {
+    let address = $(element.parentNode).find('#address').text();
+
+    window.open(getUrlGoogleMaps(address));
 }

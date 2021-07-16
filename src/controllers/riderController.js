@@ -27,16 +27,6 @@ exports.postNewRider = (req, res, next) => {
         })
 }
 
-exports.index = (req, res, next) => {
-    Rider.findOne({ name: "Tio Mario" })
-        .then(rider => {
-            res.render('rider/orders', { rider: rider });
-        })
-        .catch(err => {
-            console.log(err);
-            res.send({ err: err });
-        })
-}
 
 exports.getOrders = (req, res, next) => {
     let riderId = req.params.riderId;
@@ -66,5 +56,32 @@ exports.getActiveOrders = (req, res, next) => {
         .catch(err => {
             console.log(err);
             res.send({ result: null, err: err });
+        })
+}
+exports.index = (req, res, next) => {
+    const riderId = req.params.riderId;
+
+    Rider.findById(riderId)
+        .then(rider => {
+            res.render('rider/orders', { rider: rider });
+        })
+        .catch(err => {
+            console.log(err);
+            res.send({ err: err });
+        })
+}
+exports.getLogin = (req, res, next) => {
+    res.render('rider/index');
+}
+exports.postLogin = (req, res, next) => {
+    const code = req.body.code;
+
+    Rider.findOne({ code: code })
+        .then(rider => {
+            res.redirect(`/rider/${rider._id}`);
+        })
+        .catch(err => {
+            console.log(err);
+            res.redirect('/rider');
         })
 }

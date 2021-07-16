@@ -21,6 +21,8 @@ Router.post('/updateStatusOrder', ordersController.updateStatusOrder);
 
 Router.post('/addTimeOrder', ordersController.addTimeOrder);
 
-Router.post('/assingRiderOrder', ordersController.addRider);
+Router.post('/assignRiderOrder', ordersController.addRider);
+
+Router.post('/removeRiderOrder', ordersController.removeRider);
 
 module.exports = Router;
