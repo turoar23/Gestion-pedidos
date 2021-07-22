@@ -1,5 +1,6 @@
 const Order = require('../models/order');
 const Rider = require('../models/rider');
+const Moment = require('moment-timezone');
 
 exports.getOrders = (req, res, next) => {
     Order.find()
@@ -80,7 +81,7 @@ exports.modifyOrder = (req, res, next) => {
 exports.updateStatusOrder = (req, res, next) => {
     let id = req.body._id;
 
-    Order.findOne({ _id: id })
+    Order.findById(id)
         .then(order => {
             order.status = req.body.status || order.status;
             order.times.push(
@@ -120,35 +121,20 @@ exports.addTimeOrder = (req, res, next) => {
             res.send({ result: null, err: "Can't add the time" });
         });
 }
-
-// {
-//     "name": "Paola Torregrosa",
-//     "email": "turoar2006@gmail.com",
-//     "phone": "+34622429914",
-//     "restaurant": "Umbrella",
-//     "fulfill_at": "14:15:00 2021-02-04",
-//     "payment": "CASH",
-//     "direction": {
-//         "street": "Doctor fleming 10 3B",
-//         "city": "San vicente del raspeig",
-//         "zipcode": "03690",
-//         "more_address": "Calle"
-//     }
-// }
 exports.postNewOrder = (req, res, next) => {
     const order = new Order({
         gloriaId: req.body.id,
         client: {
-            name: req.body.name,
-            email: req.body.email,
-            phone: req.body.phone
+            name: req.body.client.name,
+            email: req.body.client.email || undefined,
+            phone: req.body.client.phone
         },
         address: {
             street: req.body.direction.street,
             city: req.body.direction.city,
             zipcode: req.body.direction.zipcode,
-            latitue: null,
-            longitude: null
+            latitue: undefined,
+            longitude: undefined
         },
         restaurant: req.body.restaurant,
         times: [{
@@ -156,7 +142,7 @@ exports.postNewOrder = (req, res, next) => {
             action: "accepted_at"
         },
         {
-            by: Date.parse(req.body.fulfill_at),
+            by: Date.parse(req.body.fulfill_at) || Moment(new Date).tz('Europe/Madrid').add(45,'m').toDate().valueOf(),
             action: "fulfill_at"
         }],
         payment: req.body.payment,

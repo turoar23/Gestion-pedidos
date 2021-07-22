@@ -10,5 +10,5 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getIndexOrders = (req, res, next) => {
-    res.render('orders');
+    res.render('orders/orders_panel');
 }

@@ -41,7 +41,7 @@ async function getCompleteOrders() {
 		//alert(mensajes);
 
 		if (r.result) {
-			return r.result.filter(order => {return order.status == "Completed"});
+			return r.result.filter(order => { return order.status == "Completed" });
 		}
 	}
 	catch (error) {
@@ -146,6 +146,19 @@ async function removeRiderFromOrder(orderId) {
 	let payload = {
 		orderId: orderId
 	}
+	request = {
+		method: "POST",
+		body: JSON.stringify(payload),
+		headers: GLOBAL_HEADERS,
+	};
+
+	return fetch(url, request);
+}
+
+async function newOrder(order) {
+	const url = url_base + '/newOrder/';
+
+	let payload = order;
 	request = {
 		method: "POST",
 		body: JSON.stringify(payload),

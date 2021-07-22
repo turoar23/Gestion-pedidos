@@ -71,13 +71,15 @@ exports.index = (req, res, next) => {
         })
 }
 exports.getLogin = (req, res, next) => {
-    res.render('rider/index');
+    res.render('rider/login');
 }
 exports.postLogin = (req, res, next) => {
     const code = req.body.code;
 
     Rider.findOne({ code: code })
         .then(rider => {
+            if(!rider)
+                console.log("Error");
             res.redirect(`/rider/${rider._id}`);
         })
         .catch(err => {

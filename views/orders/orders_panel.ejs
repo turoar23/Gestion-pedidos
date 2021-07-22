@@ -43,6 +43,16 @@
                                 <input type="text" class="form-control" id="city">
                             </div>
                         </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="name">
+                            </div>
+                            <div class="col">
+                                <label class="form-label">Teléfono</label>
+                                <input type="text" class="form-control" id="phone">
+                            </div>
+                        </div>
                         <div class="mb-3">
                             <label class="form-label">Restaurante</label>
                             <input type="text" class="form-control" id="restaurant" readonly>
@@ -51,7 +61,7 @@
                             <label class="form-label">Método de pago</label>
                             <input type="text" class="form-control" id="payment">
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-3" id="status-row">
                             <label class="form-label">Estado</label>
                             <input type="text" class="form-control" id="status">
                         </div>
@@ -60,7 +70,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-primary" onclick="modifyOrder(this)">Guardar</button>
+                    <button type="button" class="btn btn-primary" id="buttom-modify" onclick="modifyOrder()">Actualizar</button>
+                    <button type="button" class="btn btn-primary" id="buttom-save" onclick="saveNewOrder()">Guardar</button>
                 </div>
             </div>
         </div>
@@ -99,13 +110,16 @@
     </ul>
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <div style="text-align: right;margin-right: 10px;">
+                <button class="btn btn-primary" onclick="showNewOrderModal()">Nuevo pedido</button>
+            </div>
             <!-- Active orders -->
             <div id="orders_body">
                 <div class="order headers">
                     <div class="id">ID</div>
                     <div class="address">Direccion</div>
+                    <div class="payment">Entrega</div>
                     <div class="restaurant">Restaurante</div>
-                    <div class="payment">Método de pago</div>
                     <div class="rider">Rider</div>
                     <div class="status">Estado</div>
                     <div class="actions">Actions</div>
@@ -121,7 +135,6 @@
                     <div class="id">ID</div>
                     <div class="address">Direccion</div>
                     <div class="restaurant">Restaurante</div>
-                    <div class="payment">Método de pago</div>
                     <div class="rider">Rider</div>
                     <div class="status">Estado</div>
                     <div class="actions">Actions</div>
@@ -136,13 +149,14 @@
         <div class="order">
             <div class="id"></div>
             <div class="address"></div>
+            <div class="fulfill_at"></div>
             <div class="restaurant"></div>
-            <div class="payment"></div>
             <div class="rider"></div>
             <div class="status" onclick="updateStatus(this)"></div>
             <div class="actions">
                 <i class="fas fa-motorcycle" onclick="showRiderList(this.parentNode)"></i>
-                <i class="far fa-edit" onclick="showOrderDetails(this.parentNode)"></i>
+                <i class="far fa-edit" onclick="showOrderDetailsEdit(this.parentNode)"></i>
+                <i class="fas fa-info" onclick="showOrderDetails(this.parentNode)"></i>
             </div>
             <input type="hidden" class="_id">
         </div>
@@ -156,6 +170,8 @@
     <script src="/js/core.js"></script>
     <script src="/js/functions.js"></script>
     <script src="/js/utils.js"></script>
+    <script src="/js/moment.js"></script>
+    <script src="/js/moment-timezone.js"></script>
 
     <script>
         // Update automatic the DOM when is complety loaded
