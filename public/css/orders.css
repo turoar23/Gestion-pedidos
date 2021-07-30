@@ -5,6 +5,7 @@
 }
 .order{
     display: flex;
+    border-bottom: solid 1px lightgray;
 }
 .order div{
     flex: 1;

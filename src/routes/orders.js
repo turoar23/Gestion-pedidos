@@ -15,11 +15,13 @@ Router.get('/getOrders', ordersController.getOrders);
 
 Router.get('/getOrder/:orderId', ordersController.getOrder);
 
+Router.post('/getOrderFilter', ordersController.postOrdersFilter);
+
 Router.post('/modifyOrder', ordersController.modifyOrder);
 
 Router.post('/updateStatusOrder', ordersController.updateStatusOrder);
 
-Router.post('/addTimeOrder', ordersController.addTimeOrder);
+// Router.post('/addTimeOrder', ordersController.addTimeOrder);
 
 Router.post('/assignRiderOrder', ordersController.addRider);
 

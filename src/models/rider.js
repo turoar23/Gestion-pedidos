@@ -1,5 +1,5 @@
-const moogose = require('mongoose');
-const Schema = moogose.Schema;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 const riderSchema = new Schema({
     name:{
@@ -16,4 +16,4 @@ const riderSchema = new Schema({
     }
 })
 
-module.exports = moogose.model('Rider', riderSchema)
+module.exports = mongoose.model('Rider', riderSchema)

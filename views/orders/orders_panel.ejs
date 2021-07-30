@@ -70,8 +70,12 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-primary" id="buttom-modify" onclick="modifyOrder()">Actualizar</button>
-                    <button type="button" class="btn btn-primary" id="buttom-save" onclick="saveNewOrder()">Guardar</button>
+                    <button type="button" class="btn btn-primary" id="buttom-modify"
+                        onclick="modifyOrder()">Actualizar</button>
+                    <button type="button" class="btn btn-primary" id="buttom-save"
+                        onclick="saveNewOrder()">Guardar</button>
+                    <button type="button" class="btn btn-primary" id="buttom-complete"
+                        onclick="completeOrder()">Completar</button>
                 </div>
             </div>
         </div>
@@ -152,7 +156,7 @@
             <div class="fulfill_at"></div>
             <div class="restaurant"></div>
             <div class="rider"></div>
-            <div class="status" onclick="updateStatus(this)"></div>
+            <div class="status"></div>
             <div class="actions">
                 <i class="fas fa-motorcycle" onclick="showRiderList(this.parentNode)"></i>
                 <i class="far fa-edit" onclick="showOrderDetailsEdit(this.parentNode)"></i>
@@ -174,11 +178,18 @@
     <script src="/js/moment-timezone.js"></script>
 
     <script>
+        let modify = false;
         // Update automatic the DOM when is complety loaded
+
         $(function () {
             update();
             updateListRiders();
-        })
+
+            setInterval(function () {
+                if (!modify) update();
+                // console.log("update");
+            }, 10000);
+        });
 
         var myModal = new bootstrap.Modal(document.getElementById('showDetailOrder'), {
             keyboard: false

@@ -5,10 +5,12 @@ const Router = express.Router();
 const gloriaRoutes = require('./orders');
 const webRoutes = require('./web');
 const riderRoutes = require('./rider');
+const stepRoutes = require('./step');
 
 // Add the routes to express
 Router.use(gloriaRoutes);
 Router.use(webRoutes);
 Router.use(riderRoutes);
+Router.use(stepRoutes);
 
 module.exports = Router;

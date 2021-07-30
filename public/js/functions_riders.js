@@ -25,6 +25,7 @@ async function update() {
             }
             ordersToAdd.push(clone);
         }
+        // groupId = orders[0].group;
     }
 
     $('#orders').empty();
@@ -40,6 +41,10 @@ function updateStatus(element) {
     if (status === 'Active') {
         newStatus = 'Delivering';
         action = "Start delivering";
+    }
+    else if(status === 'Delivering'){
+        newStatus = "Arrived";
+        action = "Arrived destination"
     }
     else {
         newStatus = 'Completed';

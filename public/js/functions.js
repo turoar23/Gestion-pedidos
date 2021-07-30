@@ -98,20 +98,42 @@ async function updateListRiders() {
     //myModal.show();
 }
 
-function updateStatus(element) {
-    let _id = $(element.parentNode).find('._id').val();
-    let status = $(element).text();
-    let newStatus = "";
-    let action = ""
+// function updateStatus(element) {
+//     let _id = $(element.parentNode).find('._id').val();
+//     let status = $(element).text();
+//     let newStatus = "";
+//     let action = ""
 
-    if (status === 'Active') {
-        newStatus = 'Delivering';
-        action = "Start delivering"
-    }
-    else {
-        newStatus = 'Completed';
-        action = "Completed"
-    }
+//     if (status === 'Active') {
+//         newStatus = 'Delivering';
+//         action = "Start delivering"
+//     }
+//     else {
+//         newStatus = 'Completed';
+//         action = "Completed"
+//     }
+
+//     updateOrderStatus(_id, newStatus, action)
+//         .then(result => {
+//             return result.json();
+//         })
+//         .then(result => {
+//             if (result.err)
+//                 throw result.err
+//             update();
+//             console.log('Updated');
+//         })
+//         .catch(err => {
+//             alert(err);
+//         })
+// }
+
+function completeOrder(element) {
+    let modal = $('#showDetailOrder');
+    let _id = modal.find('#orderId').val()
+
+    let newStatus = "Completed";
+    let action = "Completed Manually"
 
     updateOrderStatus(_id, newStatus, action)
         .then(result => {
@@ -121,7 +143,8 @@ function updateStatus(element) {
             if (result.err)
                 throw result.err
             update();
-            console.log('Updated');
+            myModal.hide();
+            // console.log('Updated');
         })
         .catch(err => {
             alert(err);
@@ -177,6 +200,7 @@ function setCardOrder(order, readonly) {
     modal.find('#status-row').attr('hidden', false);
     modal.find('#buttom-modify').attr('hidden', readonly);
     modal.find('#buttom-save').attr('hidden', true);
+    modal.find('#buttom-complete').attr('hidden', !readonly);
 
     modal.find('h5').text(`Order: ${order.gloriaId || "Sin ID"}`);
     modal.find('h5').attr('readonly', readonly);
@@ -223,7 +247,7 @@ function modifyOrder() {
         },
         // restaurant: modal.find('#restaurant').val(),
         payment: modal.find('#payment').val(),
-        status: modal.find('#status').val(),
+        // status: modal.find('#status').val(),
     }
 
     updateOrder(order)
@@ -245,6 +269,7 @@ function showNewOrderModal() {
     let modal = $('#showDetailOrder');
     modal.find('.list-group').remove();
     modal.find('#buttom-modify').attr('hidden', true);
+    modal.find('#buttom-complete').attr('hidden', true);
     modal.find('#buttom-save').attr('hidden', false);
 
     modal.find('h5').text('New Order');
