@@ -55,6 +55,7 @@ exports.postOrdersFilter = (req, res, next) => {
 }
 exports.getActiveOrders = (req, res, next) => {
     Order.find({ status: { $ne: 'Completed' } })
+        // .sort('group')
         .then(orders => {
             return Order
                 .populate(orders, {

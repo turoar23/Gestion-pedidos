@@ -31,7 +31,7 @@ async function update() {
     $('#orders').empty();
     $('#orders').append(ordersToAdd);
 }
-
+//TODO: IMPORTANTE! ver que el boton solo se le de una vez, bloquarlo hasta actualizar o algo asi
 function updateStatus(element) {
     let _id = $(element.parentNode).find('#orderId').val();
     let status = $(element.parentNode).find('#status').text();

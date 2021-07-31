@@ -18,12 +18,20 @@ async function update() {
             let status = 'delivering';
             if (orders[i].status == 'Active')
                 status = 'active';
+            const acepted = moment(orders[i].times.find((time) => { return time.action === "accepted_at" }).by);
+            const fulfill = moment(orders[i].times.find((time) => { return time.action === "fulfill_at" }).by);
+            const duration = Math.round((moment.duration(moment().diff(acepted))).asMinutes());
+            const durationExtra = Math.round((moment.duration(moment().diff(fulfill))).asMinutes());
 
             clone.querySelector('.id').textContent = orders[i].gloriaId || "--";
             clone.querySelector('._id').value = orders[i]._id;
             clone.querySelector('.address').textContent = `${orders[i].address.street} ${orders[i].address.zipcode}`;
-            clone.querySelector('.restaurant').textContent = orders[i].restaurant; 8
-            clone.querySelector('.fulfill_at').textContent = moment(orders[i].times.find((time) => { return time.action === "fulfill_at" }).by).tz('Europe/Madrid').format('LT');
+            clone.querySelector('.duration').textContent = duration;
+            clone.querySelector('.duration-extra').textContent = durationExtra;
+            if (durationExtra > 0)
+                clone.querySelector('.duration-extra').style.color = 'red';
+            clone.querySelector('.restaurant').textContent = orders[i].restaurant;
+            clone.querySelector('.fulfill_at').textContent = fulfill.tz('Europe/Madrid').format('LT');
             clone.querySelector('.rider').textContent = (orders[i].rider) ? orders[i].rider.name : "--";
             clone.querySelector('.status').textContent = orders[i].status;
             clone.querySelector('.status').className += ` ${status}`;
