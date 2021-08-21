@@ -34,10 +34,10 @@ function getNumberFromString (_string) {
     return parseInt(number);
 }
 
-function getUrlGoogleMaps(street) {
+function getUrlGoogleMaps(street, extra) {
     const url_base = "https://www.google.com/maps/dir/?api=1&";
     const restaurante = 'origin=Avenida+Periodista+Rodolfo+Salazar+29,+Alicante&';
     const destination = `destination=${parseStreet(street).replace(/ /g, "+")}`;
 
-    return url_base + restaurante + destination;
+    return url_base + restaurante + destination + ' ' + extra;
 }

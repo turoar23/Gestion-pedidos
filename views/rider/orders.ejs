@@ -13,29 +13,101 @@
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 
+<!-- TODO: Usar-->
+
 <body style="text-align: center;">
-    <h4>
-        <%= rider.name %>
-    </h4>
+    <!-- Modal info order -->
+    <div class="modal fade" id="orderOptions" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen	">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Opciones del pedido</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">ID</label>
+                        <p id="gloriaId"></p>
+                        <input type="hidden" id="orderId">
+                    </div>
+                    <button type="button" class="btn btn-danger" onclick="rejectOrder(this)">Rechazar pedido</button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal list of orders-->
+    <div class="modal fade" id="listOrdersActives" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen	">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Pedidos pendientes por asignar</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="orders-actives">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Main body-->
+    <div class="main" style="display: flex; font-size: 1.3rem;">
+        <div class="riderName" style="flex:1">
+            <%= rider.name %>
+        </div>
+        <div class="ordersActives" style="flex:0.5; background-color: #0d6efd; color: white;">
+            <i class="fas fa-motorcycle" onclick="showOrdersList()"></i>
+        </div>
+    </div>
 
     <div id="orders_body">
         <div id="orders"></div>
     </div>
+    <!-- -->
 
     <template id="order_template">
         <div class="card">
             <div class="card-header" id="order">
             </div>
             <div class="card-body">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" style="position: absolute; right: 10px;"
+                    onclick="showOrderOptions(this)">
+                    <i class="fas fa-cog"></i>
+                </button>
                 <h5 class="card-title" id="status"></h5>
                 <p class="card-text" id="client"></p>
                 <p>
                     <a href="" class="card-text" id="phone"></a>
                 </p>
-                <p class="card-text" id="address" onclick="openGoogle(this)"></p>
+                <p class="card-text" id="street" onclick="openGoogle(this)"></p>
+                <p class="card-text" id="floor"></p>
+                <p class="card-text" id="zipCity"></p>
                 <p class="card-text" id="payment"></p>
                 <input type="hidden" id="orderId">
+                <input type="hidden" id="gloriaId">
                 <button type="button" class="btn btn-primary" onclick="updateStatus(this)">Siguiente</button>
+            </div>
+        </div>
+    </template>
+    <template id="order_active_template">
+        <div class="card">
+            <div class="card-header" id="order">
+            </div>
+            <div class="card-body">
+                <h5 class="card-title" id="status"></h5>
+                <p class="card-text" id="street"></p>
+                <p class="card-text" id="zipCity"></p>
+                <p class="card-text" id="payment"></p>
+                <input type="hidden" id="orderId">
+                <input type="hidden" id="gloriaId">
+                <button type="button" class="btn btn-primary" onclick="assignRider(this)">Asignar</button>
             </div>
         </div>
     </template>
@@ -51,6 +123,12 @@
     <script>
         const riderId = "<%= rider._id %>";
         // var groupId = "";
+        var orderOptionsModal = new bootstrap.Modal(document.getElementById('orderOptions'), {
+            keyboard: false
+        })
+        var listOrdersModal = new bootstrap.Modal(document.getElementById('listOrdersActives'), {
+            keyboard: false
+        })
 
         $(function () {
             update();
