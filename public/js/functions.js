@@ -103,38 +103,7 @@ async function updateListRiders() {
             </li>`
         )
     })
-    //myModal.show();
 }
-
-// function updateStatus(element) {
-//     let _id = $(element.parentNode).find('._id').val();
-//     let status = $(element).text();
-//     let newStatus = "";
-//     let action = ""
-
-//     if (status === 'Active') {
-//         newStatus = 'Delivering';
-//         action = "Start delivering"
-//     }
-//     else {
-//         newStatus = 'Completed';
-//         action = "Completed"
-//     }
-
-//     updateOrderStatus(_id, newStatus, action)
-//         .then(result => {
-//             return result.json();
-//         })
-//         .then(result => {
-//             if (result.err)
-//                 throw result.err
-//             update();
-//             console.log('Updated');
-//         })
-//         .catch(err => {
-//             alert(err);
-//         })
-// }
 
 function completeOrder(element) {
     let modal = $('#showDetailOrder');
@@ -382,4 +351,70 @@ function unassignRider() {
         .catch(err => {
             alert(err);
         })
+}
+
+async function updateResumen() {
+    const date = moment($('#date')[0].value).add(3, 'hours');
+    const begin = date.valueOf();
+    const end = date.add(1, 'days').valueOf();
+
+    let orders = await getOrdersByDate(begin, end);
+    console.log(orders);
+    var template = document.querySelector('#order_template_resumen');
+
+    let ordersToAdd = [];
+
+    if (orders.length > 0) {
+        for (var i = 0; i < orders.length; i++) {
+            let clone = document.importNode(template.content, true);
+            const accepted_at = getTimeFromOrder(orders[i].times, "accepted_at");
+            const delivering = getTimeFromOrder(orders[i].times, "Start delivering");
+            const arrived = getTimeFromOrder(orders[i].times, "Arrived destination");
+            const completed = getTimeFromOrder(orders[i].times, "Completed");
+            const fulfill_at = getTimeFromOrder(orders[i].times, "fulfill_at");
+            const success = differentTwoDate(completed, fulfill_at);
+            // Super gitano esto. Si es un numbero, se comprueba si es mayor o menor (si se entrego a tiempo o no)
+            const successColor = (typeof success === 'number') ? ((success > 0) ? 'green' : 'red') : 'black';
+
+            clone.querySelector('.id').textContent = orders[i].gloriaId || "--";
+            clone.querySelector('._id').value = orders[i]._id;
+            clone.querySelector('.address').textContent = `${orders[i].address.street} ${orders[i].address.zipcode}`;
+            clone.querySelector('.step1 .time').textContent = formatTime(accepted_at);
+            clone.querySelector('.step1 .duration').textContent = differentTwoDate(accepted_at, fulfill_at);
+            clone.querySelector('.step2 .time').textContent = formatTime(delivering);
+            clone.querySelector('.step2 .duration').textContent = differentTwoDate(accepted_at, delivering);
+            clone.querySelector('.step3 .time').textContent = formatTime(arrived);
+            clone.querySelector('.step3 .duration').textContent = differentTwoDate(delivering, arrived);
+            clone.querySelector('.step4 .time').textContent = formatTime(completed);
+            clone.querySelector('.step4 .duration').textContent = differentTwoDate(arrived, completed);
+            clone.querySelector('.fulfill_at .time').textContent = formatTime(fulfill_at);
+            clone.querySelector('.fulfill_at .success').textContent = success;
+            clone.querySelector('.fulfill_at .success').style.color  = successColor;
+            clone.querySelector('.rider').textContent = (orders[i].rider) ? orders[i].rider.name : "--";
+
+            ordersToAdd.push(clone);
+        }
+    }
+
+    $('#ordersResumen').empty();
+    $('#ordersResumen').append(ordersToAdd);
+}
+
+function getTimeFromOrder(times, action) {
+    let time = times.find(element => element.action == action);
+    return time ? time.by : null;
+}
+
+function formatTime(time){
+    return time = time ? moment(time).tz('Europe/Madrid').format('LT') : '--';
+
+}
+function differentTwoDate(begin, end){
+    if(!begin || !end)
+        return '--'
+    // Remove the seconds and milliseconds to ensure that dosent affect the diff
+    begin = moment(begin).seconds(0).milliseconds(0);
+    end = moment(end).seconds(0).milliseconds(0);
+
+    return Math.round(moment.duration(end.diff(begin)).asMinutes());
 }

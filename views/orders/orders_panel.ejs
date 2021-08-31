@@ -15,97 +15,17 @@
 </head>
 
 <body>
-    <!-- To edit an order-->
-    <div class="modal" id="showDetailOrder">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"></h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <!--<div class="mb-3">
-                            <label class="form-label">Order ID</label>
-                            <input type="text" class="form-control" id="gloriaId">
-                        </div>-->
-                        <div class="mb-3">
-                            <label class="form-label">Direccion</label>
-                            <input type="text" class="form-control" id="address">
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col">
-                                <label class="form-label">CP</label>
-                                <input type="text" class="form-control" id="cp">
-                            </div>
-                            <div class="col">
-                                <label class="form-label">Ciudad/Zona</label>
-                                <input type="text" class="form-control" id="city">
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col">
-                                <label class="form-label">Nombre</label>
-                                <input type="text" class="form-control" id="name">
-                            </div>
-                            <div class="col">
-                                <label class="form-label">Teléfono</label>
-                                <input type="text" class="form-control" id="phone">
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Restaurante</label>
-                            <input type="text" class="form-control" id="restaurant" readonly>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Método de pago</label>
-                            <input type="text" class="form-control" id="payment">
-                        </div>
-                        <div class="mb-3" id="status-row">
-                            <label class="form-label">Estado</label>
-                            <input type="text" class="form-control" id="status">
-                        </div>
-                        <input type="hidden" id="orderId">
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-primary" id="buttom-modify"
-                        onclick="modifyOrder()">Actualizar</button>
-                    <button type="button" class="btn btn-primary" id="buttom-save"
-                        onclick="saveNewOrder()">Guardar</button>
-                    <button type="button" class="btn btn-primary" id="buttom-complete"
-                        onclick="completeOrder()">Completar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Assign rider -->
-    <div class="modal" id="assignRider">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Repartidores</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <ol class="list-group" id="riderList">
-                    </ol>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                        onclick="unassignRider()">Unassign</button>
-                </div>
-                <input type="hidden" id="idOrder">
-            </div>
-        </div>
-    </div>
-    <!-- -->
+    <%- include('components/editOrder.ejs'); %>
+    <%- include('components/assignRider.ejs') %>
+
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
+            <button class="nav-link" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
                 role="tab" aria-controls="home" aria-selected="true">Pedidos</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="resumen-tab" data-bs-toggle="tab" data-bs-target="#resumen" type="button"
+                role="tab" aria-controls="resumen" aria-selected="true">Resumen</button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button"
@@ -113,7 +33,7 @@
         </li>
     </ul>
     <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+        <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
             <div style="text-align: right;margin-right: 10px;">
                 <button class="btn btn-primary" onclick="showNewOrderModal()">Nuevo pedido</button>
             </div>
@@ -134,12 +54,41 @@
             </div>
             <!-- Panel with the raiders -->
             <div id="position-riders">
-
             </div>
             <!-- -->
         </div>
+        <!-- Resumen -->
+        <div class="tab-pane fade show active" id="resumen" role="tabpanel" aria-labelledby="resumen-tab">
+            <div id="resumen_body">
+                <label for="date" class="form-label">Fecha:</label>
+                <input type="date" id="date" name="trip-begin">
+                <button onclick="updateResumen()" class="btn btn-primary">Cargar</button>
+                <div>
+                    Rendimiento (En desarrollo)
+                </div>
+                <div>
+                    Pedidos
+                    <div id="resumen">
+                        <div class="order headers">
+                            <div class="id">ID</div>
+                            <div class="address">Dirección</div>
+                            <!-- <div class="restaurant">Restaurante</div> -->
+                            <div class="rider">Rider</div>
+                            <!-- <div class="status">Estado</div> -->
+                            <div>Accepted</div>
+                            <div>Delivering</div>
+                            <div>Arrived</div>
+                            <div>Completed</div>
+                            <div>Fulfill</div>
+                            <div class="actions">Actions</div>
+                        </div>
+                        <div id="ordersResumen"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- History orders -->
         <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-            <!-- History orders -->
             <div id="orders_body">
                 <div class="order headers">
                     <div class="id">ID</div>
@@ -152,6 +101,7 @@
                 <div id="ordersHistory"></div>
             </div>
             <!-- -->
+        </div>
         </div>
     </div>
 
@@ -168,6 +118,39 @@
             <div class="actions">
                 <i class="fas fa-motorcycle" onclick="showRiderList(this.parentNode)"></i>
                 <i class="far fa-edit" onclick="showOrderDetailsEdit(this.parentNode)"></i>
+                <i class="fas fa-info" onclick="showOrderDetails(this.parentNode)"></i>
+            </div>
+            <input type="hidden" class="_id">
+        </div>
+    </template>
+
+    <template id="order_template_resumen">
+        <div class="order">
+            <div class="id"></div>
+            <div class="address"></div>
+            <!-- <div class="restaurant"></div> -->
+            <div class="rider"></div>
+            <div class="step1">
+                <div class="time"></div>
+                <div class="duration"></div>
+            </div>
+            <div class="step2">
+                <div class="time"></div>
+                <div class="duration"></div>
+            </div>
+            <div class="step3">
+                <div class="time"></div>
+                <div class="duration"></div>
+            </div>
+            <div class="step4">
+                <div class="time"></div>
+                <div class="duration"></div>
+            </div>
+            <div class="fulfill_at">
+                <div class="time"></div>
+                <div class="success"></div>
+            </div>
+            <div class="actions">
                 <i class="fas fa-info" onclick="showOrderDetails(this.parentNode)"></i>
             </div>
             <input type="hidden" class="_id">
@@ -194,10 +177,12 @@
 
     <script>
         let modify = false;
+        
         // Update automatic the DOM when is complety loaded
-
         $(function () {
             update();
+            // $('#date')[0].value = moment().tz('Europe/Madrid').format('Y-MM-D')
+            $('#date')[0].value = "2021-08-05";
             updateListRiders();
 
             setInterval(function () {

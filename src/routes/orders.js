@@ -17,6 +17,8 @@ Router.get('/getOrder/:orderId', ordersController.getOrder);
 
 Router.post('/getOrderFilter', ordersController.postOrdersFilter);
 
+Router.post('/getOrderByDates', ordersController.getOrdersByDate);
+
 Router.post('/modifyOrder', ordersController.modifyOrder);
 
 Router.post('/updateStatusOrder', ordersController.updateStatusOrder);

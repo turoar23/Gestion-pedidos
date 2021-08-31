@@ -34,6 +34,12 @@ const orderSchema = new Schema({
         required: true,
         default: null
     },
+    total_price: {
+        type: Number
+    },
+    for_later: {
+        type: Boolean
+    },
     status: {
         type: String,
         required: true,

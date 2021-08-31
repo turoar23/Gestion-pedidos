@@ -34,6 +34,8 @@ exports.postNewOrderGloriaFood = (req, res, next) => {
                         longitude: order['longitude']
                     },
                     restaurant: order['app'],
+                    total_price: order['total_price'],
+                    for_later: order['for_later'],
                     times: [
                         {
                             by: Date.parse(order['accepted_at']),

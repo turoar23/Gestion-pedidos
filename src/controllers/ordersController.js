@@ -53,6 +53,38 @@ exports.postOrdersFilter = (req, res, next) => {
             res.send({ result: null, err: err });
         })
 }
+exports.getOrdersByDate = (req, res, next) => {
+    const begin = req.body.begin;
+    const end = req.body.end;
+
+    // Order.find({ status: "Completed" }).slice('times', -1).where('times.by').gte(begin).lte(end)
+    //TODO: hacerlo con el fulfill no me termina de convencer mucho, aun asi se basa en que nunca pondran un pedido para mas tarde tipo dia siguiente
+    Order.find({
+        $expr: {
+            $and: [
+                {
+                    $gte: [{ "$arrayElemAt": ["$times.by", 1] }, begin]
+                },
+                {
+                    $lte: [{ "$arrayElemAt": ["$times.by", 1] }, end]
+                }]
+            }
+        })
+        .then(orders => {
+            return Order
+                .populate(orders, {
+                    path: "rider",
+                    select: 'name'
+                })
+        })
+        .then(orders => {
+            res.send({ result: orders, err: null });
+        })
+        .catch(err => {
+            console.log(err);
+            res.send({ result: null, err: "Can't get the orders" });
+        })
+}
 exports.getActiveOrders = (req, res, next) => {
     Order.find({ status: { $ne: 'Completed' } })
         // .sort('group')
@@ -143,27 +175,6 @@ exports.updateStatusOrder = (req, res, next) => {
             res.send({ result: null, err: "Can't add the time" });
         });
 }
-// exports.addTimeOrder = (req, res, next) => {
-//     let gloriaId = req.body.gloriaId;
-
-//     Order.findOne({ gloriaId: gloriaId })
-//         .then(order => {
-//             order.times.push(
-//                 {
-//                     by: Date.parse(Date()),
-//                     action: req.body.action
-//                 });
-//             return order.save();
-//         })
-//         .then(result => {
-//             // console.log('Time added');
-//             res.send({ result: 'Time added', err: null });
-//         })
-//         .catch(err => {
-//             // console.log(err);
-//             res.send({ result: null, err: "Can't add the time" });
-//         });
-// }
 exports.postNewOrder = (req, res, next) => {
     const order = new Order({
         gloriaId: req.body.id,
@@ -260,31 +271,6 @@ exports.addRider = (req, res, next) => {
             res.send({ result: null, err: err })
         })
 }
-// exports.addRider = (req, res, next) => {
-//     const riderId = req.body.riderId;
-//     const orderId = req.body.orderId;
-
-//     Order.findById(orderId)
-//         .then(order => {
-//             Rider.findById(riderId)
-//                 .then(rider => {
-//                     order.rider = rider;
-//                     return order.save();
-//                 })
-//                 .then(result => {
-//                     // console.log(result);
-//                     res.send({ result: 'Rider assigned', err: null })
-//                 })
-//                 .catch(err => {
-//                     // console.log(err);
-//                     res.send({ result: null, err: err })
-//                 })
-//         })
-//         .catch(err => {
-//             // console.log(err);
-//             res.send({ result: null, err: err })
-//         })
-// }
 
 exports.removeRider = (req, res, next) => {
     const orderId = req.body.orderId;

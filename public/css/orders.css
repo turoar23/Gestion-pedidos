@@ -1,6 +1,6 @@
-#orders_body{
+#orders_body, #resumen_body{
     flex-wrap: wrap;
-    width: 95%;
+    width: 98%;
     margin: auto;
 }
 .order{
