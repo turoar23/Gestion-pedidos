@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pedidos</title>
 
-    <link rel="stylesheet" href="css/orders.css">
+    <link rel="stylesheet" href="/css/orders.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -69,7 +69,6 @@
         <div id="orders"></div>
     </div>
     <!-- -->
-
     <template id="order_template">
         <div class="card">
             <div class="card-header" id="order">
@@ -95,15 +94,16 @@
             </div>
         </div>
     </template>
+    <!-- Template of orders to delivery -->
     <template id="order_active_template">
         <div class="card">
             <div class="card-header" id="order">
             </div>
             <div class="card-body">
-                <h5 class="card-title" id="status"></h5>
+                <h5 class="card-title" id="from"></h5>
                 <p class="card-text" id="street"></p>
                 <p class="card-text" id="zipCity"></p>
-                <p class="card-text" id="payment"></p>
+                <!-- <p class="card-text" id="from"></p> -->
                 <input type="hidden" id="orderId">
                 <input type="hidden" id="gloriaId">
                 <button type="button" class="btn btn-primary" onclick="assignRider(this)">Asignar</button>
@@ -118,6 +118,9 @@
     <script src="/js/core_riders.js"></script>
     <script src="/js/functions_riders.js"></script>
     <script src="/js/utils.js"></script>
+    <script src="/js/moment.js"></script>
+    <script src="/js/moment-timezone.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
 
     <script>
         const riderId = "<%= rider._id %>";
@@ -130,6 +133,11 @@
         })
 
         $(function () {
+            update();
+        })
+        var socket = io();
+        socket.on('Orders', data => {
+            console.log(data);
             update();
         })
     </script>

@@ -7,6 +7,9 @@
     display: flex;
     border-bottom: solid 1px lightgray;
 }
+.order > * {
+    padding: 0px 2.5px 0px 2.5px;
+}
 .order div{
     flex: 1;
 }
@@ -22,4 +25,10 @@
     border-top: 1px solid lightgray;
     /*background-color: gray;*/
     width: 100%;
+}
+.for-later{
+    color: white;
+    background-color: rgb(55, 85, 252);
+    padding: 0.5px;
+    border-radius: 20%;
 }

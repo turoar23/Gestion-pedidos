@@ -2,6 +2,8 @@ const Order = require('../models/order');
 const Rider = require('../models/rider');
 const Group = require('../models/group');
 
+const webSocket = require('../socket');
+
 // const mongoose = require('mongoose');
 const Moment = require('moment-timezone');
 const group = require('../models/group');
@@ -68,8 +70,8 @@ exports.getOrdersByDate = (req, res, next) => {
                 {
                     $lte: [{ "$arrayElemAt": ["$times.by", 1] }, end]
                 }]
-            }
-        })
+        }
+    })
         .then(orders => {
             return Order
                 .populate(orders, {
@@ -117,7 +119,11 @@ exports.modifyOrder = (req, res, next) => {
             return order.save();
         })
         .then(result => {
-            console.log('Updated Order');
+            // console.log('Updated Order');
+            webSocket.getIO().emit('Orders', {
+                action: 'Order updated',
+                order: result
+            });
             res.send({ result: 'updated', err: null });
         })
         .catch(err => {
@@ -168,6 +174,10 @@ exports.updateStatusOrder = (req, res, next) => {
             return order.save();
         })
         .then(result => {
+            webSocket.getIO().emit('Orders', {
+                action: 'Order status updated',
+                order: result
+            });
             res.send({ result: 'Time added', err: null });
 
         })
@@ -205,6 +215,10 @@ exports.postNewOrder = (req, res, next) => {
     order.save()
         .then(result => {
             // console.log(result);
+            webSocket.getIO().emit('Orders', {
+                action: 'New Order',
+                order: result
+            });
             res.send({ result: "New order added", error: null });
         })
         .catch(err => {
@@ -257,6 +271,10 @@ exports.addRider = (req, res, next) => {
                             return order.save();
                         })
                         .then(result => {
+                            webSocket.getIO().emit('Orders', {
+                                action: 'Rider assigned',
+                                order: result
+                            });
                             res.send({ result: 'Rider assigned', err: null })
                         })
                         .catch(err => { throw err });
@@ -296,6 +314,10 @@ exports.removeRider = (req, res, next) => {
         })
         .then(result => {
             // console.log(result);
+            webSocket.getIO().emit('Orders', {
+                action: 'Rider dessasigned',
+                order: result
+            });
             res.send({ result: "Rider desassigned", err: null })
         })
         .catch(err => {

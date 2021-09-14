@@ -20,24 +20,28 @@
 
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
+            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
                 role="tab" aria-controls="home" aria-selected="true">Pedidos</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="resumen-tab" data-bs-toggle="tab" data-bs-target="#resumen" type="button"
+            <button class="nav-link" id="resumen-tab" data-bs-toggle="tab" data-bs-target="#resumen" type="button"
                 role="tab" aria-controls="resumen" aria-selected="true">Resumen</button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button"
                 role="tab" aria-controls="profile" aria-selected="false" onclick="updateHistory()">Histórico</button>
         </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="mapa-tab" data-bs-toggle="tab" data-bs-target="#mapa" type="button"
+                role="tab" aria-controls="profile" aria-selected="false">Mapa</button>
+        </li>
     </ul>
     <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
+        <!-- Active orders -->
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
             <div style="text-align: right;margin-right: 10px;">
                 <button class="btn btn-primary" onclick="showNewOrderModal()">Nuevo pedido</button>
             </div>
-            <!-- Active orders -->
             <div id="orders_body">
                 <div class="order headers">
                     <div class="id">ID</div>
@@ -58,7 +62,7 @@
             <!-- -->
         </div>
         <!-- Resumen -->
-        <div class="tab-pane fade show active" id="resumen" role="tabpanel" aria-labelledby="resumen-tab">
+        <div class="tab-pane fade" id="resumen" role="tabpanel" aria-labelledby="resumen-tab">
             <div id="resumen_body">
                 <label for="date" class="form-label">Fecha:</label>
                 <input type="date" id="date" name="trip-begin">
@@ -102,9 +106,11 @@
             </div>
             <!-- -->
         </div>
+        <div class="tab-pane fade" id="mapa" role="tabpanel" aria-labelledby="mapa-tab">
+            <img src="/img/mapa.png" alt="" style="width: 100vw;max-height: 95vh;">
         </div>
     </div>
-
+    <!-- template for a generic order  -->
     <template id="order_template">
         <div class="order">
             <div class="id"></div>
@@ -174,6 +180,7 @@
     <script src="/js/utils.js"></script>
     <script src="/js/moment.js"></script>
     <script src="/js/moment-timezone.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
 
     <script>
         let modify = false;
@@ -181,14 +188,22 @@
         // Update automatic the DOM when is complety loaded
         $(function () {
             update();
-            // $('#date')[0].value = moment().tz('Europe/Madrid').format('Y-MM-D')
-            $('#date')[0].value = "2021-08-05";
+            // $('#date')[0].value = moment().tz('Europe/Madrid').format('Y-MM-DD')
+            $('#date')[0].value = "2021-08-13";
             updateListRiders();
 
             setInterval(function () {
                 if (!modify) update();
                 // console.log("update");
-            }, 10000);
+            }, 20 * 1000);
+
+            // Si entra algun pedido o se actualiza de alguna forma, se actualiza el dom entero
+            var socket = io();
+            socket.on('Orders', data => {
+                console.log(data);
+                update();
+            })
+
         });
 
         var myModal = new bootstrap.Modal(document.getElementById('showDetailOrder'), {

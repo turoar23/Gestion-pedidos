@@ -20,13 +20,13 @@ async function update() {
             clone.querySelector('#orderId').value = orders[i]._id;
             clone.querySelector('#gloriaId').value = orders[i].gloriaId || '--';
 
-            if (clone.querySelector('#remove') != null) {
-                clone.querySelector('#remove').addEventListener("click", function () {
-                    let _id = $(this).parent().find('.id').text()
-                    removeOrder(_id);
-                    update();
-                });
-            }
+            // if (clone.querySelector('#remove') != null) {
+            //     clone.querySelector('#remove').addEventListener("click", function () {
+            //         let _id = $(this).parent().find('.id').text()
+            //         removeOrder(_id);
+            //         update();
+            //     });
+            // }
             ordersToAdd.push(clone);
         }
         // groupId = orders[0].group;
@@ -95,7 +95,7 @@ function rejectOrder(element) {
     removeRiderFromOrder(orderId)
         .then(result => {
             alert("Pedido desaginado");
-            update();
+            // update();
             orderOptionsModal.toggle();
         })
         .catch(err => {
@@ -111,8 +111,12 @@ async function showOrdersList() {
     if (orders.length > 0) {
         for (var i = 0; i < orders.length; i++) {
             let clone = document.importNode(template.content, true);
+            const fulfill = moment(orders[i].times.find((time) => { return time.action === "fulfill_at" }).by);
 
-            clone.querySelector('#status').textContent = orders[i].status;
+            // clone.querySelector('#status').textContent = `${orders[i].status} ${fulfill.tz('Europe/Madrid').format('LT')}`;
+            clone.querySelector('#from').textContent = `${orders[i].restaurant} - ${fulfill.tz('Europe/Madrid').format('LT')}`;;
+            if (typeof orders[i].for_later !== 'undefined')
+                clone.querySelector('#from').innerHTML += orders[i].for_later ? '<sup class="for-later">P</sup>' : '';
             clone.querySelector('#street').textContent = `${orders[i].address.street}`;
             clone.querySelector('#zipCity').textContent = `${orders[i].address.zipcode} ${orders[i].address.city}`;
             clone.querySelector('#orderId').value = orders[i]._id;
@@ -125,7 +129,7 @@ async function showOrdersList() {
     $('#orders-actives').empty();
     $('#orders-actives').append(ordersToAdd);
 
-    listOrdersModal.toggle();
+    listOrdersModal.show();
 }
 
 function assignRider(element){
@@ -134,8 +138,9 @@ function assignRider(element){
     assignRiderToOrder(orderId, riderId)
     .then(result => {
         alert("Pedido asignado");
-        listOrdersModal.toggle();
-        update();
+        // listOrdersModal.toggle();
+        // update();
+        showOrdersList();
     })
     .catch(err => {
         alert(err);

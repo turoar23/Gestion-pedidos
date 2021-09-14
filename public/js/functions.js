@@ -32,17 +32,19 @@ async function update() {
                 clone.querySelector('.duration-extra').style.color = 'red';
             clone.querySelector('.restaurant').textContent = orders[i].restaurant;
             clone.querySelector('.fulfill_at').textContent = fulfill.tz('Europe/Madrid').format('LT');
+            // if (typeof orders[i].for_later !== 'undefined')
+            //     clone.querySelector('.fulfill_at').innerHTML += orders[i].for_later ? '<sup class="for-later">P</sup>' : '';
             clone.querySelector('.rider').textContent = (orders[i].rider) ? orders[i].rider.name : "--";
             clone.querySelector('.status').textContent = orders[i].status;
             clone.querySelector('.status').className += ` ${status}`;
 
-            if (clone.querySelector('#remove') != null) {
-                clone.querySelector('#remove').addEventListener("click", function () {
-                    let _id = $(this).parent().find('.id').text()
-                    removeOrder(_id);
-                    update();
-                });
-            }
+            // if (clone.querySelector('#remove') != null) {
+            //     clone.querySelector('#remove').addEventListener("click", function () {
+            //         let _id = $(this).parent().find('.id').text()
+            //         removeOrder(_id);
+            //         update();
+            //     });
+            // }
             ordersToAdd.push(clone);
         }
     }
@@ -70,11 +72,14 @@ async function updateHistory() {
             clone.querySelector('.restaurant').textContent = orders[i].restaurant;
             // clone.querySelector('.payment').textContent = orders[i].payment;
             clone.querySelector('.fulfill_at').remove();
+            clone.querySelector('.duration').remove();
+            clone.querySelector('.duration-extra').remove();
             clone.querySelector('.rider').textContent = (orders[i].rider) ? orders[i].rider.name : "--";
             clone.querySelector('.status').textContent = orders[i].status;
             clone.querySelector('.status').className += ` ${status}`;
             clone.querySelector('.status').onclick = null;
             clone.querySelector('.fa-motorcycle').remove();
+            clone.querySelector('.fa-edit').remove();
 
             if (clone.querySelector('#remove') != null) {
                 clone.querySelector('#remove').addEventListener("click", function () {
@@ -166,7 +171,7 @@ function showOrderDetails(element) {
             alert(err);
         })
 }
-// TODO: configure by tipe of order and modify the card 
+// TODO: configure by type of order and modify the card 
 function setCardOrder(order, readonly) {
     let modal = $('#showDetailOrder');
 
@@ -389,7 +394,7 @@ async function updateResumen() {
             clone.querySelector('.step4 .duration').textContent = differentTwoDate(arrived, completed);
             clone.querySelector('.fulfill_at .time').textContent = formatTime(fulfill_at);
             clone.querySelector('.fulfill_at .success').textContent = success;
-            clone.querySelector('.fulfill_at .success').style.color  = successColor;
+            clone.querySelector('.fulfill_at .success').style.color = successColor;
             clone.querySelector('.rider').textContent = (orders[i].rider) ? orders[i].rider.name : "--";
 
             ordersToAdd.push(clone);
@@ -405,12 +410,12 @@ function getTimeFromOrder(times, action) {
     return time ? time.by : null;
 }
 
-function formatTime(time){
+function formatTime(time) {
     return time = time ? moment(time).tz('Europe/Madrid').format('LT') : '--';
 
 }
-function differentTwoDate(begin, end){
-    if(!begin || !end)
+function differentTwoDate(begin, end) {
+    if (!begin || !end)
         return '--'
     // Remove the seconds and milliseconds to ensure that dosent affect the diff
     begin = moment(begin).seconds(0).milliseconds(0);

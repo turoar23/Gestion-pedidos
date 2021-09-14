@@ -4,6 +4,8 @@ const path = require('path');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
+const webSocket = require('./src/socket');
+
 // Configurations
 dotenv.config();
 const app = express();
@@ -27,7 +29,11 @@ app.use(routes);
 mongoose
     .connect(process.env.DATABASE)
     .then(result => {
-        app.listen(PORT);
+        const server = app.listen(PORT);
+        const io = webSocket.init(server);
+        io.on('connection', socket => {
+            // console.log("hola");
+        })
     })
     .then(() => {
         console.log(`Listen at port: ${PORT}`)
