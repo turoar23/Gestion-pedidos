@@ -11,4 +11,6 @@ Router.get('/getActiveRiderOrders/:riderId', riderController.getActiveOrders);
 
 Router.get('/getRiderOrders/:riderId', riderController.getOrders);
 
+Router.get('/getResumenByRider/:riderId/:date/', riderController.getOrdersByRiderByDates);
+
 module.exports = Router;

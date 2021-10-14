@@ -1,39 +1,43 @@
 const Order = require('../models/order');
 const Rider = require('../models/rider');
 
+var ObjectId = require('mongoose').Types.ObjectId;
+
+const Moment = require('moment-timezone');
+
 exports.getRiders = (req, res, next) => {
     Rider.find()
         .then(riders => {
-            res.send({ result: riders, err: null })
+            res.send({ result: riders, err: null });
         })
         .catch(err => {
             res.send({ result: null, err: err });
-        })
-}
+        });
+};
 
 exports.postNewRider = (req, res, next) => {
     const rider = new Rider({
         name: req.body.name,
-        vehicle: req.body.vehicle
-    })
+        vehicle: req.body.vehicle,
+    });
 
-    rider.save()
+    rider
+        .save()
         .then(result => {
             res.send({ result: 'Rider added', err: null });
         })
         .catch(err => {
             console.log(err);
-            res.send({ result: null, err: err })
-        })
-}
-
+            res.send({ result: null, err: err });
+        });
+};
 
 exports.getOrders = (req, res, next) => {
     let riderId = req.params.riderId;
 
     Rider.findById(riderId)
         .then(rider => {
-            return Order.find({ rider: rider })
+            return Order.find({ rider: rider });
         })
         .then(orders => {
             res.send({ result: orders, err: null });
@@ -41,14 +45,14 @@ exports.getOrders = (req, res, next) => {
         .catch(err => {
             console.log(err);
             res.send({ result: null, err: err });
-        })
-}
+        });
+};
 exports.getActiveOrders = (req, res, next) => {
     let riderId = req.params.riderId;
 
     Rider.findById(riderId)
         .then(rider => {
-            return Order.find({ rider: rider, status: { $ne: "Completed" } })
+            return Order.find({ rider: rider, status: ['Active', 'Delivering', 'Arrived'] });
         })
         .then(orders => {
             res.send({ result: orders, err: null });
@@ -56,34 +60,44 @@ exports.getActiveOrders = (req, res, next) => {
         .catch(err => {
             console.log(err);
             res.send({ result: null, err: err });
-        })
-}
-exports.index = (req, res, next) => {
+        });
+};
+
+exports.getOrdersByRiderByDates = (req, res, next) => {
     const riderId = req.params.riderId;
+    const date = req.params.date;
 
-    Rider.findById(riderId)
-        .then(rider => {
-            res.render('rider/orders', { rider: rider });
+    const begin = Moment(new Date(date)).tz('Europe/Madrid').valueOf();
+    const end = Moment(new Date(date))
+        .tz('Europe/Madrid')
+        .add(1, 'month')
+        .valueOf();
+
+    Order.find({
+        $expr: {
+            $and: [
+                {
+                    $gte: [{ $arrayElemAt: ['$times.by', 1] }, begin],
+                },
+                {
+                    $lte: [{ $arrayElemAt: ['$times.by', 1] }, end],
+                },
+            ],
+        },
+    })
+        .where('rider', new ObjectId(riderId))
+        .then(orders => {
+            console.log(orders.length);
+            res.send({ result: orders, err: null });
         })
         .catch(err => {
             console.log(err);
-            res.send({ err: err });
-        })
-}
-exports.getLogin = (req, res, next) => {
-    res.render('rider/login');
-}
-exports.postLogin = (req, res, next) => {
-    const code = req.body.code;
+            res.send({ result: null, err: "Can't get the orders" });
+        });
 
-    Rider.findOne({ code: code })
-        .then(rider => {
-            if(!rider)
-                console.log("Error");
-            res.redirect(`/rider/${rider._id}`);
-        })
-        .catch(err => {
-            console.log(err);
-            res.redirect('/rider');
-        })
-}
+    // res.send(200);
+
+    // Moment(new Date('2020-07-01')).tz('Europe/Madrid').format('Y-M-D')
+
+    // Order.find
+};

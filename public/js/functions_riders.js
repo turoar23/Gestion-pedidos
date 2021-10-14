@@ -7,8 +7,10 @@ async function update() {
     if (orders.length > 0) {
         for (var i = 0; i < orders.length; i++) {
             let clone = document.importNode(template.content, true);
+            const fulfill = moment(orders[i].times.find((time) => { return time.action === "fulfill_at" }).by);
 
             clone.querySelector('#status').textContent = orders[i].status;
+            clone.querySelector('#fulfill').textContent = `Entrega: ${fulfill.tz('Europe/Madrid').format('LT')}`;
             clone.querySelector('#client').textContent = orders[i].client.name;
             clone.querySelector('#phone').textContent = orders[i].client.phone;
             clone.querySelector('#phone').setAttribute('href', "tel:" + orders[i].client.phone);

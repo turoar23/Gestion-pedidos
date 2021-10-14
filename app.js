@@ -27,17 +27,17 @@ const routes = require('./src/routes');
 app.use(routes);
 
 mongoose
-    .connect(process.env.DATABASE)
-    .then(result => {
-        const server = app.listen(PORT);
-        const io = webSocket.init(server);
-        io.on('connection', socket => {
-            // console.log("hola");
-        })
-    })
-    .then(() => {
-        console.log(`Listen at port: ${PORT}`)
-    })
-    .catch(err => {
-        console.log(err);
-    });
+	.connect(process.env.DATABASE)
+	.then(result => {
+		const server = app.listen(PORT);
+		const io = webSocket.init(server);
+		io.on('connection', socket => {
+			// console.log("hola");
+		});
+	})
+	.then(() => {
+		console.log(`Listen at port: ${PORT}`);
+	})
+	.catch(err => {
+		console.log(err);
+	});

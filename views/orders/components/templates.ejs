@@ -1,0 +1,59 @@
+<!-- template for a generic order  -->
+<template id="order_template">
+    <div class="order">
+        <div class="id"></div>
+        <div class="address"></div>
+        <div class="fulfill_at"></div>
+        <div class="duration"></div>
+        <div class="duration-extra"></div>
+        <div class="restaurant"></div>
+        <div class="rider"></div>
+        <div class="status"></div>
+        <div class="actions">
+            <i class="fas fa-motorcycle" onclick="showRiderList(this.parentNode)"></i>
+            <i class="far fa-edit" onclick="showOrderDetailsEdit(this.parentNode)"></i>
+            <i class="fas fa-info" onclick="showOrderDetails(this.parentNode)"></i>
+        </div>
+        <input type="hidden" class="_id">
+    </div>
+</template>
+
+<template id="order_template_resumen">
+    <div class="order">
+        <div class="id"></div>
+        <div class="address"></div>
+        <!-- <div class="restaurant"></div> -->
+        <div class="rider"></div>
+        <div class="step1">
+            <div class="time"></div>
+            <div class="duration"></div>
+        </div>
+        <div class="step2">
+            <div class="time"></div>
+            <div class="duration"></div>
+        </div>
+        <div class="step3">
+            <div class="time"></div>
+            <div class="duration"></div>
+        </div>
+        <div class="step4">
+            <div class="time"></div>
+            <div class="duration"></div>
+        </div>
+        <div class="fulfill_at">
+            <div class="time"></div>
+            <div class="success"></div>
+        </div>
+        <div class="actions">
+            <i class="fas fa-info" onclick="showOrderDetails(this.parentNode)"></i>
+        </div>
+        <input type="hidden" class="_id">
+    </div>
+</template>
+
+<template id="rider-list">
+    <div class="rider">
+        <div class="name"></div>
+        <div class="position"></div>
+    </div>
+</template>

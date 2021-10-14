@@ -17,32 +17,14 @@
 <body>
     <%- include('components/editOrder.ejs'); %>
     <%- include('components/assignRider.ejs') %>
-
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button"
-                role="tab" aria-controls="home" aria-selected="true">Pedidos</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="resumen-tab" data-bs-toggle="tab" data-bs-target="#resumen" type="button"
-                role="tab" aria-controls="resumen" aria-selected="true">Resumen</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button"
-                role="tab" aria-controls="profile" aria-selected="false" onclick="updateHistory()">Histórico</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="mapa-tab" data-bs-toggle="tab" data-bs-target="#mapa" type="button"
-                role="tab" aria-controls="profile" aria-selected="false">Mapa</button>
-        </li>
-    </ul>
-    <div class="tab-content" id="myTabContent">
+    <%- include('components/navbar.ejs') %>
+    <main class="tab-content" id="myTabContent">
         <!-- Active orders -->
-        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+        <section class="tab-pane fade show active main-panel-section" id="home" role="tabpanel" aria-labelledby="home-tab">
             <div style="text-align: right;margin-right: 10px;">
                 <button class="btn btn-primary" onclick="showNewOrderModal()">Nuevo pedido</button>
             </div>
-            <div id="orders_body">
+            <div id="orders_body" class="main-panel-item main-panel-orders">
                 <div class="order headers">
                     <div class="id">ID</div>
                     <div class="address">Direccion</div>
@@ -57,12 +39,12 @@
                 <div id="orders"></div>
             </div>
             <!-- Panel with the raiders -->
-            <div id="position-riders">
+            <div id="position-riders" class="main-panel-item main-panel-riders">
             </div>
             <!-- -->
-        </div>
+        </section>
         <!-- Resumen -->
-        <div class="tab-pane fade" id="resumen" role="tabpanel" aria-labelledby="resumen-tab">
+        <section class="tab-pane fade" id="resumen" role="tabpanel" aria-labelledby="resumen-tab">
             <div id="resumen_body">
                 <label for="date" class="form-label">Fecha:</label>
                 <input type="date" id="date" name="trip-begin">
@@ -90,10 +72,15 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
         <!-- History orders -->
-        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+        <section class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
             <div id="orders_body">
+                <label for="date-history-begin" class="form-label">Desde:</label>
+                <input type="date" id="date-history-begin" name="hist-begin">
+                <label for="date-history-end" class="form-label">Hasta:</label>
+                <input type="date" id="date-history-end" name="hist-end">
+                <button onclick="updateHistory()" class="btn btn-primary">Cargar</button>
                 <div class="order headers">
                     <div class="id">ID</div>
                     <div class="address">Direccion</div>
@@ -105,70 +92,12 @@
                 <div id="ordersHistory"></div>
             </div>
             <!-- -->
-        </div>
-        <div class="tab-pane fade" id="mapa" role="tabpanel" aria-labelledby="mapa-tab">
+        </section>
+        <section class="tab-pane fade" id="mapa" role="tabpanel" aria-labelledby="mapa-tab">
             <img src="/img/mapa.png" alt="" style="width: 100vw;max-height: 95vh;">
-        </div>
-    </div>
-    <!-- template for a generic order  -->
-    <template id="order_template">
-        <div class="order">
-            <div class="id"></div>
-            <div class="address"></div>
-            <div class="fulfill_at"></div>
-            <div class="duration"></div>
-            <div class="duration-extra"></div>
-            <div class="restaurant"></div>
-            <div class="rider"></div>
-            <div class="status"></div>
-            <div class="actions">
-                <i class="fas fa-motorcycle" onclick="showRiderList(this.parentNode)"></i>
-                <i class="far fa-edit" onclick="showOrderDetailsEdit(this.parentNode)"></i>
-                <i class="fas fa-info" onclick="showOrderDetails(this.parentNode)"></i>
-            </div>
-            <input type="hidden" class="_id">
-        </div>
-    </template>
-
-    <template id="order_template_resumen">
-        <div class="order">
-            <div class="id"></div>
-            <div class="address"></div>
-            <!-- <div class="restaurant"></div> -->
-            <div class="rider"></div>
-            <div class="step1">
-                <div class="time"></div>
-                <div class="duration"></div>
-            </div>
-            <div class="step2">
-                <div class="time"></div>
-                <div class="duration"></div>
-            </div>
-            <div class="step3">
-                <div class="time"></div>
-                <div class="duration"></div>
-            </div>
-            <div class="step4">
-                <div class="time"></div>
-                <div class="duration"></div>
-            </div>
-            <div class="fulfill_at">
-                <div class="time"></div>
-                <div class="success"></div>
-            </div>
-            <div class="actions">
-                <i class="fas fa-info" onclick="showOrderDetails(this.parentNode)"></i>
-            </div>
-            <input type="hidden" class="_id">
-        </div>
-    </template>
-
-    <template id="rider-list">
-        <div class="rider">
-            <div class="name"></div>
-            <div class="position"></div>
-        </div>
-    </template>
+        </section>
+    </main>
+    <%- include('components/templates.ejs') %>
 
     <script type='text/javascript' src='/js/jquery-3.5.1.min.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
@@ -191,6 +120,9 @@
             // $('#date')[0].value = moment().tz('Europe/Madrid').format('Y-MM-DD')
             $('#date')[0].value = "2021-08-13";
             updateListRiders();
+
+            $('#date-history-begin')[0].value = moment().tz('Europe/Madrid').add(-1,'week').format('Y-MM-DD');
+	        $('#date-history-end')[0].value = moment().tz('Europe/Madrid').format('Y-MM-DD');
 
             setInterval(function () {
                 if (!modify) update();

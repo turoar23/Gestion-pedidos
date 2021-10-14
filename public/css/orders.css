@@ -6,6 +6,8 @@
 .order{
     display: flex;
     border-bottom: solid 1px lightgray;
+    /* padding: 0px 2.5px 0px 2.5px; */
+    padding:2.5px;
 }
 .order > * {
     padding: 0px 2.5px 0px 2.5px;
@@ -16,19 +18,33 @@
 .order .active{
     color:orange;
 }
+.order .cancelled{
+    color:red;
+}
+.order .danger{
+    color:yellow;
+}
 .order .delivering{
     color: green;
 }
-#position-riders{
+/* #position-riders{
     position: absolute;
     bottom: 0;
     border-top: 1px solid lightgray;
-    /*background-color: gray;*/
+    background-color: gray;
     width: 100%;
-}
+} */
 .for-later{
     color: white;
     background-color: rgb(55, 85, 252);
     padding: 0.5px;
     border-radius: 20%;
 }
+.main-panel-section{
+    display: flex;
+    flex-direction: column;
+}
+/* .main-panel-item{
+    height: 800px;
+    overflow: auto;
+} */

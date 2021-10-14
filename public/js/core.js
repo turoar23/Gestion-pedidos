@@ -1,6 +1,6 @@
 const GLOBAL_HEADERS = {
-	"Content-Type": "application/json",
-	"Accept": "application/json",
+	'Content-Type': 'application/json',
+	Accept: 'application/json',
 };
 // var local_orders = [];
 
@@ -10,7 +10,7 @@ async function getActiveOrders() {
 	const url = url_base + '/getActiveOrders/';
 
 	request = {
-		method: "GET",
+		method: 'GET',
 		headers: GLOBAL_HEADERS,
 	};
 
@@ -22,16 +22,16 @@ async function getActiveOrders() {
 		if (r.result) {
 			return r.result;
 		}
-	}
-	catch (error) {
+	} catch (error) {
 		console.log(error);
 	}
 }
 async function getCompleteOrders() {
 	const url = url_base + '/getOrders/';
+	const status = ['Active', 'Delivering', 'Arrived'];
 
 	request = {
-		method: "GET",
+		method: 'GET',
 		headers: GLOBAL_HEADERS,
 	};
 
@@ -41,10 +41,11 @@ async function getCompleteOrders() {
 		//alert(mensajes);
 
 		if (r.result) {
-			return r.result.filter(order => { return order.status == "Completed" });
+			return r.result.filter(order => {
+				return !status.includes(order.status);
+			});
 		}
-	}
-	catch (error) {
+	} catch (error) {
 		console.log(error);
 	}
 }
@@ -53,7 +54,7 @@ async function getOrder(_id) {
 	const url = url_base + `/getOrder/${_id}`;
 
 	request = {
-		method: "GET",
+		method: 'GET',
 		headers: GLOBAL_HEADERS,
 	};
 
@@ -65,8 +66,7 @@ async function getOrder(_id) {
 		if (r.result) {
 			return r.result;
 		}
-	}
-	catch (error) {
+	} catch (error) {
 		console.log(error);
 	}
 }
@@ -77,10 +77,10 @@ async function updateOrderStatus(_id, status, action) {
 	let payload = {
 		_id: _id,
 		status: status,
-		action: action
-	}
+		action: action,
+	};
 	request = {
-		method: "POST",
+		method: 'POST',
 		body: JSON.stringify(payload),
 		headers: GLOBAL_HEADERS,
 	};
@@ -88,15 +88,14 @@ async function updateOrderStatus(_id, status, action) {
 	return fetch(url, request);
 }
 
-
 async function updateOrder(order) {
 	const url = url_base + '/modifyOrder/';
 
 	let payload = {
-		...order
-	}
+		...order,
+	};
 	request = {
-		method: "POST",
+		method: 'POST',
 		body: JSON.stringify(payload),
 		headers: GLOBAL_HEADERS,
 	};
@@ -108,7 +107,7 @@ async function getRiders() {
 	const url = url_base + '/getRiders/';
 
 	request = {
-		method: "GET",
+		method: 'GET',
 		headers: GLOBAL_HEADERS,
 	};
 
@@ -119,8 +118,7 @@ async function getRiders() {
 		if (r.result) {
 			return r.result;
 		}
-	}
-	catch (error) {
+	} catch (error) {
 		console.log(error);
 	}
 }
@@ -129,10 +127,10 @@ async function assignRiderToOrder(orderId, riderId) {
 
 	let payload = {
 		riderId: riderId,
-		orderId: orderId
-	}
+		orderId: orderId,
+	};
 	request = {
-		method: "POST",
+		method: 'POST',
 		body: JSON.stringify(payload),
 		headers: GLOBAL_HEADERS,
 	};
@@ -144,10 +142,10 @@ async function removeRiderFromOrder(orderId) {
 	const url = url_base + '/removeRiderOrder/';
 
 	let payload = {
-		orderId: orderId
-	}
+		orderId: orderId,
+	};
 	request = {
-		method: "POST",
+		method: 'POST',
 		body: JSON.stringify(payload),
 		headers: GLOBAL_HEADERS,
 	};
@@ -160,7 +158,7 @@ async function newOrder(order) {
 
 	let payload = order;
 	request = {
-		method: "POST",
+		method: 'POST',
 		body: JSON.stringify(payload),
 		headers: GLOBAL_HEADERS,
 	};
@@ -173,10 +171,10 @@ async function getOrdersByDate(begin, end) {
 
 	let payload = {
 		begin: begin,
-		end: end
-	}
+		end: end,
+	};
 	request = {
-		method: "POST",
+		method: 'POST',
 		body: JSON.stringify(payload),
 		headers: GLOBAL_HEADERS,
 	};
@@ -189,8 +187,7 @@ async function getOrdersByDate(begin, end) {
 		if (r.result) {
 			return r.result;
 		}
-	}
-	catch (error) {
+	} catch (error) {
 		console.log(error);
 	}
 }
