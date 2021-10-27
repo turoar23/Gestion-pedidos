@@ -2,6 +2,7 @@
     "ignore": [
         "data/*",
         "public/*",
-        "README"
+        "README",
+        "client/*"
     ]
 }
