@@ -174,17 +174,22 @@ exports.updateStatusOrder = (req, res, next) => {
 				.catch(err => {
 					throw err;
 				});
-			// Si el pedido se acaba de completar, se envia la encuesta
-			if (order.status === 'Completed' && order.restaurant === 'Umbrella' && order.rider !== null && !order.surveySent) {
+			// Si el pedido se acaba de completar, se envia la encuesta a los 60 minutos
+			if (
+				order.status === 'Completed' &&
+				order.restaurant === 'Umbrella' &&
+				order.rider !== null &&
+				!order.surveySent
+			) {
 				order.surveySent = true;
-				setTimeout(() => {
-					utils
-						.sendSurvey(order)
-						.then(order => {
-							console.log(order);
-						})
-						.catch(err => console.log(err));
-				}, 1000); // Se envia a los 60 minutos
+				// setTimeout(() => {
+				// 	utils
+				// 		.sendSurvey(order)
+				// 		.then(order => {
+				// 			console.log(order);
+				// 		})
+				// 		.catch(err => console.log(err));
+				// }, 60 * 60 * 1000); // Se envia a los 60 minutos
 			}
 			return order.save();
 		})

@@ -1,0 +1,10 @@
+.header {
+	display: flex;
+	font-size: 1.3rem;
+}
+.header .info {
+	flex: 1;
+}
+.header .actions{
+    flex: 0.5;
+}

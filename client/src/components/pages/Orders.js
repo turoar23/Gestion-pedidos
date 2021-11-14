@@ -1,5 +1,6 @@
 import { Tabs, Tab } from 'react-bootstrap';
 import ListActiveOrders from '../orders/ListActiveOrders';
+import ListResumenOrders from '../orders/ListResumenOrders';
 
 const LayoutOrders = () => {
 	return (
@@ -12,10 +13,10 @@ const LayoutOrders = () => {
 				<ListActiveOrders />
 			</Tab>
 			<Tab eventKey='resumen' title='Resumen'>
-				Profile
+				<ListResumenOrders />
 			</Tab>
 			<Tab eventKey='history' title='Histórico'>
-				Contact
+				En desarrollo
 			</Tab>
 		</Tabs>
 	);

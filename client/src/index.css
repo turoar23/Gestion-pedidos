@@ -3,14 +3,24 @@
 	border-bottom: 1px solid lightgray;
 }
 .order > * {
-  padding: 0.5px 0px;
+	padding: 0.5px 0px;
 }
-.order .active{
-  color: orange;
+.order .active {
+	color: orange;
 }
-.order .delivering{
-  color: green;
+.order .delivering {
+	color: green;
 }
-.order .arrived{
-  color:green;
+.order .arrived {
+	color: green;
+}
+.centered {
+	text-align: center;
+	margin: auto;
+}
+.danger {
+	color: red;
+}
+.actions {
+	text-align: right;
 }

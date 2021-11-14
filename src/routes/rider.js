@@ -5,6 +5,8 @@ const riderController = require('../controllers/riderController');
 
 Router.get('/getRiders', riderController.getRiders);
 
+Router.post('/getRiderByCode', riderController.getRiderByCode);
+
 Router.post('/newRider', riderController.postNewRider);
 
 Router.get('/getActiveRiderOrders/:riderId', riderController.getActiveOrders);
