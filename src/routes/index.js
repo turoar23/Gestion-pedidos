@@ -9,8 +9,9 @@ const stepRoutes = require('./step');
 
 // Add the routes to express
 Router.use(gloriaRoutes);
-Router.use(webRoutes);
 Router.use(riderRoutes);
 Router.use(stepRoutes);
+
+// Router.use(webRoutes);
 
 module.exports = Router;

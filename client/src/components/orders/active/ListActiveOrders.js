@@ -2,17 +2,19 @@ import { useEffect, useState } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 
 import ActiveOrder from './ActiveOrder';
-import useHttp from '../hooks/use-http';
+import useHttp from '../../hooks/use-http';
 import {
 	getAllActiveOrders,
 	getAllRiders,
 	updateOrderStatus,
-} from '../lib/api';
-import OrdersContext from '../../store/orders-context';
-import NewOrderModal from './NewOrderModal';
-
+} from '../../lib/api';
+import OrdersContext from '../../../store/orders-context';
+import NewOrderModal from '../NewOrderModal';
 import socketIOClient from 'socket.io-client';
-const ENDPOINT = 'http://localhost:3000';
+
+import classes from './ListActiveOrders.module.css';
+
+const ENDPOINT = `http://${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}`
 
 const ListActiveOrders = () => {
 	const [showNewOrderModal, setShowNewOrderModal] = useState(false);
@@ -41,7 +43,6 @@ const ListActiveOrders = () => {
 	useEffect(() => {
 		const socket = socketIOClient(ENDPOINT);
 		socket.on('Orders', data => {
-			console.log(data);
 			updateHandler();
 		});
 
@@ -90,15 +91,15 @@ const ListActiveOrders = () => {
 					<Button onClick={handleShowNewOrder}>Nuevo pedido</Button>
 				</div>
 				<Row className='order'>
-					<Col>ID</Col>
-					<Col>Dirección</Col>
-					<Col>Entrega</Col>
-					<Col>Duración</Col>
-					<Col>Restante</Col>
-					<Col>Restaurante</Col>
-					<Col>Rider</Col>
-					<Col>Estado</Col>
-					<Col>Actions</Col>
+					<Col className={classes.col}>ID</Col>
+					<Col className={classes.col}>Dirección</Col>
+					<Col className={classes.col}>Entrega</Col>
+					<Col className={classes.col}>Duración</Col>
+					<Col className={classes.col}>Restante</Col>
+					<Col className={classes.col}>Restaurante</Col>
+					<Col className={classes.col}>Rider</Col>
+					<Col className={classes.col}>Estado</Col>
+					<Col className={classes.col}>Actions</Col>
 				</Row>
 				{listOrders}
 				<NewOrderModal

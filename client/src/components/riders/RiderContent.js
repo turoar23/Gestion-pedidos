@@ -1,4 +1,5 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect } from 'react';
+
 import RiderContext from '../../store/rider-context';
 import useHttp from '../hooks/use-http';
 import { getActiveRiderOrders, assignRider } from '../lib/api';
@@ -27,13 +28,13 @@ const RiderContent = props => {
 	const updateOrdersHandler = async () => {
 		await sendRequest(riderId);
 	};
-    const removeOrderRiderHandler = async orderId =>{
-        const body = {
+	const removeOrderRiderHandler = async orderId => {
+		const body = {
 			orderId: orderId,
 		};
 		await sendAddRider(body);
 		await updateOrdersHandler();
-    }
+	};
 	const addOrderRiderHandler = async orderId => {
 		const body = {
 			orderId: orderId,
@@ -50,7 +51,7 @@ const RiderContent = props => {
 				orders: orders,
 				updateOrders: updateOrdersHandler,
 				addNewOrder: addOrderRiderHandler,
-                removeOrder: removeOrderRiderHandler
+				removeOrder: removeOrderRiderHandler,
 			}}
 		>
 			<div style={{ textAlign: 'center' }}>

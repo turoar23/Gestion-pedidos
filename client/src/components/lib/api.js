@@ -1,4 +1,4 @@
-const SERVER_URL = 'http://localhost:3000';
+const SERVER_URL = `http://${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}`
 
 export async function getAllActiveOrders() {
 	const response = await fetch(`${SERVER_URL}/getActiveOrders`);
@@ -182,11 +182,15 @@ export async function getRiderByCode(riderData) {
 }
 
 export async function getActiveRiderOrders(riderId) {
-	const response = await fetch(`${SERVER_URL}/getActiveRiderOrders/${riderId}`);
+	const response = await fetch(
+		`${SERVER_URL}/getActiveRiderOrders/${riderId}`
+	);
 	const data = await response.json();
 
 	if (!response.ok) {
-		throw new Error(data.message || 'Could not fetch orders for the rider.');
+		throw new Error(
+			data.message || 'Could not fetch orders for the rider.'
+		);
 	}
 
 	const transformedRider = [];
@@ -230,8 +234,8 @@ export async function getOrdersWithoutRiders() {
 	const response = await fetch(url, {
 		method: 'POST',
 		body: JSON.stringify({
-			status: "Active",
-			rider: null
+			status: 'Active',
+			rider: null,
 		}),
 		headers: {
 			'Content-Type': 'application/json',
@@ -241,7 +245,9 @@ export async function getOrdersWithoutRiders() {
 	const data = await response.json();
 
 	if (!response.ok) {
-		throw new Error(data.message || 'Could not get the order withour riders.');
+		throw new Error(
+			data.message || 'Could not get the order withour riders.'
+		);
 	}
 
 	const transformedOrders = [];

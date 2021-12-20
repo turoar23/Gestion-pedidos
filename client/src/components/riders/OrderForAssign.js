@@ -19,7 +19,7 @@ const OrderForAssign = props => {
 	);
 	let forLater = '';
 	if (typeof order.for_later !== 'undefined')
-		forLater = order.for_later ? '<sup class="for-later">P</sup>' : '';
+		forLater = order.for_later ? <sup className="for-later">P</sup> : '';
 
 	return (
 		<Card>

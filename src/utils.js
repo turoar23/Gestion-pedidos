@@ -49,8 +49,12 @@ function checkIfEqual(arr1, arr2) {
 exports.sendSurvey = async order => {
 	const pathTemplate = path.join(process.cwd(), '/views/email/survey.html');
 	const name = order.client.name.split(' ')[0];
-	// const sendTo = order.client.email;
-	const sendTo = 'turoar2006@gmail.com';
+	var sendTo = 'turoar2006@gmail.com';
+
+	// Si es produccio, enviar al correo del cliente
+	if (process.env.NODE_ENV == 'production') {
+		sendTo = order.client.email;
+	}
 
 	let content = fs.readFileSync(pathTemplate, 'utf-8');
 	content = content.replace('{name}', name); // Cambiamos el nombre de la plantilla por el del cliente
@@ -76,14 +80,14 @@ exports.sendEmail = async (content, sendTo) => {
 	// 	},
 	// });
 	let transporter = nodemailer.createTransport({
-			host: 'smtp-es.securemail.pro',
-			port: 465,
-			secure: true, // true for 465, false for other ports
-			auth: {
-				user: 'noresponder@umbrellash.es', // generated ethereal user
-				pass: 'YXCWkx!1$9Vk', // generated ethereal password
-			},
-		});
+		host: 'smtp-es.securemail.pro',
+		port: 465,
+		secure: true, // true for 465, false for other ports
+		auth: {
+			user: 'noresponder@umbrellash.es', // generated ethereal user
+			pass: 'YXCWkx!1$9Vk', // generated ethereal password
+		},
+	});
 
 	// send mail with defined transport object
 	let info = await transporter.sendMail({

@@ -18,7 +18,8 @@ app.set('public', 'public');
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, './client/build')));
 
 // Disable crossorigin
 //TODO: Ver como se puede mejorar esto, quizas con el paquete cors
@@ -34,6 +35,12 @@ const routes = require('./src/routes');
 
 // Add the routes to express
 app.use(routes);
+
+// Any route than dont exist in the routes before, will be forwaded to the client
+app.get('*', (req, res) => {
+	res.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
+});
+
 
 mongoose
 	.connect(process.env.DATABASE)

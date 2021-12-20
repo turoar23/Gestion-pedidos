@@ -1,0 +1,10 @@
+.icons :not:first-child {
+	margin-left: 10px;
+}
+
+@media only screen and (max-width: 600px) {
+	.col {
+		flex: 1 0 31%;
+        margin-bottom: 10px;
+	}
+}

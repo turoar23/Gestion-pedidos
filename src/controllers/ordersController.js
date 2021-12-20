@@ -182,14 +182,17 @@ exports.updateStatusOrder = (req, res, next) => {
 				!order.surveySent
 			) {
 				order.surveySent = true;
-				// setTimeout(() => {
-				// 	utils
-				// 		.sendSurvey(order)
-				// 		.then(order => {
-				// 			console.log(order);
-				// 		})
-				// 		.catch(err => console.log(err));
-				// }, 60 * 60 * 1000); // Se envia a los 60 minutos
+				// Se envia la encuesta si se esta en el entorno de produccion
+				if(process.env.NODE_ENV == 'production'){
+					setTimeout(() => {
+						utils
+							.sendSurvey(order)
+							.then(order => {
+								console.log(order);
+							})
+							.catch(err => console.log(err));
+					}, 60 * 60 * 1000); // Se envia a los 60 minutos 
+				}
 			}
 			return order.save();
 		})

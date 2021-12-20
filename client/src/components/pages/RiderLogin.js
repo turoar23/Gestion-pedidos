@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { Fragment } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { useHistory } from 'react-router';
@@ -16,6 +16,9 @@ const RiderLogin = props => {
 		const code = codeRef.current.value.trim();
 		await sendRequest({ code: code });
 	};
+	useEffect(() => {
+		document.title = 'Rider';
+	}, []);
 
 	if (status === 'completed') {
 		history.push(`/rider/${data.result._id}`);

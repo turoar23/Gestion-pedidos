@@ -1,13 +1,15 @@
+import { useContext, useState, Fragment } from 'react';
 import { Card, Button } from 'react-bootstrap';
 import moment from 'moment-timezone';
-import { useState } from 'react';
 
 import useHttp from '../hooks/use-http';
+import RiderContext from '../../store/rider-context';
 import { updateOrderStatus } from '../lib/api';
-import { Fragment } from 'react';
 import OrderOptions from './OrderOptions';
+import { getUrlGoogleMaps } from '../lib/utils';
 
 const OrderAssigned = props => {
+	const ctx = useContext(RiderContext);
 	const { sendRequest, status } = useHttp(updateOrderStatus);
 	const [order, updateOrder] = useState(props.order);
 	const [show, setShow] = useState(false);
@@ -24,6 +26,8 @@ const OrderAssigned = props => {
 	const handleClose = () => setShow(false);
 
 	const updateStatusHandler = async () => {
+		let completed = false;
+
 		if (order.status === 'Active') {
 			newStatus = 'Delivering';
 			action = 'Start delivering';
@@ -33,6 +37,7 @@ const OrderAssigned = props => {
 		} else {
 			newStatus = 'Completed';
 			action = 'Completed';
+			completed = true;
 		}
 
 		await sendRequest({
@@ -44,23 +49,44 @@ const OrderAssigned = props => {
 			...order,
 			status: newStatus,
 		});
+
+		if (completed) ctx.updateOrders();
 	};
+
+	const openGoogleHandler = () => {
+		window.open(
+			getUrlGoogleMaps(
+				order.address.street,
+				order.address.zipcode,
+				order.restaurant
+			)
+		);
+	};
+	let forLater = '';
+	if (typeof order.for_later !== 'undefined')
+		forLater = order.for_later ? <sup className='for-later'>P</sup> : '';
 
 	return (
 		<Fragment>
 			<Card key={order._id}>
 				<Card.Header></Card.Header>
 				<Card.Body>
-					<Button style={{ position: 'absolute', right: '10px' }} onClick={handleShow}>
+					<Button
+						style={{ position: 'absolute', right: '10px' }}
+						onClick={handleShow}
+					>
 						<i className='fas fa-cog'></i>
 					</Button>
 					<Card.Title>{order.status}</Card.Title>
-					<Card.Text>{`Entrega: ${fulfill
-						.tz('Europe/Madrid')
-						.format('LT')}`}</Card.Text>
+					<Card.Text>
+						{`Entrega: ${fulfill.tz('Europe/Madrid').format('LT')}`}
+						{forLater}
+					</Card.Text>
 					<Card.Text>{order.client.name}</Card.Text>
 					<Card.Text>{order.client.phone}</Card.Text>
-					<Card.Text>{order.address.street}</Card.Text>
+					<Card.Text onClick={openGoogleHandler}>
+						{order.address.street}
+					</Card.Text>
 					{order.address.floor && (
 						<Card.Text>{order.address.floor}</Card.Text>
 					)}

@@ -2,10 +2,12 @@ import { useState, Fragment, useEffect } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import moment from 'moment-timezone';
 
-import ModalRider from './ModalRider';
-import ModalOrder from './ModalOrder';
-import useHttp from '../hooks/use-http';
-import { updateOrder } from '../lib/api';
+import ModalRider from '../ModalRider';
+import ModalOrder from '../ModalOrder';
+import useHttp from '../../hooks/use-http';
+import { updateOrder } from '../../lib/api';
+
+import classes from './ActiveOrder.module.css';
 
 const ActiveOrders = props => {
 	const [order, setOrder] = useState(props.order);
@@ -18,7 +20,7 @@ const ActiveOrders = props => {
 	useEffect(() => {
 		setInterval(() => {
 			setMomentToCompare(moment());
-		},  60 * 1000);
+		}, 60 * 1000);
 	}, []);
 
 	const handleCloseRider = () => setShowRider(false);
@@ -67,25 +69,32 @@ const ActiveOrders = props => {
 	return (
 		<Fragment>
 			<Row className='order'>
-				<Col>{order.gloriaId || '--'}</Col>
-				<Col>{`${order.address.street} ${props.order.address.zipcode}`}</Col>
-				<Col>{fulfill.tz('Europe/Madrid').format('LT')}</Col>
-				<Col>{duration}</Col>
-				<Col className={durationExtra > 0 ? 'danger' : ''}>{durationExtra}</Col>
-				<Col>{order.restaurant}</Col>
-				<Col>{order.rider ? order.rider.name : '--'}</Col>
-				<Col className={order.status.toLowerCase()}>{order.status}</Col>
-				<Col>
+				<Col className={classes.col}>{order.gloriaId || '--'}</Col>
+				<Col className={classes.col}>{`${order.address.street} ${props.order.address.zipcode}`}</Col>
+				<Col className={classes.col}>
+					{fulfill.tz('Europe/Madrid').format('LT')}{' '}
+					{order.for_later && <sup className='for-later'>P</sup>}
+				</Col>
+				<Col className={classes.col}>{duration}</Col>
+				<Col className={`${classes.col} ${durationExtra > 0 ? 'danger' : ''}`}>
+					{durationExtra}
+				</Col>
+				<Col className={classes.col}>{order.restaurant}</Col>
+				<Col className={classes.col}>{order.rider ? order.rider.name : '--'}</Col>
+				<Col className={`${classes.col} ${order.status.toLowerCase()}`}>{order.status}</Col>
+				<Col className={classes.col}>
 					<i
 						className='fas fa-motorcycle'
 						onClick={handleShowRider}
 					></i>
 					<i
 						className='far fa-edit'
+						style={{ marginLeft: '8px' }}
 						onClick={handleShowOrderInfoToEdit}
 					></i>
 					<i
 						className='fas fa-info'
+						style={{ marginLeft: '8px' }}
 						onClick={handleShowOrderInfo}
 					></i>
 				</Col>

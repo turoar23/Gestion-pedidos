@@ -24,3 +24,9 @@
 .actions {
 	text-align: right;
 }
+.for-later{
+	background-color: blue;
+	color: white;
+	padding: 2px;
+	border-radius: 25%;
+}
