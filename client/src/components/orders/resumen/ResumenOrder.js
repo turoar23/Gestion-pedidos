@@ -73,7 +73,7 @@ const ResumenOrder = props => {
 							<sup className='for-later'>P</sup>
 						)}
 					</div>
-					<div style={{ color: successColor }}>{success}</div>
+					<div><span style={{ color: successColor }}>{success}</span> / {differentTwoDate(accepted_at, completed)}</div>
 				</Col>
 				<Col>
 					<i

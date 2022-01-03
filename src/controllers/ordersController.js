@@ -182,17 +182,20 @@ exports.updateStatusOrder = (req, res, next) => {
 				!order.surveySent
 			) {
 				order.surveySent = true;
-				// Se envia la encuesta si se esta en el entorno de produccion
-				if(process.env.NODE_ENV == 'production'){
-					setTimeout(() => {
-						utils
-							.sendSurvey(order)
-							.then(order => {
-								console.log(order);
-							})
-							.catch(err => console.log(err));
-					}, 60 * 60 * 1000); // Se envia a los 60 minutos 
+				// Se coloca este tiempo para que la envia al instante en dev
+				let timeSurvey = 0.01; // segundos
+				// Si la app esta en produccion, se envia a la hora (60 minutos)
+				if (process.env.NODE_ENV === 'production') {
+					timeSurvey = 60;
 				}
+				setTimeout(() => {
+					utils
+						.sendSurvey(order)
+						.then(order => {
+							console.log(order);
+						})
+						.catch(err => console.log(err));
+				}, timeSurvey * 60 * 1000); // Se envia a los 60 minutos
 			}
 			return order.save();
 		})
