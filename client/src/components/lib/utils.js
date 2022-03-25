@@ -1,3 +1,5 @@
+import moment from 'moment-timezone';
+
 const parseStreet = function (_street) {
 	let parts = _street.split(' ');
 	var find = false;
@@ -38,11 +40,27 @@ export const getUrlGoogleMaps = (street, extra, origin = null) => {
 	if (origin && origin === 'Umbrella') {
 		restaurante = 'origin=Carrer+Llinares+5,+Alicante&';
 	}
-    if (origin && origin === 'Tepuy Burger') {
+	if (origin && origin === 'Tepuy Burger') {
 		restaurante = 'origin=Calle+Bazan+49,+Alicante&';
 	}
 
 	const destination = `destination=${parseStreet(street).replace(/ /g, '+')}`;
 
 	return url_base + restaurante + destination + ' ' + extra;
+};
+export const getTimeFromOrder = (times, action) => {
+	let time = times.find(element => element.action === action);
+	return time ? time.by : null;
+};
+
+export const formatTime = time => {
+	return (time = time ? moment(time).tz('Europe/Madrid').format('LT') : '--');
+};
+export const differentTwoDate = (begin, end) => {
+	if (!begin || !end) return '--';
+	// Remove the seconds and milliseconds to ensure that dosent affect the diff
+	begin = moment(begin).seconds(0).milliseconds(0);
+	end = moment(end).seconds(0).milliseconds(0);
+
+	return Math.round(moment.duration(end.diff(begin)).asMinutes());
 };

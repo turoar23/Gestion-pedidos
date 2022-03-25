@@ -1,7 +1,12 @@
 import { useEffect } from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
+
 import ActiveOrdersPanel from '../orders/active/ActiveOrdersPanel';
+import PanelCierre from '../orders/cierre/PanelCierre';
 import ListResumenOrders from '../orders/resumen/ListResumenOrders';
+import PanelRiders from '../orders/riders/PanelRiders';
+
+import classes from './OrdersPage.module.css';
 
 const LayoutOrders = () => {
 	useEffect(() => {
@@ -19,8 +24,11 @@ const LayoutOrders = () => {
 			<Tab eventKey='resumen' title='Resumen'>
 				<ListResumenOrders />
 			</Tab>
-			<Tab eventKey='history' title='Histórico'>
-				En desarrollo
+			<Tab eventKey='cierre' title='Cierre'>
+				<PanelCierre />
+			</Tab>
+			<Tab eventKey='riders' title='Riders'>
+				<PanelRiders />
 			</Tab>
 		</Tabs>
 	);

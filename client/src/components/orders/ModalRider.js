@@ -4,6 +4,7 @@ import useHttp from '../hooks/use-http';
 import { assignRider } from '../lib/api';
 
 const ModalRider = props => {
+	const riders = props.riders.filter(rider => (rider.status))
 	const { sendRequest, status } = useHttp(assignRider, true);
 
 	const assignHandler = rider => {
@@ -28,11 +29,11 @@ const ModalRider = props => {
 	return (
 		<Modal show={props.show} onHide={props.handleClose}>
 			<Modal.Header closeButton>
-				<Modal.Title>Modal heading</Modal.Title>
+				<Modal.Title>Riders activos</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
 				<ListGroup>
-					{props.riders.map(rider => (
+					{riders.map(rider => (
 						<ListGroup.Item
 							className='d-flex justify-content-between align-items-start'
 							key={rider._id}

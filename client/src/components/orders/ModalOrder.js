@@ -70,6 +70,14 @@ const ModalOrder = props => {
 							/>
 						</Form.Group>
 						<Row className='mb-3'>
+							<Form.Group as={Col} controlId='floor'>
+								<Form.Label>Piso</Form.Label>
+								<Form.Control
+									type='text'
+									defaultValue={order.address.floor}
+									ref={postalCodeRef}
+								/>
+							</Form.Group>
 							<Form.Group as={Col} controlId='postalCode'>
 								<Form.Label>CP</Form.Label>
 								<Form.Control
@@ -118,11 +126,18 @@ const ModalOrder = props => {
 						<Row className='mb-3'>
 							<Form.Group as={Col} controlId='payment'>
 								<Form.Label>Método de pago</Form.Label>
-								<Form.Control
-									type='text'
-									defaultValue={order.payment}
+								<Form.Select
+									aria-label='payment-selector'
 									ref={paymentRef}
-								/>
+									required={true}
+									defaultValue={order.payment}
+								>
+									{!edit && (
+										<option value='ONLINE'>Online</option>
+									)}
+									<option value='CASH'>Efectivo</option>
+									<option value='CARD'>Tarjeta</option>
+								</Form.Select>
 							</Form.Group>
 							<Form.Group as={Col} controlId='price'>
 								<Form.Label>Precio</Form.Label>
@@ -133,7 +148,7 @@ const ModalOrder = props => {
 											? `${order.total_price.toFixed(
 													2
 											  )} €`
-											: '--'
+											: null
 									}
 									// ref={cityRef}
 								/>
@@ -147,7 +162,7 @@ const ModalOrder = props => {
 				</Modal.Body>
 				<Modal.Footer>
 					<Button variant='secondary' onClick={props.handleClose}>
-						{edit ? 'Cancelar' : 'Cerrar'}
+						Cerrar
 					</Button>
 					{edit && (
 						<Fragment>
@@ -164,6 +179,11 @@ const ModalOrder = props => {
 								Actualizar
 							</Button>
 						</Fragment>
+					)}
+					{!edit && order.status !== 'Completed' && (
+						<Button variant='primary' onClick={props.completeOrder}>
+							Completar
+						</Button>
 					)}
 				</Modal.Footer>
 			</Modal>

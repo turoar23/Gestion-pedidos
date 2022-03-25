@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import RiderContext from '../../store/rider-context';
-import OrderAssigned from './OrderAssigned';
+import OrderAssigned from './Order/OrderAssigned';
 
 const ListRiderOrders = props => {
 	const ctx = useContext(RiderContext);

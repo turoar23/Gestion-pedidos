@@ -1,25 +1,8 @@
 import { useState, Fragment } from 'react';
 import { Row, Col } from 'react-bootstrap';
-import moment from 'moment-timezone';
 
 import ModalOrder from '../ModalOrder';
-
-function getTimeFromOrder(times, action) {
-	let time = times.find(element => element.action === action);
-	return time ? time.by : null;
-}
-
-function formatTime(time) {
-	return (time = time ? moment(time).tz('Europe/Madrid').format('LT') : '--');
-}
-function differentTwoDate(begin, end) {
-	if (!begin || !end) return '--';
-	// Remove the seconds and milliseconds to ensure that dosent affect the diff
-	begin = moment(begin).seconds(0).milliseconds(0);
-	end = moment(end).seconds(0).milliseconds(0);
-
-	return Math.round(moment.duration(end.diff(begin)).asMinutes());
-}
+import { getTimeFromOrder, differentTwoDate, formatTime } from '../../lib/utils';
 
 // Component
 const ResumenOrder = props => {
@@ -49,6 +32,7 @@ const ResumenOrder = props => {
 			<Row className='order'>
 				<Col>{props.order.gloriaId || '--'}</Col>
 				<Col>{`${props.order.address.street} ${props.order.address.zipcode}`}</Col>
+				<Col>{props.order.restaurant}</Col>
 				<Col>{props.order.rider ? props.order.rider.name : '--'}</Col>
 				<Col>
 					<div>{formatTime(accepted_at)}</div>
@@ -75,7 +59,7 @@ const ResumenOrder = props => {
 					</div>
 					<div><span style={{ color: successColor }}>{success}</span> / {differentTwoDate(accepted_at, completed)}</div>
 				</Col>
-				<Col>
+				<Col xs={1}>
 					<i
 						className='fas fa-info'
 						onClick={handleShowOrderInfo}

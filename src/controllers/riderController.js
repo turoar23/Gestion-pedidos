@@ -14,7 +14,7 @@ exports.getRiders = (req, res, next) => {
 			res.send({ result: null, err: err });
 		});
 };
-
+//TODO: update to a login name and behaviour
 exports.getRiderByCode = (req, res, next) => {
 	const code = req.body.code;
 
@@ -32,6 +32,8 @@ exports.postNewRider = (req, res, next) => {
 	const rider = new Rider({
 		name: req.body.name,
 		vehicle: req.body.vehicle,
+		code: req.body.code,
+		status: true,
 	});
 
 	rider
@@ -110,10 +112,36 @@ exports.getOrdersByRiderByDates = (req, res, next) => {
 			console.log(err);
 			res.send({ result: null, err: "Can't get the orders" });
 		});
+};
 
-	// res.send(200);
+exports.toggleStatusRider = (req, res) => {
+	const riderId = req.body.riderId;
 
-	// Moment(new Date('2020-07-01')).tz('Europe/Madrid').format('Y-M-D')
+	Rider.findById(riderId)
+		.then(rider => {
+			// TODO: agregar que no se pueda cambiar el estado de un rider con pedidos asignados
+			// const query = Order.find({
+			// 	rider: rider,
+			// 	status: ['Active', 'Delivering', 'Arrived'],
+			// }).then(result => {
+			// 	return result;
+			// });
+			// console.log(query);
+			// if (query.length > 0)
+			// 	throw new Error('The rider have orders actives assignaded');
+			if (rider.status === null) rider.status = true;
+			else rider.status = !rider.status;
 
-	// Order.find
+			return rider.save();
+		})
+		.then(rider => {
+			res.send({ result: 'Rider status updated', err: null });
+		})
+		.catch(err => {
+			console.log(err);
+			res.send({
+				result: null,
+				err: 'An error ocurred updating the status of the rider',
+			});
+		});
 };

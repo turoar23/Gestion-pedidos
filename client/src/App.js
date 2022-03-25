@@ -5,9 +5,9 @@ import React, { Suspense } from 'react';
 // import Rider from './components/pages/Rider';
 // import RiderLogin from './components/pages/RiderLogin';
 
-const Orders = React.lazy(() => import('./components/pages/Orders'));
-const Rider = React.lazy(() => import('./components/pages/Rider'));
-const RiderLogin = React.lazy(() => import('./components/pages/RiderLogin'));
+const OrdersPage = React.lazy(() => import('./components/pages/OrdersPage'));
+const RiderPage = React.lazy(() => import('./components/pages/RiderPage'));
+const RiderLoginPage = React.lazy(() => import('./components/pages/RiderLoginPage'));
 
 function App() {
 	return (
@@ -19,13 +19,13 @@ function App() {
 					<Link to='/rider'>Login rider</Link>
 				</Route>
 				<Route path='/orders'>
-					<Orders />
+					<OrdersPage />
 				</Route>
 				<Route path='/rider' exact>
-					<RiderLogin />
+					<RiderLoginPage />
 				</Route>
 				<Route path='/rider/:riderId'>
-					<Rider />
+					<RiderPage />
 				</Route>
 			</Switch>
 		</Suspense>

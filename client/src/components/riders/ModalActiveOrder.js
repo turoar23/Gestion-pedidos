@@ -2,7 +2,7 @@ import { Modal } from 'react-bootstrap';
 import { useEffect, useContext } from 'react';
 
 import useHttp from '../hooks/use-http';
-import OrderForAssign from './OrderForAssign';
+import OrderForAssign from './Order/OrderForAssign';
 import RiderContext from '../../store/rider-context';
 import { getOrdersWithoutRiders, assignRider } from '../lib/api';
 

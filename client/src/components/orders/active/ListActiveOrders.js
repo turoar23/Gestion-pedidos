@@ -13,8 +13,9 @@ import NewOrderModal from '../NewOrderModal';
 import socketIOClient from 'socket.io-client';
 
 import classes from './ListActiveOrders.module.css';
+import ListStatusRiders from './ListStatusRiders';
 
-const ENDPOINT = `http://${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}`
+const ENDPOINT = `http://${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}`;
 
 const ListActiveOrders = () => {
 	const [showNewOrderModal, setShowNewOrderModal] = useState(false);
@@ -86,6 +87,7 @@ const ListActiveOrders = () => {
 				cancelOrder: cancelOrderHandler,
 			}}
 		>
+			{/* <ListStatusRiders orders={loadedOrders} riders={riders} /> */}
 			<Container fluid>
 				<div className='actions'>
 					<Button onClick={handleShowNewOrder}>Nuevo pedido</Button>

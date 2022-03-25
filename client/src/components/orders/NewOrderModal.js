@@ -10,6 +10,8 @@ const NewOrderModal = props => {
 	const { sendRequest, status } = useHttp(newOrder);
 
 	const streetRef = useRef();
+	const floorRef = useRef();
+	const priceRef = useRef();
 	const postalCodeRef = useRef();
 	const cityRef = useRef();
 	const clientNameRef = useRef();
@@ -25,18 +27,20 @@ const NewOrderModal = props => {
 				street: streetRef.current.value,
 				city: cityRef.current.value,
 				zipcode: postalCodeRef.current.value,
+				floor: floorRef.current.value,
 			},
 			client: {
 				name: clientNameRef.current.value,
 				phone: clientPhoneRef.current.value,
 			},
 			payment: paymentRef.current.value,
+			total_price: priceRef.current.value,
 			restaurant: restaurantRef.current.value,
 		};
 
 		await sendRequest(newOrder);
 
-        ctx.updateOrders();
+		ctx.updateOrders();
 
 		props.handleClose();
 
@@ -59,6 +63,14 @@ const NewOrderModal = props => {
 						/>
 					</Form.Group>
 					<Row className='mb-3'>
+						<Form.Group as={Col} controlId='floor'>
+							<Form.Label>Piso</Form.Label>
+							<Form.Control
+								type='text'
+								ref={floorRef}
+								// required={true}
+							/>
+						</Form.Group>
 						<Form.Group as={Col} controlId='postalCode'>
 							<Form.Label>CP</Form.Label>
 							<Form.Control
@@ -95,23 +107,40 @@ const NewOrderModal = props => {
 							/>
 						</Form.Group>
 					</Row>
+
 					{/* Datos extra */}
 					<Form.Group className='mb-3' controlId='restaurant'>
 						<Form.Label>Restaurante</Form.Label>
-						<Form.Control
-							type='text'
+						<Form.Select
+							aria-label='restaurant-selector'
 							ref={restaurantRef}
 							required={true}
-						/>
+						>
+							<option value='Tepuy Burger'>Tepuy Burger</option>
+							<option value='Umbrella'>Umbrella</option>
+						</Form.Select>
 					</Form.Group>
-					<Form.Group className='mb-3' controlId='payment'>
-						<Form.Label>Método de pago</Form.Label>
-						<Form.Control
-							type='text'
-							ref={paymentRef}
-							required={true}
-						/>
-					</Form.Group>
+					<Row className='mb-3'>
+						<Form.Group as={Col} controlId='price'>
+							<Form.Label>Método de pago</Form.Label>
+							<Form.Select
+								aria-label='payment-selector'
+								ref={paymentRef}
+								required={true}
+							>
+								<option value='CASH'>Efectivo</option>
+								<option value='CARD'>Tarjeta</option>
+							</Form.Select>
+						</Form.Group>
+						<Form.Group as={Col} controlId='price'>
+							<Form.Label>Precio</Form.Label>
+							<Form.Control
+								type='text'
+								ref={priceRef}
+								// required={true}
+							/>
+						</Form.Group>
+					</Row>
 				</Modal.Body>
 				<Modal.Footer>
 					<Button variant='secondary' onClick={props.handleClose}>

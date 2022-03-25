@@ -262,6 +262,45 @@ export async function getOrdersWithoutRiders() {
 
 	return transformedOrders;
 }
+export async function toggleRiderStatus(riderId) {
+	let url = `${SERVER_URL}/toggleRiderStatus/`;
+
+	const response = await fetch(url, {
+		method: 'POST',
+		body: JSON.stringify(riderId),
+		headers: {
+			'Content-Type': 'application/json',
+			Accept: 'application/json',
+		},
+	});
+	const data = await response.json();
+
+	if (!response.ok) {
+		throw new Error(data.message || 'Could not update the rider status.');
+	}
+
+	return data;
+}
+
+export async function newRider(rider) {
+	let url = `${SERVER_URL}/newRider/`;
+
+	const response = await fetch(url, {
+		method: 'POST',
+		body: JSON.stringify(rider),
+		headers: {
+			'Content-Type': 'application/json',
+			Accept: 'application/json',
+		},
+	});
+	const data = await response.json();
+
+	if (!response.ok) {
+		throw new Error(data.message || 'Could not create the new rider.');
+	}
+
+	return data;
+}
 // export async function getAllQuotes() {
 //   const response = await fetch(`${SERVER_URL}/quotes.json`);
 //   const data = await response.json();

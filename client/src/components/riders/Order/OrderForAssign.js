@@ -2,7 +2,7 @@ import { Card, Button } from 'react-bootstrap';
 import moment from 'moment-timezone';
 
 import { useContext } from 'react';
-import RiderContext from '../../store/rider-context';
+import RiderContext from '../../../store/rider-context';
 
 const OrderForAssign = props => {
     const ctx = useContext(RiderContext);

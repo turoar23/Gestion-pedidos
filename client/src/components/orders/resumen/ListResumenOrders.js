@@ -7,11 +7,12 @@ import useHttp from '../../hooks/use-http';
 import { getOrdersByDate } from '../../lib/api';
 
 const ListResumenOrders = () => {
-	const [selectedDate, setSelectedDate] = useState(moment().format('Y-M-DD'));
+	const [selectedDate, setSelectedDate] = useState(moment().format('Y-MM-DD'));
 	const dateRef = useRef();
 
 	// const fecha = "2021-08-13";
 	const fecha = selectedDate;
+	
 	const date = moment(fecha).add(3, 'hours');
 	const begin = date.valueOf();
 	const end = date.add(1, 'days').valueOf();
@@ -64,13 +65,14 @@ const ListResumenOrders = () => {
 					<Row className='order'>
 						<Col>ID</Col>
 						<Col>Dirección</Col>
+						<Col>Restaurante</Col>
 						<Col>Rider</Col>
 						<Col>Accepted</Col>
 						<Col>Delivering</Col>
 						<Col>Arrived</Col>
 						<Col>Completed</Col>
 						<Col>Fulfill</Col>
-						<Col>Actions</Col>
+						<Col xs={1}>Actions</Col>
 					</Row>
 					{listOrders}
 				</Container>

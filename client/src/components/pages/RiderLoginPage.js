@@ -10,6 +10,7 @@ const RiderLogin = props => {
 	const history = useHistory();
 	const codeRef = useRef();
 	const { sendRequest, status, data } = useHttp(getRiderByCode, true);
+	let error = null;
 
 	const submitHandler = async event => {
 		event.preventDefault();
@@ -21,13 +22,21 @@ const RiderLogin = props => {
 	}, []);
 
 	if (status === 'completed') {
-		history.push(`/rider/${data.result._id}`);
-		localStorage.setItem('rider', JSON.stringify(data.result));
+		if (data.result) {
+			error = null;
+			history.push(`/rider/${data.result._id}`);
+			localStorage.setItem('rider', JSON.stringify(data.result));
+		} else {
+			error = (
+				<div>Pin incorrecto</div>
+			)
+		}
 	}
 
 	return (
 		<Fragment>
 			<h2>Introduce tu código</h2>
+			{error}
 			<Form onSubmit={submitHandler}>
 				<Form.Group className='mb-3' controlId='formGridAddress1'>
 					<Form.Label>Código</Form.Label>

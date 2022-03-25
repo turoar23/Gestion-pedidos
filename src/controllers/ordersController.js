@@ -222,9 +222,11 @@ exports.postNewOrder = (req, res, next) => {
 			street: req.body.direction.street,
 			city: req.body.direction.city,
 			zipcode: req.body.direction.zipcode,
+			floor: req.body.direction.floor || undefined,
 			latitue: undefined,
 			longitude: undefined,
 		},
+		total_price: req.body.total_price || undefined,
 		restaurant: req.body.restaurant,
 		times: [
 			{

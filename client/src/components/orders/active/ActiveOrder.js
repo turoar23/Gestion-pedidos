@@ -5,7 +5,8 @@ import moment from 'moment-timezone';
 import ModalRider from '../ModalRider';
 import ModalOrder from '../ModalOrder';
 import useHttp from '../../hooks/use-http';
-import { updateOrder } from '../../lib/api';
+import { updateOrder, updateOrderStatus } from '../../lib/api';
+import { getUrlGoogleMaps } from '../../lib/utils';
 
 import classes from './ActiveOrder.module.css';
 
@@ -16,6 +17,8 @@ const ActiveOrders = props => {
 	const [showOrderInfoToEdit, setShowOrderInfoToEdit] = useState(false);
 	const [momentToCompare, setMomentToCompare] = useState(moment());
 	const { sendRequest, status } = useHttp(updateOrder);
+	const { sendRequest: sendRequestUpdateStatus, status: statusOrder } =
+		useHttp(updateOrderStatus);
 
 	useEffect(() => {
 		setInterval(() => {
@@ -66,22 +69,51 @@ const ActiveOrders = props => {
 		handleCloseOrderInfoToEdit();
 	};
 
+	const completeOrderManuallyHandler = async () => {
+		await sendRequestUpdateStatus({
+			_id: order._id,
+			status: 'Completed',
+			action: 'Completed Manually',
+		});
+
+		handleCloseOrderInfoToEdit();
+	};
+	const openGoogleHandler = () => {
+		window.open(
+			getUrlGoogleMaps(
+				order.address.street,
+				order.address.zipcode,
+				order.restaurant
+			)
+		);
+	};
+
 	return (
 		<Fragment>
 			<Row className='order'>
 				<Col className={classes.col}>{order.gloriaId || '--'}</Col>
-				<Col className={classes.col}>{`${order.address.street} ${props.order.address.zipcode}`}</Col>
+				<Col
+					className={classes.col}
+				>{`${order.address.street} ${props.order.address.zipcode}`}</Col>
 				<Col className={classes.col}>
 					{fulfill.tz('Europe/Madrid').format('LT')}{' '}
 					{order.for_later && <sup className='for-later'>P</sup>}
 				</Col>
 				<Col className={classes.col}>{duration}</Col>
-				<Col className={`${classes.col} ${durationExtra > 0 ? 'danger' : ''}`}>
+				<Col
+					className={`${classes.col} ${
+						durationExtra > 0 ? 'danger' : ''
+					}`}
+				>
 					{durationExtra}
 				</Col>
 				<Col className={classes.col}>{order.restaurant}</Col>
-				<Col className={classes.col}>{order.rider ? order.rider.name : '--'}</Col>
-				<Col className={`${classes.col} ${order.status.toLowerCase()}`}>{order.status}</Col>
+				<Col className={classes.col}>
+					{order.rider ? order.rider.name : '--'}
+				</Col>
+				<Col className={`${classes.col} ${order.status.toLowerCase()}`}>
+					{order.status}
+				</Col>
 				<Col className={classes.col}>
 					<i
 						className='fas fa-motorcycle'
@@ -97,6 +129,9 @@ const ActiveOrders = props => {
 						style={{ marginLeft: '8px' }}
 						onClick={handleShowOrderInfo}
 					></i>
+					<div onClick={openGoogleHandler}>
+						<i className={'fas fa-map-marked-alt'}></i>
+					</div>
 				</Col>
 			</Row>
 			<ModalRider
@@ -119,6 +154,7 @@ const ActiveOrders = props => {
 				handleClose={handleCloseOrderInfo}
 				order={order}
 				edit={false}
+				completeOrder={completeOrderManuallyHandler}
 			/>
 		</Fragment>
 	);

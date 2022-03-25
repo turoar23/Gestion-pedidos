@@ -15,4 +15,6 @@ Router.get('/getRiderOrders/:riderId', riderController.getOrders);
 
 Router.get('/getResumenByRider/:riderId/:date/', riderController.getOrdersByRiderByDates);
 
+Router.post('/toggleRiderStatus',riderController.toggleStatusRider);
+
 module.exports = Router;

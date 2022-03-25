@@ -52,7 +52,7 @@ exports.sendSurvey = async order => {
 	const idOrder = order.gloriaId;
 	var sendTo = 'turoar2006@gmail.com';
 
-	// Si es produccio, enviar al correo del cliente
+	// Si el enterno es de produccion, enviar al correo del cliente
 	if (process.env.NODE_ENV === 'production') {
 		sendTo = order.client.email;
 	}
@@ -86,8 +86,8 @@ exports.sendEmail = async (content, sendTo) => {
 		port: 465,
 		secure: true, // true for 465, false for other ports
 		auth: {
-			user: 'noresponder@umbrellash.es', // generated ethereal user
-			pass: 'YXCWkx!1$9Vk', // generated ethereal password
+			user: 'noresponder@umbrellash.es',
+			pass: 'YXCWkx!1$9Vk', 
 		},
 	});
 
@@ -96,8 +96,7 @@ exports.sendEmail = async (content, sendTo) => {
 		from: '"Umbrella SH" <noresponder@umbrellash.es>', // sender address
 		to: sendTo, // list of receivers
 		subject: 'Valora tu experiencia con nosotros 🍔 Umbrella SH', // Subject line
-		text: 'Hello world?', // plain text body
-		// html: '<b>Hello world?</b>', // html body
+		text: 'Valora tu experiencia con nosotros', // plain text body
 		html: content,
 	});
 	console.log('Message sent: %s', info.response);

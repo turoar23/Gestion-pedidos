@@ -11,7 +11,7 @@ const ModalOrder = props => {
 	if (itemsFiltered) {
 		items = itemsFiltered.map((item, index) => (
 			<ListGroup.Item key={index}>
-				{item.name}
+				{item.quantity}x {item.name}
 				<div>
 					{item.options.map((option) => (
 						`${option.name}, `
