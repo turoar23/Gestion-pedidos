@@ -24,10 +24,16 @@ app.use(express.static(path.join(__dirname, './client/build')));
 // Disable crossorigin
 //TODO: Ver como se puede mejorar esto, quizas con el paquete cors
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    next();
+	res.setHeader('Access-Control-Allow-Origin', '*');
+	res.setHeader(
+		'Access-Control-Allow-Methods',
+		'OPTIONS, GET, POST, PUT, PATCH, DELETE'
+	);
+	res.setHeader(
+		'Access-Control-Allow-Headers',
+		'Content-Type, Authorization'
+	);
+	next();
 });
 
 // Routes
@@ -36,7 +42,7 @@ const routes = require('./src/routes');
 // Add the routes to express
 app.use(routes);
 
-// Any route than dont exist in the routes before, will be forwaded to the client
+// Any route than dosent exist in the routes before, will be forwaded to the client
 app.get('*', (req, res) => {
 	res.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
 });

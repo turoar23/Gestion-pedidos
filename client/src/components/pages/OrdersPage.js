@@ -4,7 +4,6 @@ import { Tabs, Tab } from 'react-bootstrap';
 import ActiveOrdersPanel from '../orders/active/ActiveOrdersPanel';
 import PanelCierre from '../orders/cierre/PanelCierre';
 import ListResumenOrders from '../orders/resumen/ListResumenOrders';
-import PanelRiders from '../orders/riders/PanelRiders';
 
 import classes from './OrdersPage.module.css';
 
@@ -26,9 +25,6 @@ const LayoutOrders = () => {
 			</Tab>
 			<Tab eventKey='cierre' title='Cierre'>
 				<PanelCierre />
-			</Tab>
-			<Tab eventKey='riders' title='Riders'>
-				<PanelRiders />
 			</Tab>
 		</Tabs>
 	);

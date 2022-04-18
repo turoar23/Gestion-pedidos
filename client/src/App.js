@@ -7,13 +7,14 @@ import React, { Suspense } from 'react';
 
 const OrdersPage = React.lazy(() => import('./components/pages/OrdersPage'));
 const RiderPage = React.lazy(() => import('./components/pages/RiderPage'));
-const RiderLoginPage = React.lazy(() => import('./components/pages/RiderLoginPage'));
+const AdminPage = React.lazy(() => import('./components/pages/AdminPage'));
+const RiderLoginPage = React.lazy(() =>
+	import('./components/pages/RiderLoginPage')
+);
 
 function App() {
 	return (
-		<Suspense fallback={
-			<p>Loading ...</p>
-		}>
+		<Suspense fallback={<p>Loading ...</p>}>
 			<Switch>
 				<Route path='/' exact>
 					<Link to='/rider'>Login rider</Link>
@@ -21,12 +22,16 @@ function App() {
 				<Route path='/orders'>
 					<OrdersPage />
 				</Route>
+				{/* App of the riders */}
 				<Route path='/rider' exact>
 					<RiderLoginPage />
 				</Route>
 				<Route path='/rider/:riderId'>
 					<RiderPage />
 				</Route>
+				{/*  */}
+				{/* Import all the routes and nav from admin */}
+				<AdminPage />
 			</Switch>
 		</Suspense>
 	);

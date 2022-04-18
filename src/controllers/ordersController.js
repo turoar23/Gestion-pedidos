@@ -113,6 +113,8 @@ exports.modifyOrder = (req, res, next) => {
 			order.payment = req.body.payment || order.payment;
 			order.client = req.body.client || order.client;
 			order.address = req.body.address || order.address;
+			order.statusCorrect = req.body.statusCorrect === undefined ? order.statusCorrect : req.body.statusCorrect;
+
 			return order.save();
 		})
 		.then(result => {
@@ -124,7 +126,6 @@ exports.modifyOrder = (req, res, next) => {
 			res.send({ result: 'updated', err: null });
 		})
 		.catch(err => {
-			console.log(err);
 			res.send({ result: null, err: "Can't update the order" });
 		});
 };
@@ -226,7 +227,8 @@ exports.postNewOrder = (req, res, next) => {
 			latitue: undefined,
 			longitude: undefined,
 		},
-		total_price: req.body.total_price || undefined,
+		total_price:
+			parseFloat(req.body.total_price.replace(',', '.')) || undefined,
 		restaurant: req.body.restaurant,
 		times: [
 			{
@@ -250,7 +252,6 @@ exports.postNewOrder = (req, res, next) => {
 	order
 		.save()
 		.then(result => {
-			// console.log(result);
 			webSocket.getIO().emit('Orders', {
 				action: 'New Order',
 				order: result,

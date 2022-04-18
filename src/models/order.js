@@ -63,6 +63,10 @@ const orderSchema = new Schema({
 		type: Boolean,
 		required: false,
 	},
+	statusCorrect:{
+		type: Boolean,
+		default: true,
+	},
 	items:{
 		type: Array,
 		default: [],

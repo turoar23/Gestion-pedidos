@@ -301,6 +301,20 @@ export async function newRider(rider) {
 
 	return data;
 }
+
+export async function getReviews() {
+	const response = await fetch(
+		`${SERVER_URL}/getReviews/`
+	);
+	const data = await response.json();
+
+	if (!response.ok) {
+		throw new Error(
+			data.message || 'Could not fetch reviews.'
+		);
+	}
+	return data;
+}
 // export async function getAllQuotes() {
 //   const response = await fetch(`${SERVER_URL}/quotes.json`);
 //   const data = await response.json();
