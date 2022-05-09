@@ -8,6 +8,7 @@ import React, { Suspense } from 'react';
 const OrdersPage = React.lazy(() => import('./components/pages/OrdersPage'));
 const RiderPage = React.lazy(() => import('./components/pages/RiderPage'));
 const AdminPage = React.lazy(() => import('./components/pages/AdminPage'));
+const HomePage = React.lazy(() => import('./components/pages/HomePage'));
 const RiderLoginPage = React.lazy(() =>
 	import('./components/pages/RiderLoginPage')
 );
@@ -17,7 +18,7 @@ function App() {
 		<Suspense fallback={<p>Loading ...</p>}>
 			<Switch>
 				<Route path='/' exact>
-					<Link to='/rider'>Login rider</Link>
+					<HomePage />
 				</Route>
 				<Route path='/orders'>
 					<OrdersPage />

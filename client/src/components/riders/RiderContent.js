@@ -6,6 +6,8 @@ import { getActiveRiderOrders, assignRider } from '../lib/api';
 import ListRiderOrders from '../riders/ListRiderOrders';
 import Header from '../riders/Header';
 
+import classes from './RiderContent.module.css'
+
 const RiderContent = props => {
 	const riderName = props.riderName;
 	const riderId = props.riderId;
