@@ -86,22 +86,115 @@ exports.getOrdersByDate = (req, res, next) => {
 			res.send({ result: null, err: "Can't get the orders" });
 		});
 };
-exports.getActiveOrders = (req, res, next) => {
-	Order.find({ status: ['Active', 'Delivering', 'Arrived'] })
-		// .sort('group')
-		.then(orders => {
-			return Order.populate(orders, {
-				path: 'rider',
-				select: 'name',
-			});
-		})
-		.then(orders => {
-			res.send({ result: orders, err: null });
-		})
-		.catch(err => {
-			console.log(err);
-			res.send({ result: null, err: "Can't get the active orders" });
+exports.getActiveOrders = async (req, res, next) => {
+	try {
+		let orders = await Order.find({
+			status: ['Active', 'Delivering', 'Arrived'],
 		});
+		orders = await Order.populate(orders, {
+			path: 'rider',
+			select: 'name',
+		});
+		// orders = await Promise.all(
+		// 	orders.map(async order => {
+		// 		try {
+		// 			return {
+		// 				...order,
+		// 				totalClient: await Order.find({
+		// 					'client.email': order.client.email,
+		// 				}).countDocuments(),
+		// 			};
+		// 		} catch (err) {
+		// 			return order;
+		// 		}
+		// 	})
+		// );
+		// const prueba = await Order.aggregate([
+		// 	{
+		// 		$match: {
+		// 			'client.email': {
+		// 				$in: orders
+		// 					.filter(order => order.client.email !== undefined)
+		// 					.map(order => order.client.email),
+		// 			},
+		// 		},
+		// 	},
+		// 	{
+		// 		$project: {
+		// 			_id: 0,
+		// 			client: 1,
+		// 		},
+		// 	},
+		// 	{
+		// 		$group: {
+		// 			_id: null,
+		// 			count: { $sum: 1 },
+		// 		},
+		// 	},
+		// ]);
+		var prueba = await Order.aggregate([
+			{
+				$match: {
+					client: {
+						$in: orders
+							// .filter(order => order.client.email !== undefined)
+							.map(order => order.client),
+					},
+				},
+			},
+			{
+				$group: {
+					_id: '$client',
+					count: { $sum: 1 },
+				},
+			},
+			// {
+			// 	$lookup: {
+			// 		from: 'orders',
+			// 		localField: '_id',
+			// 		foreignField: 'client',
+			// 		as: 'orders',
+			// 	},
+			// },
+		]);
+		var result = orders.map(order => {
+			order = order.toJSON();
+			let client = prueba.find(client => {
+				// console.log(order.client);
+				// console.log(client._id);
+				// console.log(JSON.stringify(order.client) === JSON.stringify(client._id));
+				// console.log('----');
+
+				return JSON.stringify(order.client) === JSON.stringify(client._id);
+			});
+			// console.log(client);
+			return {
+				...order,
+				totalOrdersClient: client.count,
+			};
+		});
+		// prueba = prueba.filter(item => item.email)
+		// console.log(result);
+		res.send({ result: result, err: null });
+	} catch (err) {
+		// console.log(err);
+		res.send({ result: null, err: "Can't get the active orders" });
+	}
+	// Order.find({ status: ['Active', 'Delivering', 'Arrived'] })
+	// 	// .sort('group')
+	// 	.then(orders => {
+	// 		return Order.populate(orders, {
+	// 			path: 'rider',
+	// 			select: 'name',
+	// 		});
+	// 	})
+	// 	.then(orders => {
+	// 		res.send({ result: orders, err: null });
+	// 	})
+	// 	.catch(err => {
+	// 		console.log(err);
+	// 		res.send({ result: null, err: "Can't get the active orders" });
+	// 	});
 };
 
 exports.modifyOrder = (req, res, next) => {
@@ -113,7 +206,10 @@ exports.modifyOrder = (req, res, next) => {
 			order.payment = req.body.payment || order.payment;
 			order.client = req.body.client || order.client;
 			order.address = req.body.address || order.address;
-			order.statusCorrect = req.body.statusCorrect === undefined ? order.statusCorrect : req.body.statusCorrect;
+			order.statusCorrect =
+				req.body.statusCorrect === undefined
+					? order.statusCorrect
+					: req.body.statusCorrect;
 
 			return order.save();
 		})

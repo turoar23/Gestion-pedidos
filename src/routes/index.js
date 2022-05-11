@@ -7,12 +7,14 @@ const webRoutes = require('./web');
 const riderRoutes = require('./rider');
 const stepRoutes = require('./step');
 const reviewRoutes = require('./review');
+const clientRoutes = require('./clients');
 
 // Add the routes to express
 Router.use(gloriaRoutes);
 Router.use(riderRoutes);
 Router.use(stepRoutes);
 Router.use(reviewRoutes);
+Router.use(clientRoutes);
 
 // Router.use(webRoutes);
 
