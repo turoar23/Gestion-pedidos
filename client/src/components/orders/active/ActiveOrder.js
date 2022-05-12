@@ -94,7 +94,10 @@ const ActiveOrders = props => {
 				<Col className={classes.col}>{order.gloriaId || '--'}</Col>
 				<Col
 					className={classes.col}
-				>{`${order.address.street} ${props.order.address.zipcode}`}</Col>
+				>
+					{`${order.address.street} ${props.order.address.zipcode}`}
+					<sup className='for-later'>{order.totalOrdersClient}</sup>
+				</Col>
 				<Col className={classes.col}>
 					{fulfill.tz('Europe/Madrid').format('LT')}{' '}
 					{order.for_later && <sup className='for-later'>P</sup>}
