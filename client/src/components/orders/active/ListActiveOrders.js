@@ -3,6 +3,8 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 
 import ActiveOrder from './ActiveOrder';
 import useHttp from '../../hooks/use-http';
+import { connectSocket } from '../../lib/socket';
+
 import {
 	getAllActiveOrders,
 	getAllRiders,
@@ -10,12 +12,10 @@ import {
 } from '../../lib/api';
 import OrdersContext from '../../../store/orders-context';
 import NewOrderModal from '../NewOrderModal';
-import socketIOClient from 'socket.io-client';
 
 import classes from './ListActiveOrders.module.css';
 import ListStatusRiders from './ListStatusRiders';
 
-const ENDPOINT = `${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}`;
 
 const ListActiveOrders = () => {
 	const [showNewOrderModal, setShowNewOrderModal] = useState(false);
@@ -42,10 +42,7 @@ const ListActiveOrders = () => {
 	}, [sendRequestRiders, sendRequest]);
 
 	useEffect(() => {
-		const socket = socketIOClient(ENDPOINT);
-		socket.on('Orders', data => {
-			updateHandler();
-		});
+		const socket = connectSocket(updateHandler);
 
 		// CLEAN UP THE EFFECT
 		return () => socket.disconnect();

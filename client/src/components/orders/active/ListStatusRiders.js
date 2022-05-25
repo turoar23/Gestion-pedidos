@@ -1,13 +1,12 @@
 import moment from 'moment-timezone';
 import { useEffect } from 'react';
-import socketIOClient from 'socket.io-client';
+import { connectSocket } from '../../lib/socket';
 
 import Card from '../../UI/Card';
 import useHttp from '../../hooks/use-http';
 import { getOrdersByDate } from '../../lib/api';
 import StatusRider from './StatusRider';
 
-const ENDPOINT = `${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}`;
 
 // Solo se actualiza cunado socket le avise
 const ListStatusRiders = props => {
@@ -28,13 +27,7 @@ const ListStatusRiders = props => {
 		// Primera vez para obtener los datos
 		sendRequest({ begin: begin, end: end });
 
-		const socket = socketIOClient(ENDPOINT);
-
-		// Activamos el socket para que se actualice cada nueva actualizacion
-		socket.on('Orders', data => {
-			sendRequest({ begin: begin, end: end });
-		});
-
+		const socket = connectSocket(sendRequest({ begin: begin, end: end }));
 		// CLEAN UP THE EFFECT
 		return () => socket.disconnect();
 		//
@@ -42,14 +35,14 @@ const ListStatusRiders = props => {
 
 	let allOrders = [];
 
-    console.log(loadedOrders)
+	console.log(loadedOrders);
 
 	// Añadimos las que ya fueron completadas
 	if (loadedOrders) allOrders = allOrders.concat(loadedOrders);
 	// Añadimos los pedidos en curso
 	if (activeOrders) allOrders = allOrders.concat(activeOrders);
-    // Quitamos los pedidos sin rider
-    allOrders = allOrders.filter(order => order.rider)
+	// Quitamos los pedidos sin rider
+	allOrders = allOrders.filter(order => order.rider);
 
 	let ordersRiders = [];
 
