@@ -4,7 +4,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
-const webSocket = require('./src/socket');
+const webSocket = require('./src/lib/socket');
 
 // Configurations
 dotenv.config();

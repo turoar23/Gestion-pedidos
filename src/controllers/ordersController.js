@@ -2,8 +2,8 @@ const Order = require('../models/order');
 const Rider = require('../models/rider');
 const Group = require('../models/group');
 
-const webSocket = require('../socket');
-const utils = require('../utils');
+const webSocket = require('../lib/socket');
+const utils = require('../lib/utils');
 
 // const mongoose = require('mongoose');
 const Moment = require('moment-timezone');
@@ -159,18 +159,29 @@ exports.getActiveOrders = async (req, res, next) => {
 		]);
 		var result = orders.map(order => {
 			order = order.toJSON();
+			let amount = 0;
+
+			// if(order.client.email){
 			let client = prueba.find(client => {
 				// console.log(order.client);
 				// console.log(client._id);
 				// console.log(JSON.stringify(order.client) === JSON.stringify(client._id));
 				// console.log('----');
+				const email =
+					JSON.stringify(order.client.email) ===
+					JSON.stringify(client._id.email);
+				const phone =
+					JSON.stringify(order.client.phone) ===
+					JSON.stringify(client._id.phone);
 
-				return JSON.stringify(order.client) === JSON.stringify(client._id);
+				return email || phone;
 			});
+			amount = client.count;
+			// }
 			// console.log(client);
 			return {
 				...order,
-				totalOrdersClient: client.count,
+				totalOrdersClient: amount,
 			};
 		});
 		// prueba = prueba.filter(item => item.email)

@@ -7,7 +7,7 @@ import useHttp from '../../hooks/use-http';
 import { getOrdersByDate } from '../../lib/api';
 import StatusRider from './StatusRider';
 
-const ENDPOINT = `http://${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}`;
+const ENDPOINT = `${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}`;
 
 // Solo se actualiza cunado socket le avise
 const ListStatusRiders = props => {

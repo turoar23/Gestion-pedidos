@@ -47,9 +47,10 @@ function checkIfEqual(arr1, arr2) {
 	return find;
 }
 exports.sendSurvey = async order => {
-	const pathTemplate = path.join(process.cwd(), '/views/email/survey.html');
+	const pathTemplate = path.join(process.cwd(), 'src/templates/survey.html');
 	const name = order.client.name.split(' ')[0];
 	const idOrder = order.gloriaId;
+	// Por defecto envia el correo a esta dirección
 	var sendTo = 'turoar2006@gmail.com';
 
 	// Si el enterno es de produccion, enviar al correo del cliente
@@ -61,6 +62,7 @@ exports.sendSurvey = async order => {
 	content = content.replace('{name}', name); // Cambiamos el nombre de la plantilla por el del cliente
 	content = content.replace('{idOrder}', idOrder); // Cambiamos el id del pedido por el de GloriaFood (asi se vincula el pedido con la encuesta)
 
+	//FIXME: This is strange
 	sendTo
 		? this.sendEmail(content, sendTo)
 		: console.log('No se pudo enviar el correo');

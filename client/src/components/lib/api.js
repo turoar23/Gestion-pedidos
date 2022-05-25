@@ -1,4 +1,4 @@
-const SERVER_URL = `http://${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}`
+const SERVER_URL = `${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}`
 
 export async function getAllActiveOrders() {
 	const response = await fetch(`${SERVER_URL}/getActiveOrders`);

@@ -15,7 +15,7 @@ import socketIOClient from 'socket.io-client';
 import classes from './ListActiveOrders.module.css';
 import ListStatusRiders from './ListStatusRiders';
 
-const ENDPOINT = `http://${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}`;
+const ENDPOINT = `${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}`;
 
 const ListActiveOrders = () => {
 	const [showNewOrderModal, setShowNewOrderModal] = useState(false);

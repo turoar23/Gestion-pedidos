@@ -2,15 +2,16 @@ const express = require('express')
 const Router = express.Router();
 
 // Routes for the use of the API from GloriaFood
-const gloriaRoutes = require('./orders');
-const webRoutes = require('./web');
+const ordersRoutes = require('./orders');
+const integrationsRoutes = require('./integrations');
 const riderRoutes = require('./rider');
 const stepRoutes = require('./step');
 const reviewRoutes = require('./review');
 const clientRoutes = require('./clients');
 
 // Add the routes to express
-Router.use(gloriaRoutes);
+Router.use(ordersRoutes);
+Router.use(integrationsRoutes);
 Router.use(riderRoutes);
 Router.use(stepRoutes);
 Router.use(reviewRoutes);
