@@ -1,28 +1,26 @@
-const express = require('express')
+const express = require('express');
 const Router = express.Router();
 
 const ordersController = require('../controllers/ordersController');
 
-Router.post('/newOrder', ordersController.postNewOrder);
+// Getters
+Router.get('/orders', ordersController.getOrders);
+Router.get('/ordersActive', ordersController.getActiveOrders);
+Router.get('/orders/:orderId', ordersController.getOrder);
 
-Router.get('/getActiveOrders', ordersController.getActiveOrders);
+Router.get('/orders/:begin/:end', ordersController.getOrdersByDate);
 
-Router.get('/getOrders', ordersController.getOrders);
+//FIXME: Check if this resource its really necesary
+// Router.post('/getOrderFilter', ordersController.postOrdersFilter);
 
-Router.get('/getOrder/:orderId', ordersController.getOrder);
+Router.post('/orders', ordersController.postNewOrder);
 
-Router.post('/getOrderFilter', ordersController.postOrdersFilter);
+Router.put('/orders/addAction', ordersController.addAction);
 
-Router.post('/getOrderByDates', ordersController.getOrdersByDate);
+Router.put('/orders/:orderId', ordersController.modifyOrder);
 
-Router.post('/modifyOrder', ordersController.modifyOrder);
+Router.put('/orders/assignRider', ordersController.addRider);
 
-Router.post('/updateStatusOrder', ordersController.updateStatusOrder);
-
-// Router.post('/addTimeOrder', ordersController.addTimeOrder);
-
-Router.post('/assignRiderOrder', ordersController.addRider);
-
-Router.post('/removeRiderOrder', ordersController.removeRider);
+Router.put('/orders/removeRider', ordersController.removeRider);
 
 module.exports = Router;

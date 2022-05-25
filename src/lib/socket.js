@@ -1,7 +1,7 @@
 let io;
 
 // FIXME: This is not very good :/
-const ENDPOINT = 'https:/azape.es';
+const ENDPOINT = 'https://azape.es';
 const ENDPOINT_DEV = 'http://localhost:5000';
 
 module.exports = {

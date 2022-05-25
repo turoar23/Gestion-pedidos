@@ -40,13 +40,12 @@ app.use((req, res, next) => {
 const routes = require('./src/routes');
 
 // Add the routes to express
-app.use(routes);
+app.use('/api/v1', routes);
 
 // Any route than dosent exist in the routes before, will be forwaded to the client
 app.get('*', (req, res) => {
 	res.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
 });
-
 
 mongoose
 	.connect(process.env.DATABASE)

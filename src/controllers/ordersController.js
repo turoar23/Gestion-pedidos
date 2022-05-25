@@ -21,11 +21,61 @@ exports.getOrders = (req, res, next) => {
 			res.send({ result: orders, err: null });
 		})
 		.catch(err => {
-			console.log(err);
-			res.send({ result: null, err: "Can't get orders" });
+			res.status(500);
+			res.send({ result: null, err: "Can't get the orders" });
 		});
 };
 
+// TODO: Find a better way to make this request
+exports.getActiveOrders = async (req, res, next) => {
+	try {
+		let orders = await Order.find({
+			status: ['Active', 'Delivering', 'Arrived'],
+		});
+		orders = await Order.populate(orders, {
+			path: 'rider',
+			select: 'name',
+		});
+		var ordersClients = await Order.aggregate([
+			{
+				$match: {
+					client: {
+						$in: orders.map(order => order.client),
+					},
+				},
+			},
+			{
+				$group: {
+					_id: '$client',
+					count: { $sum: 1 },
+				},
+			},
+		]);
+		var result = orders.map(order => {
+			order = order.toJSON();
+			let amount = 0;
+
+			let client = ordersClients.find(client => {
+				const email =
+					JSON.stringify(order.client.email) ===
+					JSON.stringify(client._id.email);
+				const phone =
+					JSON.stringify(order.client.phone) ===
+					JSON.stringify(client._id.phone);
+
+				return email || phone;
+			});
+			amount = client.count;
+			return {
+				...order,
+				totalOrdersClient: amount,
+			};
+		});
+		res.send({ result: result, err: null });
+	} catch (err) {
+		res.send({ result: null, err: "Can't get the active orders" });
+	}
+};
 exports.getOrder = (req, res, next) => {
 	const _id = req.params.orderId;
 	Order.findById(_id)
@@ -39,8 +89,7 @@ exports.getOrder = (req, res, next) => {
 			res.send({ result: order, err: null });
 		})
 		.catch(err => {
-			console.log(err);
-			res.send({ result: null, err: "Can't get the order" });
+			res.send({ result: null, err: "Can't get the order with that id" });
 		});
 };
 exports.postOrdersFilter = (req, res, next) => {
@@ -55,8 +104,8 @@ exports.postOrdersFilter = (req, res, next) => {
 		});
 };
 exports.getOrdersByDate = (req, res, next) => {
-	const begin = req.body.begin;
-	const end = req.body.end;
+	const begin = req.params.begin;
+	const end = req.params.end;
 
 	// Order.find({ status: "Completed" }).slice('times', -1).where('times.by').gte(begin).lte(end)
 	//TODO: hacerlo con el fulfill no me termina de convencer mucho, aun asi se basa en que nunca pondran un pedido para mas tarde tipo dia siguiente a las 00:15
@@ -86,132 +135,12 @@ exports.getOrdersByDate = (req, res, next) => {
 			res.send({ result: null, err: "Can't get the orders" });
 		});
 };
-exports.getActiveOrders = async (req, res, next) => {
-	try {
-		let orders = await Order.find({
-			status: ['Active', 'Delivering', 'Arrived'],
-		});
-		orders = await Order.populate(orders, {
-			path: 'rider',
-			select: 'name',
-		});
-		// orders = await Promise.all(
-		// 	orders.map(async order => {
-		// 		try {
-		// 			return {
-		// 				...order,
-		// 				totalClient: await Order.find({
-		// 					'client.email': order.client.email,
-		// 				}).countDocuments(),
-		// 			};
-		// 		} catch (err) {
-		// 			return order;
-		// 		}
-		// 	})
-		// );
-		// const prueba = await Order.aggregate([
-		// 	{
-		// 		$match: {
-		// 			'client.email': {
-		// 				$in: orders
-		// 					.filter(order => order.client.email !== undefined)
-		// 					.map(order => order.client.email),
-		// 			},
-		// 		},
-		// 	},
-		// 	{
-		// 		$project: {
-		// 			_id: 0,
-		// 			client: 1,
-		// 		},
-		// 	},
-		// 	{
-		// 		$group: {
-		// 			_id: null,
-		// 			count: { $sum: 1 },
-		// 		},
-		// 	},
-		// ]);
-		var prueba = await Order.aggregate([
-			{
-				$match: {
-					client: {
-						$in: orders
-							// .filter(order => order.client.email !== undefined)
-							.map(order => order.client),
-					},
-				},
-			},
-			{
-				$group: {
-					_id: '$client',
-					count: { $sum: 1 },
-				},
-			},
-			// {
-			// 	$lookup: {
-			// 		from: 'orders',
-			// 		localField: '_id',
-			// 		foreignField: 'client',
-			// 		as: 'orders',
-			// 	},
-			// },
-		]);
-		var result = orders.map(order => {
-			order = order.toJSON();
-			let amount = 0;
 
-			// if(order.client.email){
-			let client = prueba.find(client => {
-				// console.log(order.client);
-				// console.log(client._id);
-				// console.log(JSON.stringify(order.client) === JSON.stringify(client._id));
-				// console.log('----');
-				const email =
-					JSON.stringify(order.client.email) ===
-					JSON.stringify(client._id.email);
-				const phone =
-					JSON.stringify(order.client.phone) ===
-					JSON.stringify(client._id.phone);
-
-				return email || phone;
-			});
-			amount = client.count;
-			// }
-			// console.log(client);
-			return {
-				...order,
-				totalOrdersClient: amount,
-			};
-		});
-		// prueba = prueba.filter(item => item.email)
-		// console.log(result);
-		res.send({ result: result, err: null });
-	} catch (err) {
-		// console.log(err);
-		res.send({ result: null, err: "Can't get the active orders" });
-	}
-	// Order.find({ status: ['Active', 'Delivering', 'Arrived'] })
-	// 	// .sort('group')
-	// 	.then(orders => {
-	// 		return Order.populate(orders, {
-	// 			path: 'rider',
-	// 			select: 'name',
-	// 		});
-	// 	})
-	// 	.then(orders => {
-	// 		res.send({ result: orders, err: null });
-	// 	})
-	// 	.catch(err => {
-	// 		console.log(err);
-	// 		res.send({ result: null, err: "Can't get the active orders" });
-	// 	});
-};
-
+//TODO: Make some check before try to update the order
 exports.modifyOrder = (req, res, next) => {
-	let id = req.body._id;
+	const orderId = req.params.orderId;
 
-	Order.findOne({ _id: id })
+	Order.findOne({ _id: orderId })
 		.then(order => {
 			order.status = req.body.status || order.status;
 			order.payment = req.body.payment || order.payment;
@@ -233,10 +162,11 @@ exports.modifyOrder = (req, res, next) => {
 			res.send({ result: 'updated', err: null });
 		})
 		.catch(err => {
+			console.log(err);
 			res.send({ result: null, err: "Can't update the order" });
 		});
 };
-exports.updateStatusOrder = (req, res, next) => {
+exports.addAction = (req, res, next) => {
 	//TODO: Esto se debe poder simplificar :/
 	let id = req.body._id;
 
@@ -334,8 +264,9 @@ exports.postNewOrder = (req, res, next) => {
 			latitue: undefined,
 			longitude: undefined,
 		},
-		total_price:
-			parseFloat(req.body.total_price.replace(',', '.')) || undefined,
+		total_price: req.body.total_price
+			? parseFloat(req.body.total_price.replace(',', '.'))
+			: undefined,
 		restaurant: req.body.restaurant,
 		times: [
 			{
