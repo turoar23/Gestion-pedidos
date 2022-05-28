@@ -18,6 +18,7 @@ const ModalOrder = props => {
 	const clientNameRef = useRef();
 	const clientPhoneRef = useRef();
 	const paymentRef = useRef();
+	const floorRef = useRef();
 
 	const handleCloseItemsInfo = () => {
 		setShowItemsInfo(false);
@@ -33,6 +34,7 @@ const ModalOrder = props => {
 		updatedOrder.address.street = streetRef.current.value;
 		updatedOrder.address.city = cityRef.current.value;
 		updatedOrder.address.zipcode = postalCodeRef.current.value;
+		updatedOrder.address.floor = floorRef.current.value;
 		updatedOrder.client.name = clientNameRef.current.value;
 		updatedOrder.client.phone = clientPhoneRef.current.value;
 		updatedOrder.payment = paymentRef.current.value;
@@ -75,7 +77,7 @@ const ModalOrder = props => {
 								<Form.Control
 									type='text'
 									defaultValue={order.address.floor}
-									ref={postalCodeRef}
+									ref={floorRef}
 								/>
 							</Form.Group>
 							<Form.Group as={Col} controlId='postalCode'>

@@ -1,7 +1,8 @@
-const SERVER_URL = `${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}`
+const SERVER_URL = `${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}${process.env.REACT_APP_API}`;
 
 export async function getAllActiveOrders() {
-	const response = await fetch(`${SERVER_URL}/getActiveOrders`);
+	console.log(SERVER_URL);
+	const response = await fetch(`${SERVER_URL}/ordersActive`);
 	const data = await response.json();
 
 	if (!response.ok) {
@@ -24,7 +25,7 @@ export async function getAllActiveOrders() {
 }
 
 export async function getAllOrders() {
-	const response = await fetch(`${SERVER_URL}/getOrders`);
+	const response = await fetch(`${SERVER_URL}/orders`);
 	const data = await response.json();
 
 	if (!response.ok) {
@@ -47,14 +48,14 @@ export async function getAllOrders() {
 }
 
 export async function getOrdersByDate(dateBody) {
-	let url = `${SERVER_URL}/getOrderByDates`;
+	let url = `${SERVER_URL}/orders/${dateBody.begin}&${dateBody.end}`;
 
 	const response = await fetch(url, {
-		method: 'POST',
-		body: JSON.stringify(dateBody),
-		headers: {
-			'Content-Type': 'application/json',
-		},
+		// method: 'POST',
+		// body: JSON.stringify(dateBody),
+		// headers: {
+		// 	'Content-Type': 'application/json',
+		// },
 	});
 	const data = await response.json();
 
@@ -78,7 +79,7 @@ export async function getOrdersByDate(dateBody) {
 }
 
 export async function getAllRiders() {
-	const response = await fetch(`${SERVER_URL}/getRiders`);
+	const response = await fetch(`${SERVER_URL}/riders`);
 	const data = await response.json();
 
 	if (!response.ok) {
@@ -101,13 +102,13 @@ export async function getAllRiders() {
 }
 export async function assignRider(orderData) {
 	// Assign
-	let url = `${SERVER_URL}/assignRiderOrder`;
+	let url = `${SERVER_URL}/orders/assignRider`;
 	// Unassign
 	if (!orderData.riderId) {
-		url = `${SERVER_URL}/removeRiderOrder`;
+		url = `${SERVER_URL}/orders/removeRider`;
 	}
 	const response = await fetch(url, {
-		method: 'POST',
+		method: 'PUT',
 		body: JSON.stringify(orderData),
 		headers: {
 			'Content-Type': 'application/json',
@@ -123,10 +124,10 @@ export async function assignRider(orderData) {
 }
 
 export async function updateOrder(orderData) {
-	let url = `${SERVER_URL}/modifyOrder`;
+	let url = `${SERVER_URL}/orders/${orderData._id}`;
 
 	const response = await fetch(url, {
-		method: 'POST',
+		method: 'PUT',
 		body: JSON.stringify(orderData),
 		headers: {
 			'Content-Type': 'application/json',
@@ -142,7 +143,7 @@ export async function updateOrder(orderData) {
 }
 
 export async function newOrder(orderData) {
-	let url = `${SERVER_URL}/newOrder`;
+	let url = `${SERVER_URL}/orders`;
 
 	const response = await fetch(url, {
 		method: 'POST',
@@ -162,7 +163,7 @@ export async function newOrder(orderData) {
 }
 
 export async function getRiderByCode(riderData) {
-	let url = `${SERVER_URL}/getRiderByCode`;
+	let url = `${SERVER_URL}/rider/login`;
 
 	const response = await fetch(url, {
 		method: 'POST',
@@ -183,7 +184,7 @@ export async function getRiderByCode(riderData) {
 
 export async function getActiveRiderOrders(riderId) {
 	const response = await fetch(
-		`${SERVER_URL}/getActiveRiderOrders/${riderId}`
+		`${SERVER_URL}/riderOrders/${riderId}?active=true`
 	);
 	const data = await response.json();
 
@@ -209,10 +210,10 @@ export async function getActiveRiderOrders(riderId) {
 }
 
 export async function updateOrderStatus(orderData) {
-	let url = `${SERVER_URL}/updateStatusOrder/`;
+	let url = `${SERVER_URL}/orders/addAction/`;
 
 	const response = await fetch(url, {
-		method: 'POST',
+		method: 'PUT',
 		body: JSON.stringify(orderData),
 		headers: {
 			'Content-Type': 'application/json',
@@ -228,6 +229,7 @@ export async function updateOrderStatus(orderData) {
 	return data;
 }
 
+// FIXME: This is very ugly. This can be improve.
 export async function getOrdersWithoutRiders() {
 	let url = `${SERVER_URL}/getOrderFilter/`;
 
@@ -263,7 +265,7 @@ export async function getOrdersWithoutRiders() {
 	return transformedOrders;
 }
 export async function toggleRiderStatus(riderId) {
-	let url = `${SERVER_URL}/toggleRiderStatus/`;
+	let url = `${SERVER_URL}/rider/status`;
 
 	const response = await fetch(url, {
 		method: 'POST',
@@ -283,7 +285,7 @@ export async function toggleRiderStatus(riderId) {
 }
 
 export async function newRider(rider) {
-	let url = `${SERVER_URL}/newRider/`;
+	let url = `${SERVER_URL}/riders/`;
 
 	const response = await fetch(url, {
 		method: 'POST',
@@ -303,15 +305,11 @@ export async function newRider(rider) {
 }
 
 export async function getReviews() {
-	const response = await fetch(
-		`${SERVER_URL}/getReviews/`
-	);
+	const response = await fetch(`${SERVER_URL}/reviews/`);
 	const data = await response.json();
 
 	if (!response.ok) {
-		throw new Error(
-			data.message || 'Could not fetch reviews.'
-		);
+		throw new Error(data.message || 'Could not fetch reviews.');
 	}
 	return data;
 }
