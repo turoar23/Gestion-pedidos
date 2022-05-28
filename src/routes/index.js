@@ -6,7 +6,7 @@ const ordersRoutes = require('./orders');
 const integrationsRoutes = require('./integrations');
 const riderRoutes = require('./rider');
 const stepRoutes = require('./step');
-const reviewRoutes = require('./review');
+const reviewsRoutes = require('./reviews');
 const clientRoutes = require('./clients');
 
 // Add the routes to express
@@ -14,7 +14,7 @@ Router.use(ordersRoutes);
 Router.use(integrationsRoutes);
 Router.use(riderRoutes);
 Router.use(stepRoutes);
-Router.use(reviewRoutes);
+Router.use(reviewsRoutes);
 Router.use(clientRoutes);
 
 // Router.use(webRoutes);

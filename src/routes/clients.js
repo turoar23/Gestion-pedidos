@@ -1,9 +1,9 @@
 const express = require('express')
 const Router = express.Router();
 
-const ordersController = require('../controllers/clientController')
+const clientsController = require('../controllers/clientsController')
 
-// Add the route to post news orders from GloriaFood
-Router.get('/clients', ordersController.getClients);
+Router.get('/clients', clientsController.getClients);
+Router.get('/client/:clientEmail', clientsController.getClient);
 
 module.exports = Router;

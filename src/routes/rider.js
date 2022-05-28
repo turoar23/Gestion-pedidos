@@ -1,20 +1,20 @@
 const express = require('express')
 const Router = express.Router();
 
-const riderController = require('../controllers/riderController');
+const ridersController = require('../controllers/ridersController');
 
-Router.get('/getRiders', riderController.getRiders);
+Router.get('/riders', ridersController.getRiders);
 
-Router.post('/getRiderByCode', riderController.getRiderByCode);
+Router.post('/riders', ridersController.newRider);
 
-Router.post('/newRider', riderController.postNewRider);
+Router.get('/riderOrders/:riderId', ridersController.getOrders);
 
-Router.get('/getActiveRiderOrders/:riderId', riderController.getActiveOrders);
+Router.post('/rider/login', ridersController.getRiderByCode);
 
-Router.get('/getRiderOrders/:riderId', riderController.getOrders);
+//TODO: Check if this is really necesary
+// Router.get('/getResumenByRider/:riderId/:date/', ridersController.getOrdersByRiderByDates);
 
-Router.get('/getResumenByRider/:riderId/:date/', riderController.getOrdersByRiderByDates);
-
-Router.post('/toggleRiderStatus',riderController.toggleStatusRider);
+//TODO: Could be better to change the method to a Get
+Router.post('/rider/status',ridersController.toggleStatusRider);
 
 module.exports = Router;

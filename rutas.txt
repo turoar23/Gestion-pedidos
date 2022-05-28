@@ -1,0 +1,86 @@
+All the routes use the prefix /api/v1/
+
+ORDERS:
+
+Route: orders
+Method: Get
+Logic: Return all the orders in the DB
+
+Route: orders/:orderId
+Method: Get
+Logic: Get all the data from a order that its id is passed in the route
+
+Route: ordersActive
+Method: Get
+Logic: Return all the orders that are active (Active, Delivering, Arrived)
+
+Route: orders
+Method: Post
+Body: All the data of the new order
+Logic: Post a new order in the system
+
+Route: orders/addAction
+Method: Put
+Body: _id of the order and action and status of the new action for the order
+Logic: Add a new action on the times array
+
+Route: orders/:begin/:end
+Method: Get
+Logic: Return all the orders between :begin and :end dates
+
+Route: orders/:orderId
+Method: Put
+Body: the new value of the order. It have to have the _id in the body of the order
+Logic: Update an order in the system with the new values passed in the body
+
+Route: orders/assignRider
+Method: Put
+Body: riderId (id of the rider) and orderId (id of the order)
+Logic: Assign the rider passed by id to the order passed by id
+
+Route: orders/removeRider
+Method: Put
+Body: orderId (id of the order that will be detached the rider)
+Logic: Remove the rider assigned to the order
+
+RIDERS
+
+Route: riders
+Method: Get
+Logic: Return all the riders that are in the system
+
+Route: riders
+Method: Post
+Body: the data of the new rider (name and vehicle)
+Logic: Create a new rider with the data passed in the body
+
+Route: riderOrders/:riderId
+Method: Get
+Param: active=true (with this in the query, it return the orders that are active (Active, Delivering and Arrived))
+Logic: Return the orders assigned to the rider
+
+Route: rider/login
+Method: Post
+Body: Code of the rider that is login
+Logic: Send the code of the rider and return the rider assigned to that code
+
+Route: rider/status
+Method: Post
+Body: riderId (id of the rider)
+Logic: Change the status of a rider. If it is active, the rider can be assigned to the orders. But it is not active, it dont let it to be assigned to hte orders
+
+REVIEWS
+
+Route: reviews
+Method: Get
+Logic: Get the reviews from google sheets
+
+CLIENTS: 
+
+Route: clients
+Method: Get
+Logic: Get all the clients info
+
+Route: client/:clientEmail
+Method: Get
+Logic: return the data of the client passed in the query (the email of the client, that is unique).

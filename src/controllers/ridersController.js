@@ -28,7 +28,7 @@ exports.getRiderByCode = (req, res, next) => {
 		});
 };
 
-exports.postNewRider = (req, res, next) => {
+exports.newRider = (req, res, next) => {
 	const rider = new Rider({
 		name: req.body.name,
 		vehicle: req.body.vehicle,
@@ -48,29 +48,19 @@ exports.postNewRider = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
+	let active = false;
+	if (req.query.active && req.query.active === 'true') active = true;
+
 	let riderId = req.params.riderId;
 
 	Rider.findById(riderId)
 		.then(rider => {
+			if (active)
+				return Order.find({
+					rider: rider,
+					status: ['Active', 'Delivering', 'Arrived'],
+				});
 			return Order.find({ rider: rider });
-		})
-		.then(orders => {
-			res.send({ result: orders, err: null });
-		})
-		.catch(err => {
-			console.log(err);
-			res.send({ result: null, err: err });
-		});
-};
-exports.getActiveOrders = (req, res, next) => {
-	let riderId = req.params.riderId;
-
-	Rider.findById(riderId)
-		.then(rider => {
-			return Order.find({
-				rider: rider,
-				status: ['Active', 'Delivering', 'Arrived'],
-			});
 		})
 		.then(orders => {
 			res.send({ result: orders, err: null });
@@ -120,15 +110,6 @@ exports.toggleStatusRider = (req, res) => {
 	Rider.findById(riderId)
 		.then(rider => {
 			// TODO: agregar que no se pueda cambiar el estado de un rider con pedidos asignados
-			// const query = Order.find({
-			// 	rider: rider,
-			// 	status: ['Active', 'Delivering', 'Arrived'],
-			// }).then(result => {
-			// 	return result;
-			// });
-			// console.log(query);
-			// if (query.length > 0)
-			// 	throw new Error('The rider have orders actives assignaded');
 			if (rider.status === null) rider.status = true;
 			else rider.status = !rider.status;
 

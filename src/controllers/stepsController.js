@@ -10,7 +10,7 @@ exports.getSteps = (req, res, next) => {
         });
 }
 
-exports.postNewSteps = (req, res, next) => {
+exports.newSteps = (req, res, next) => {
     const newSteps = req.body.steps;
 
     Step.remove()
