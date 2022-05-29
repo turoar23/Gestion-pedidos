@@ -8,6 +8,7 @@ const riderRoutes = require('./rider');
 const stepRoutes = require('./step');
 const reviewsRoutes = require('./reviews');
 const clientRoutes = require('./clients');
+const usersRoutes = require('./users');
 
 // Add the routes to express
 Router.use(ordersRoutes);
@@ -16,6 +17,7 @@ Router.use(riderRoutes);
 Router.use(stepRoutes);
 Router.use(reviewsRoutes);
 Router.use(clientRoutes);
+Router.use(usersRoutes);
 
 // Router.use(webRoutes);
 
