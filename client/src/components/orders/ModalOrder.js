@@ -19,6 +19,7 @@ const ModalOrder = props => {
 	const clientPhoneRef = useRef();
 	const paymentRef = useRef();
 	const floorRef = useRef();
+	const totalPriceRef = useRef();
 
 	const handleCloseItemsInfo = () => {
 		setShowItemsInfo(false);
@@ -38,6 +39,7 @@ const ModalOrder = props => {
 		updatedOrder.client.name = clientNameRef.current.value;
 		updatedOrder.client.phone = clientPhoneRef.current.value;
 		updatedOrder.payment = paymentRef.current.value;
+		updatedOrder.total_price = totalPriceRef.current.value;
 
 		props.updateOrder(updatedOrder);
 	};
@@ -152,7 +154,7 @@ const ModalOrder = props => {
 											  )} €`
 											: null
 									}
-									// ref={cityRef}
+									ref={totalPriceRef}
 								/>
 							</Form.Group>
 						</Row>

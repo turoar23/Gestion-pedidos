@@ -72,10 +72,10 @@ const OrderOptions = props => {
 					<div className={classes.col1}>Método de pago</div>
 					<div className={classes.col2}>{order.payment}</div>
 				</div>
-				{/* <div className={classes.row}>
-					<div className={classes.col1}>Opciones de entrega</div>
-					<div className={classes.col2}></div>
-				</div> */}
+				<div className={classes.row}>
+					<div className={classes.col1}>Precio</div>
+					<div className={classes.col2}>{order.total_price ? `${order.total_price.toFixed(2)} €` : '--'}</div>
+				</div>
 				<Button variant='danger' onClick={handleDesassign} className={classes.button}>
 					Rechazar pedido
 				</Button>
