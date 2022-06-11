@@ -104,11 +104,12 @@ exports.postOrdersFilter = (req, res, next) => {
 		});
 };
 exports.getOrdersByDate = (req, res, next) => {
-	const begin = req.params.begin;
-	const end = req.params.end;
+	// Convert it to number because the string dosent work :(
+	const begin = parseInt(req.params.begin);
+	const end = parseInt(req.params.end);
 
 	// Order.find({ status: "Completed" }).slice('times', -1).where('times.by').gte(begin).lte(end)
-	//TODO: hacerlo con el fulfill no me termina de convencer mucho, aun asi se basa en que nunca pondran un pedido para mas tarde tipo dia siguiente a las 00:15
+	//TODO: hacerlo con el fulfill no me termina de convencer mucho, aun asi se basa en que nunca pondran un pedido para más tarde tipo dia siguiente a las 00:15
 	Order.find({
 		$expr: {
 			$and: [
