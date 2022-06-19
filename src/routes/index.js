@@ -19,6 +19,11 @@ Router.use(reviewsRoutes);
 Router.use(clientRoutes);
 Router.use(usersRoutes);
 
+Router.use((req, res, next) => {
+    res.status(404);
+    res.send({message: 'This page dosen\'t exist'});
+})
+
 // Router.use(webRoutes);
 
 module.exports = Router;

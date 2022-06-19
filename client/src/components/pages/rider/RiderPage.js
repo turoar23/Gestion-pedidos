@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useHistory, useParams } from 'react-router';
-import RiderContent from '../riders/RiderContent';
+import RiderContent from '../../riders/RiderContent';
 
 const Rider = () => {
 	const params = useParams();

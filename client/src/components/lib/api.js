@@ -326,5 +326,8 @@ export async function login(username, password){
 	});
 	const data = await response.json();
 
+	if(!response.ok)
+		throw new Error(data.message || 'There was an error');
+
 	return data;
 }

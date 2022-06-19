@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const auth = require('../middlewares/auth');
 const UserModel = require('../models/user');
+const usersController = require('../controllers/usersController');
 
 const Router = express.Router();
 
@@ -27,19 +28,25 @@ Router.post('/login', async (req, res, next) => {
 	passport.authenticate('login', async (err, user, info) => {
 		try {
 			if (err || !user) {
-				const error = new Error('An error occurred.');
+				// const error = new Error('An error occurred.');
 
-				return next(error);
+				// return next(error);
+				res.status(401);
+				res.send({ message: 'User or password wrong.' });
+			} else {
+				req.login(user, { session: false }, async error => {
+					if (error) return next(error);
+
+					const body = {
+						_id: user._id,
+						email: user.email,
+						role: user.role,
+					};
+					const token = jwt.sign({ user: body }, 'TOP_SECRET');
+
+					return res.json({ token });
+				});
 			}
-
-			req.login(user, { session: false }, async error => {
-				if (error) return next(error);
-
-				const body = { _id: user._id, email: user.email, role: user.role };
-				const token = jwt.sign({ user: body }, 'TOP_SECRET');
-
-				return res.json({ token });
-			});
 		} catch (error) {
 			return next(error);
 		}
@@ -54,5 +61,8 @@ Router.get(
 		res.send(req.user);
 	}
 );
+
+Router.get('/users', usersController.getAllUsers);
+Router.post('/users', usersController.postNewUser);
 
 module.exports = Router;

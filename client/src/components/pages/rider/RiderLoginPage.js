@@ -3,8 +3,8 @@ import { Fragment } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { useHistory } from 'react-router';
 
-import useHttp from '../hooks/use-http';
-import { getRiderByCode } from '../lib/api';
+import useHttp from '../../hooks/use-http';
+import { getRiderByCode } from '../../lib/api';
 
 const RiderLogin = props => {
 	const history = useHistory();

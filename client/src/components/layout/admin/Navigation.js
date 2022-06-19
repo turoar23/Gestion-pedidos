@@ -1,15 +1,6 @@
-import { Accordion, Nav, Navbar, NavDropdown } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
-import { removeJwt } from '../../lib/jwt';
+import { Nav, Navbar } from 'react-bootstrap';
 
 const Navigation = () => {
-	const history = useHistory();
-
-	const handleLogout = () => {
-		removeJwt();
-
-		history.push('/login');
-	}
 	return (
 		<Navbar expand={false}>
 			<Nav className='justify-content-end flex-grow-1 pe-3'>
@@ -23,10 +14,12 @@ const Navigation = () => {
 						Resumen
 					</NavDropdown.Item>
 				</NavDropdown> */}
-				<Nav.Link href="/admin/riders">Riders</Nav.Link>
-				<Nav.Link href="/admin/reporting/resumen">Informe resumen</Nav.Link>
-				<Nav.Link href="/admin/reporting">Informe pedidos</Nav.Link>
-				<Nav.Link href="/admin/reviews">Reseñas</Nav.Link>
+				<Nav.Link href='/admin/riders'>Riders</Nav.Link>
+				<Nav.Link href='/admin/reporting/resumen'>
+					Informe resumen
+				</Nav.Link>
+				<Nav.Link href='/admin/reporting'>Informe pedidos</Nav.Link>
+				<Nav.Link href='/admin/reviews'>Reseñas</Nav.Link>
 				{/* <Nav.Item>
 					<Accordion flush={true} alwaysOpen={false}>
 						<Accordion.Item eventKey='0'>
@@ -37,9 +30,6 @@ const Navigation = () => {
 						</Accordion.Item>
 					</Accordion>
 				</Nav.Item> */}
-				<Nav.Item onClick={handleLogout}>
-					Logout
-				</Nav.Item>
 			</Nav>
 		</Navbar>
 	);
