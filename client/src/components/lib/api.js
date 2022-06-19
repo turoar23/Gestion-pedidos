@@ -313,3 +313,18 @@ export async function getReviews() {
 	}
 	return data;
 }
+
+export async function login(username, password){
+	const url = `${SERVER_URL}/login`;
+	const response = await fetch(url, {
+		method: 'POST',
+		body: JSON.stringify({email: username, password}),
+		headers: {
+			'Content-Type': 'application/json',
+			Accept: 'application/json',
+		},
+	});
+	const data = await response.json();
+
+	return data;
+}

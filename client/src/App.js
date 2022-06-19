@@ -1,5 +1,7 @@
 import { Switch, Route, Link } from 'react-router-dom';
 import React, { Suspense } from 'react';
+import RequireAuth from './components/pages/RequireAuth';
+import LoginPage from './components/pages/LoginPage';
 
 // import Orders from './components/pages/Orders';
 // import Rider from './components/pages/Rider';
@@ -30,9 +32,12 @@ function App() {
 				<Route path='/rider/:riderId'>
 					<RiderPage />
 				</Route>
+				<Route path= '/admin/login' ><LoginPage /></Route>
 				{/*  */}
 				{/* Import all the routes and nav from admin */}
-				<AdminPage />
+				<RequireAuth>
+					<AdminPage />
+				</RequireAuth>
 			</Switch>
 		</Suspense>
 	);

@@ -1,6 +1,15 @@
 import { Accordion, Nav, Navbar, NavDropdown } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
+import { removeJwt } from '../../lib/jwt';
 
 const Navigation = () => {
+	const history = useHistory();
+
+	const handleLogout = () => {
+		removeJwt();
+
+		history.push('/login');
+	}
 	return (
 		<Navbar expand={false}>
 			<Nav className='justify-content-end flex-grow-1 pe-3'>
@@ -28,6 +37,9 @@ const Navigation = () => {
 						</Accordion.Item>
 					</Accordion>
 				</Nav.Item> */}
+				<Nav.Item onClick={handleLogout}>
+					Logout
+				</Nav.Item>
 			</Nav>
 		</Navbar>
 	);
