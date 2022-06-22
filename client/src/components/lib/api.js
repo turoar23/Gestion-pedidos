@@ -331,3 +331,13 @@ export async function login(username, password){
 
 	return data;
 }
+
+export async function getUsers() {
+	const response = await fetch(`${SERVER_URL}/users/`);
+	const data = await response.json();
+
+	if (!response.ok) {
+		throw new Error(data.message || 'Could not fetch users');
+	}
+	return data;
+}

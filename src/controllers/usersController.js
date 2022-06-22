@@ -21,3 +21,24 @@ module.exports.postNewUser = async (req, res, next) => {
 		res.send('That email is already used');
 	}
 };
+
+module.exports.updateUser = async (req, res, next) => {
+	try{
+		const userId = req.params.userId;
+		const user = await UserModel.findOne({ _id: userId });
+
+		if(!user)
+			res.status(400).send('There is not that user')
+		else{
+			user.role = req.body.role || user.role;
+			const userUpdated = await user.save();
+			userUpdated.password = undefined;
+	
+			res.send(userUpdated);
+		}
+	}catch(err) {
+		console.error(err);
+		res.status(500);
+		res.send('There was an error');
+	}
+}

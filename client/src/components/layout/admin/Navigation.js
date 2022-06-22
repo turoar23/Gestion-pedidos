@@ -20,6 +20,7 @@ const Navigation = () => {
 				</Nav.Link>
 				<Nav.Link href='/admin/reporting'>Informe pedidos</Nav.Link>
 				<Nav.Link href='/admin/reviews'>Reseñas</Nav.Link>
+				<Nav.Link href='/admin/users'>Usuarios</Nav.Link>
 				{/* <Nav.Item>
 					<Accordion flush={true} alwaysOpen={false}>
 						<Accordion.Item eventKey='0'>
