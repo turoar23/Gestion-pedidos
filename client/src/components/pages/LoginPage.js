@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Button, Form } from 'react-bootstrap';
+import { Button, Col, Form, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../lib/api';
 import { setJwt } from '../lib/jwt';
@@ -26,20 +26,24 @@ const LoginPage = props => {
   };
 
   return (
-    <Form onSubmit={handleLogin}>
-      <Form.Group className='mb-3' controlId='formBasicEmail'>
-        <Form.Label>Username</Form.Label>
-        <Form.Control type='email' placeholder='Enter email' ref={usernameRef} />
-      </Form.Group>
+    <Row className='justify-content-center align-middle'>
+      <Col md={3} xs={11} className="mt-5">
+        <Form onSubmit={handleLogin}>
+          <Form.Group controlId='formBasicEmail'>
+            <Form.Label>Correo</Form.Label>
+            <Form.Control type='email' ref={usernameRef} />
+          </Form.Group>
 
-      <Form.Group className='mb-3' controlId='formBasicPassword'>
-        <Form.Label>Password</Form.Label>
-        <Form.Control type='password' placeholder='Password' ref={passwordRef} />
-      </Form.Group>
-      <Button variant='primary' type='submit'>
-        Submit
-      </Button>
-    </Form>
+          <Form.Group controlId='formBasicPassword'>
+            <Form.Label>Contraseña</Form.Label>
+            <Form.Control type='password' ref={passwordRef} />
+          </Form.Group>
+          <Button variant='primary' type='submit' className='mt-2'>
+            Iniciar sesión
+          </Button>
+        </Form>
+      </Col>
+    </Row>
   );
 };
 

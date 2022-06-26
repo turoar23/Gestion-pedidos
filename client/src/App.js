@@ -11,6 +11,7 @@ import PanelReportingOrders from './components/admin/reporting/PanelReportingOrd
 import PanelReportingResumenOrders from './components/admin/reporting/PanelReportingResumenOrders';
 import PanelReviews from './components/admin/reviews/PanelReviews';
 import UsersPage from './components/pages/UsersPage';
+import RequireRol from './components/auth/RequireRole';
 import RequireAuth from './components/auth/RequireAuth';
 
 const OrdersPage = React.lazy(() => import('./components/pages/OrdersPage'));
@@ -66,12 +67,12 @@ function App() {
             </React.Suspense>
           }
         />
-        <Route element={<RequireAuth isAllowed={user && user.role === 'Admin'} />}>
-          <Route path='/admin/riders' element={<PanelRiders />} />
-          <Route path='/admin/users' element={<UsersPage />} />
-          <Route path='/admin/reporting/resumen' element={<PanelReportingResumenOrders />} />
-        </Route>
-        <Route element={<RequireAuth isAllowed={user} />}>
+        <Route element={<RequireAuth />}>
+          <Route element={<RequireRol isAllowed={user && user.role === 'Admin'} />}>
+            <Route path='/admin/riders' element={<PanelRiders />} />
+            <Route path='/admin/users' element={<UsersPage />} />
+            <Route path='/admin/reporting/resumen' element={<PanelReportingResumenOrders />} />
+          </Route>
           <Route path='/admin/reporting' exact element={<PanelReportingOrders />} />
           <Route path='/admin/orders' exact element={<OrdersPage />} />
           <Route path='/admin/reviews' element={<PanelReviews />} />
