@@ -1,4 +1,4 @@
-const page404 = () => {
+const Page404 = () => {
     return (
         <div>
             <h1>Error 404</h1>
@@ -7,4 +7,4 @@ const page404 = () => {
     )
 }
 
-export default page404;
+export default Page404;

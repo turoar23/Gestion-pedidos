@@ -1,39 +1,22 @@
 import { Nav, Navbar } from 'react-bootstrap';
+import { getUser } from '../../lib/jwt';
 
 const Navigation = () => {
-	return (
-		<Navbar expand={false}>
-			<Nav className='justify-content-end flex-grow-1 pe-3'>
-				<Nav.Link href='/admin'>Home</Nav.Link>
-				{/* <Nav.Link href='/admin/riders'>Riders</Nav.Link> */}
-				{/* <NavDropdown title='Riders' id='offcanvasNavbarDropdown'>
-					<NavDropdown.Item href='/admin/riders'>
-						Listado
-					</NavDropdown.Item>
-					<NavDropdown.Item href='/admin/riders/resume'>
-						Resumen
-					</NavDropdown.Item>
-				</NavDropdown> */}
-				<Nav.Link href='/admin/riders'>Riders</Nav.Link>
-				<Nav.Link href='/admin/reporting/resumen'>
-					Informe resumen
-				</Nav.Link>
-				<Nav.Link href='/admin/reporting'>Informe pedidos</Nav.Link>
-				<Nav.Link href='/admin/reviews'>Reseñas</Nav.Link>
-				<Nav.Link href='/admin/users'>Usuarios</Nav.Link>
-				{/* <Nav.Item>
-					<Accordion flush={true} alwaysOpen={false}>
-						<Accordion.Item eventKey='0'>
-							<Accordion.Header as={'div'}>
-								Riders
-							</Accordion.Header>
-							<Accordion.Body></Accordion.Body>
-						</Accordion.Item>
-					</Accordion>
-				</Nav.Item> */}
-			</Nav>
-		</Navbar>
-	);
+  const user = getUser();
+
+  return (
+    <Navbar expand={false}>
+      <Nav className='justify-content-end flex-grow-1 pe-3'>
+        <Nav.Link href='/admin'>Home</Nav.Link>
+        <Nav.Link href='/admin/orders'>Pedidos</Nav.Link>
+        {user.role === 'Admin' && <Nav.Link href='/admin/reporting/resumen'>Informe resumen</Nav.Link>}
+        <Nav.Link href='/admin/reporting'>Informe pedidos</Nav.Link>
+        <Nav.Link href='/admin/reviews'>Reseñas</Nav.Link>
+        {user.role === 'Admin' && <Nav.Link href='/admin/riders'>Riders</Nav.Link>}
+        {user.role === 'Admin' && <Nav.Link href='/admin/users'>Usuarios</Nav.Link>}
+      </Nav>
+    </Navbar>
+  );
 };
 
 export default Navigation;

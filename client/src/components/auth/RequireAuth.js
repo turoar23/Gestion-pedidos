@@ -1,10 +1,17 @@
-import { getJwt } from '../lib/jwt';
-import { Redirect } from 'react-router-dom';
+import { Outlet, Navigate } from 'react-router-dom';
 
-function RequireAuth({ children }) {
-  const isLogged = !!getJwt();
+import MainContainer from '../layout/admin/MainContainer';
 
-  return isLogged === true ? children : <Redirect to='/admin/login' replace />;
+function RequireAuth({ isAllowed, redirectPath = '/admin', children }) {
+  if (!isAllowed) return <Navigate to={redirectPath} replace />;
+
+  return children ? (
+    children
+  ) : (
+    <MainContainer>
+      <Outlet />
+    </MainContainer>
+  );
 }
 
 export default RequireAuth;

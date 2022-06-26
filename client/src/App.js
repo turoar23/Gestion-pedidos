@@ -1,48 +1,93 @@
-import { Switch, Route } from 'react-router-dom';
-import React, { Suspense } from 'react';
-import RequireAuth from './components/auth/RequireAuth';
-import LoginPage from './components/pages/LoginPage';
-import page404 from './components/pages/errors/404';
+import { Routes, Route } from 'react-router-dom';
+import React, { Fragment, Suspense } from 'react';
 
-// import Orders from './components/pages/Orders';
-// import Rider from './components/pages/Rider';
-// import RiderLogin from './components/pages/RiderLogin';
+import LoginPage from './components/pages/LoginPage';
+import Page404 from './components/pages/errors/404';
+import { getUser } from './components/lib/jwt';
+
+import PanelRiders from './components/admin/riders/PanelRiders';
+import Home from './components/admin/Home';
+import PanelReportingOrders from './components/admin/reporting/PanelReportingOrders';
+import PanelReportingResumenOrders from './components/admin/reporting/PanelReportingResumenOrders';
+import PanelReviews from './components/admin/reviews/PanelReviews';
+import UsersPage from './components/pages/UsersPage';
+import RequireAuth from './components/auth/RequireAuth';
 
 const OrdersPage = React.lazy(() => import('./components/pages/OrdersPage'));
 const RiderPage = React.lazy(() => import('./components/pages/rider/RiderPage'));
-const AdminPage = React.lazy(() => import('./components/pages/AdminPage'));
 const HomePage = React.lazy(() => import('./components/pages/HomePage'));
-const RiderLoginPage = React.lazy(() =>
-	import('./components/pages/rider/RiderLoginPage')
-);
+const RiderLoginPage = React.lazy(() => import('./components/pages/rider/RiderLoginPage'));
 
 function App() {
-	return (
-		<Suspense fallback={<p>Loading ...</p>}>
-			<Switch>
-				<Route path='/' exact>
-					<HomePage />
-				</Route>
-				<Route path='/orders'>
-					<OrdersPage />
-				</Route>
-				{/* App of the riders */}
-				<Route path='/rider' exact>
-					<RiderLoginPage />
-				</Route>
-				<Route path='/rider/:riderId'>
-					<RiderPage />
-				</Route>
-				<Route path='/admin/login' ><LoginPage /></Route>
-				{/*  */}
-				{/* Import all the routes and nav from admin */}
-				<RequireAuth>
-					<AdminPage />
-				</RequireAuth>
-				<Route path='*' component={page404} />
-			</Switch>
-		</Suspense>
-	);
+  const user = getUser();
+
+  return (
+    <Suspense fallback={<>...</>}>
+      <Routes>
+        <Route
+          index
+          path='/'
+          element={
+            <React.Suspense>
+              <HomePage />
+            </React.Suspense>
+          }
+        />
+        <Route
+          path='/orders'
+          element={
+            <React.Suspense>
+              <OrdersPage />
+            </React.Suspense>
+          }
+        />
+        <Route
+          path='/rider'
+          exact
+          element={
+            <React.Suspense>
+              <RiderLoginPage />
+            </React.Suspense>
+          }
+        />
+        <Route
+          path='/rider/:riderId'
+          element={
+            <React.Suspense>
+              <RiderPage />
+            </React.Suspense>
+          }
+        />
+        <Route
+          path='/admin/login'
+          element={
+            <React.Suspense>
+              <LoginPage />
+            </React.Suspense>
+          }
+        />
+        <Route element={<RequireAuth isAllowed={user && user.role === 'Admin'} />}>
+          <Route path='/admin/riders' element={<PanelRiders />} />
+          <Route path='/admin/users' element={<UsersPage />} />
+          <Route path='/admin/reporting/resumen' element={<PanelReportingResumenOrders />} />
+        </Route>
+        <Route element={<RequireAuth isAllowed={user} />}>
+          <Route path='/admin/reporting' exact element={<PanelReportingOrders />} />
+          <Route path='/admin/orders' exact element={<OrdersPage />} />
+          <Route path='/admin/reviews' element={<PanelReviews />} />
+          <Route path='/admin' exact element={<Home />} />
+        </Route>
+        <Route
+          path='*'
+          element={
+            <React.Suspense>
+              <Page404 />
+            </React.Suspense>
+          }
+        />
+      </Routes>
+    </Suspense>
+  );
 }
 
 export default App;

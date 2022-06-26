@@ -1,17 +1,17 @@
 import { Col, Container, Row } from 'react-bootstrap';
 import Navigation from './Navigation';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import classes from './MainContainer.module.css';
 import { removeJwt } from '../../lib/jwt';
 
 const MainContainer = props => {
-	const history = useHistory();
+	const navigate = useNavigate();
 
 	const handleLogout = () => {
 		removeJwt();
 
-		history.push('/login');
+		navigate('/admin/login');
 	}
 
 	return (
