@@ -13,7 +13,7 @@ const MainContainer = props => {
   const handleLogout = () => {
     removeJwt();
 
-    navigate('/admin/login');
+    navigate('/');
   };
   const toggleSideNavBar = () => {
     if (widthNavigation === 1) setWidthNavigation(2);

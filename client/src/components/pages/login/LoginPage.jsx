@@ -1,8 +1,9 @@
 import { useRef } from 'react';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../lib/api';
-import { setJwt } from '../lib/jwt';
+
+import { login } from '../../lib/api';
+import { setJwt } from '../../lib/jwt';
 
 const LoginPage = props => {
   const navigate = useNavigate();
@@ -26,14 +27,14 @@ const LoginPage = props => {
   };
 
   return (
-    <Row className='justify-content-center align-middle'>
-      <Col md={3} xs={11} className="mt-5">
+    <Row className='justify-content-center align-middle mt-2 mb-2'>
+      <Col md={3} xs={11}>
+        <h3>Login</h3>
         <Form onSubmit={handleLogin}>
           <Form.Group controlId='formBasicEmail'>
             <Form.Label>Correo</Form.Label>
             <Form.Control type='email' ref={usernameRef} />
           </Form.Group>
-
           <Form.Group controlId='formBasicPassword'>
             <Form.Label>Contraseña</Form.Label>
             <Form.Control type='password' ref={passwordRef} />

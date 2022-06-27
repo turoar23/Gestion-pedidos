@@ -1,7 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import React, { Fragment, Suspense } from 'react';
 
-import LoginPage from './components/pages/LoginPage';
 import Page404 from './components/pages/errors/404';
 import { getUser } from './components/lib/jwt';
 
@@ -15,9 +14,8 @@ import RequireRol from './components/auth/RequireRole';
 import RequireAuth from './components/auth/RequireAuth';
 
 const OrdersPage = React.lazy(() => import('./components/pages/OrdersPage'));
-const RiderPage = React.lazy(() => import('./components/pages/rider/RiderPage'));
+const RiderPage = React.lazy(() => import('./components/pages/RiderPage'));
 const HomePage = React.lazy(() => import('./components/pages/HomePage'));
-const RiderLoginPage = React.lazy(() => import('./components/pages/rider/RiderLoginPage'));
 
 function App() {
   const user = getUser();
@@ -35,35 +33,12 @@ function App() {
           }
         />
         <Route
-          path='/orders'
-          element={
-            <React.Suspense>
-              <OrdersPage />
-            </React.Suspense>
-          }
-        />
-        <Route
           path='/rider'
           exact
           element={
             <React.Suspense>
-              <RiderLoginPage />
-            </React.Suspense>
-          }
-        />
-        <Route
-          path='/rider/:riderId'
-          element={
-            <React.Suspense>
+              {/* <RiderLoginPage /> */}
               <RiderPage />
-            </React.Suspense>
-          }
-        />
-        <Route
-          path='/admin/login'
-          element={
-            <React.Suspense>
-              <LoginPage />
             </React.Suspense>
           }
         />
