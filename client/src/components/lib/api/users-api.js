@@ -48,3 +48,23 @@ export async function removeUser(userId) {
 
   return data;
 }
+
+export async function updateUser(userData) {
+  let url = `${SERVER_URL}/users/${userData._id}`;
+
+  const response = await fetch(url, {
+    method: 'PUT',
+    body: JSON.stringify(userData),
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+  });
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Could not update the user.');
+  }
+
+  return data;
+}
