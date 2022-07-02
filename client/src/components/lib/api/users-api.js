@@ -29,3 +29,22 @@ export async function newUser(userData) {
 
   return data;
 }
+
+export async function removeUser(userId) {
+  let url = `${SERVER_URL}/users/${userId}`;
+
+  const response = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+  });
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Could not delete the user.');
+  }
+
+  return data;
+}

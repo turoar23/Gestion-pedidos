@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, Table } from 'react-bootstrap';
 
-import { getUsers } from '../../lib/api/users-api';
+import { getUsers, removeUser } from '../../lib/api/users-api';
 import ItemUser from './ItemUser';
 import ModalUser from './ModalUser';
 
@@ -17,7 +17,6 @@ const ListUsers = props => {
       .catch(err => {
         console.error(err);
       });
-    // const users = fetchData();
   }, []);
 
   const handleClose = () => {
@@ -32,8 +31,14 @@ const ListUsers = props => {
     listUsers.push(user);
     setUsers(listUsers);
   };
+  const handleRemoveUser = async userId =>{
+    await removeUser(userId);
 
-  let listUsers = users.map(user => <ItemUser key={user._id} user={user} />);
+    const filteredList = users.filter(user => user._id !== userId);
+    setUsers(filteredList);
+  }
+
+  const listUsers = users.map(user => <ItemUser key={user._id} user={user} onRemove={handleRemoveUser} />);
 
   return (
     <>
