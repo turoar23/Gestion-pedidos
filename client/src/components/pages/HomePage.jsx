@@ -16,7 +16,7 @@ const HomePage = () => {
     setIsRider(!isRider);
   };
 
-  if (user) return <Navigate to={'/admin'} replace />;
+  if (user) return <Navigate to={'/'} replace />;
 
   return (
     <Content>
@@ -25,13 +25,17 @@ const HomePage = () => {
         {!isRider && (
           <>
             <LoginPage />
-            <Button onClick={handleToggleIsRider}>Soy Rider</Button>
+            <Button variant='info' onClick={handleToggleIsRider}>
+              Soy Rider
+            </Button>
           </>
         )}
         {isRider && (
           <>
             <RiderLogin />
-            <Button onClick={handleToggleIsRider}>Soy restaurante</Button>
+            <Button variant='info' onClick={handleToggleIsRider}>
+              Soy restaurante
+            </Button>
           </>
         )}
       </Card>

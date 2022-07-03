@@ -1,6 +1,6 @@
 import { Card } from 'react-bootstrap';
 
-import { getTimeFromOrder, differentTwoDate } from '../../lib/utils';
+import { getTimeFromOrder, differentTwoDate } from '../../../lib/utils';
 
 /** Se quiere calcular:
  *  - Número de pedidos

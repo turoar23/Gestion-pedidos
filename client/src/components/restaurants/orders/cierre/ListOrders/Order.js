@@ -7,7 +7,7 @@ import {
 	getTimeFromOrder,
 	formatTime,
 	differentTwoDate,
-} from '../../../lib/utils';
+} from '../../../../lib/utils';
 
 const Order = props => {
 	const [showOrderInfo, setShowOrderInfo] = useState(false);

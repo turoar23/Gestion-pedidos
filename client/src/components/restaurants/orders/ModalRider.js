@@ -1,7 +1,7 @@
 import { Modal, Button, ListGroup } from 'react-bootstrap';
 
-import useHttp from '../hooks/use-http';
-import { assignRider } from '../lib/api';
+import useHttp from '../../hooks/use-http';
+import { assignRider } from '../../lib/api';
 
 const ModalRider = props => {
 	const riders = props.riders.filter(rider => (rider.status))

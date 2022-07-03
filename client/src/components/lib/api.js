@@ -1,7 +1,6 @@
 const SERVER_URL = `${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}${process.env.REACT_APP_API}`;
 
 export async function getAllActiveOrders() {
-	console.log(SERVER_URL);
 	const response = await fetch(`${SERVER_URL}/ordersActive`);
 	const data = await response.json();
 

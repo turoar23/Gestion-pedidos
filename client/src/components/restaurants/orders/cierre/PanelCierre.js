@@ -3,8 +3,8 @@ import { Container, Row, Col } from 'react-bootstrap';
 import moment from 'moment';
 
 import ResumenOrders from './ResumenOrders';
-import useHttp from '../../hooks/use-http';
-import { getOrdersByDate } from '../../lib/api';
+import useHttp from '../../../hooks/use-http';
+import { getOrdersByDate } from '../../../lib/api';
 import ListOrders from './ListOrders/ListOrders';
 import CierreRider from './CierreRider';
 

@@ -1,11 +1,8 @@
 import { useEffect } from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
 
-import ActiveOrdersPanel from '../orders/active/ActiveOrdersPanel';
-import PanelCierre from '../orders/cierre/PanelCierre';
-import ListResumenOrders from '../orders/resumen/ListResumenOrders';
-
-import classes from './OrdersPage.module.css';
+import ActiveOrdersPanel from '../restaurants/orders/active/ActiveOrdersPanel';
+import PanelCierre from '../restaurants/orders/cierre/PanelCierre';
 
 const LayoutOrders = () => {
 	useEffect(() => {
@@ -19,9 +16,6 @@ const LayoutOrders = () => {
 		>
 			<Tab eventKey='orders' title='Pedidos'>
 				<ActiveOrdersPanel />
-			</Tab>
-			<Tab eventKey='resumen' title='Resumen'>
-				<ListResumenOrders />
 			</Tab>
 			<Tab eventKey='cierre' title='Cierre'>
 				<PanelCierre />

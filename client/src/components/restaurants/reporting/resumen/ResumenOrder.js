@@ -1,7 +1,7 @@
 import { useState, Fragment, useRef } from 'react';
 import { Row, Col, Form } from 'react-bootstrap';
 
-import ModalOrder from '../../../orders/ModalOrder';
+import ModalOrder from '../../orders/ModalOrder';
 import {
 	getTimeFromOrder,
 	differentTwoDate,

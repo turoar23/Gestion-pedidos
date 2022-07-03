@@ -1,9 +1,9 @@
 import { useContext, useRef } from 'react';
 import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
 
-import OrdersContext from '../../store/orders-context';
-import useHttp from '../hooks/use-http';
-import { newOrder } from '../lib/api';
+import OrdersContext from '../../../store/orders-context';
+import useHttp from '../../hooks/use-http';
+import { newOrder } from '../../lib/api';
 
 const NewOrderModal = props => {
 	const ctx = useContext(OrdersContext);

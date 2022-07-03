@@ -1,4 +1,4 @@
-import ListUsers from '../admin/users/ListUsers';
+import ListUsers from '../restaurants/users/ListUsers';
 
 const UsersPage = props => {
   return <ListUsers />;

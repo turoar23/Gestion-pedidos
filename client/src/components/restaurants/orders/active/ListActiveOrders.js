@@ -2,19 +2,19 @@ import { useEffect, useState } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 
 import ActiveOrder from './ActiveOrder';
-import useHttp from '../../hooks/use-http';
-import { connectSocket } from '../../lib/socket';
+import useHttp from '../../../hooks/use-http';
+import { connectSocket } from '../../../lib/socket';
 
 import {
 	getAllActiveOrders,
 	getAllRiders,
 	updateOrderStatus,
-} from '../../lib/api';
-import OrdersContext from '../../../store/orders-context';
+} from '../../../lib/api';
+import OrdersContext from '../../../../store/orders-context';
 import NewOrderModal from '../NewOrderModal';
 
 import classes from './ListActiveOrders.module.css';
-import ListStatusRiders from './ListStatusRiders';
+// import ListStatusRiders from './ListStatusRiders';
 
 
 const ListActiveOrders = () => {

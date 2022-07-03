@@ -4,9 +4,9 @@ import moment from 'moment-timezone';
 
 import ModalRider from '../ModalRider';
 import ModalOrder from '../ModalOrder';
-import useHttp from '../../hooks/use-http';
-import { updateOrder, updateOrderStatus } from '../../lib/api';
-import { getUrlGoogleMaps } from '../../lib/utils';
+import useHttp from '../../../hooks/use-http';
+import { updateOrder, updateOrderStatus } from '../../../lib/api';
+import { getUrlGoogleMaps } from '../../../lib/utils';
 
 import classes from './ActiveOrder.module.css';
 

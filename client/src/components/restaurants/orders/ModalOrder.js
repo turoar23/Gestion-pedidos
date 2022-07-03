@@ -2,7 +2,7 @@ import { Fragment, useContext, useRef, useState } from 'react';
 import { Modal, Button, Form, Row, Col, ListGroup } from 'react-bootstrap';
 import moment from 'moment';
 
-import OrdersContext from '../../store/orders-context';
+import OrdersContext from '../../../store/orders-context';
 import ModalItems from './ModalItems';
 
 const ModalOrder = props => {

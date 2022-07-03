@@ -13,7 +13,7 @@ const MainContainer = props => {
   const handleLogout = () => {
     removeJwt();
 
-    navigate('/');
+    navigate('/login');
   };
   const toggleSideNavBar = () => {
     if (widthNavigation === 1) setWidthNavigation(2);
@@ -22,17 +22,18 @@ const MainContainer = props => {
 
   return (
     <Container fluid className={classes.container}>
-      <Row style={{ borderBottom: '1px solid gray', padding: '10px' }}>
+      <Row style={{ borderBottom: '1px solid gray', padding: '10px', height: '6vh' }}>
         <Col>Azape - Control pedidos</Col>
         <Col className={classes['nav-profile']}>
-          <Button onClick={handleLogout}>
-						Logout
-					</Button>
+          <Button onClick={handleLogout}>Logout</Button>
         </Col>
       </Row>
       <Row className={classes.col}>
         <Col md={widthNavigation} className={classes.navbar}>
-          {/* <span onClick={toggleSideNavBar}>hola</span> */}
+          <span className={`${classes.arrow} ${classes.open}`} onClick={toggleSideNavBar}>
+            {widthNavigation === 1 && <i className='fas fa-angle-double-right'></i>}
+            {widthNavigation === 2 && <i className='fas fa-angle-double-left'></i>}
+          </span>
           <Navigation />
         </Col>
         <Col style={{ overflow: 'auto' }}>{props.children}</Col>

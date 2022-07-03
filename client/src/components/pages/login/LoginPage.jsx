@@ -20,7 +20,7 @@ const LoginPage = props => {
       const token = await login(username, password);
 
       setJwt(token.token);
-      navigate('/admin');
+      navigate('/');
     } catch (err) {
       alert(err.message);
     }
