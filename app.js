@@ -16,6 +16,8 @@ app.set('views', 'views');
 app.set('public', 'public');
 
 // Middleware
+require('./src/middlewares/passport-strategy');
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(express.static(path.join(__dirname, 'public')));

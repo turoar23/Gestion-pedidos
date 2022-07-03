@@ -7,7 +7,7 @@ const utils = require('../lib/utils');
 
 // const mongoose = require('mongoose');
 const Moment = require('moment-timezone');
-const group = require('../models/group');
+// const group = require('../models/group');
 
 exports.getOrders = (req, res, next) => {
 	Order.find()
@@ -73,6 +73,7 @@ exports.getActiveOrders = async (req, res, next) => {
 		});
 		res.send({ result: result, err: null });
 	} catch (err) {
+		res.status(500);
 		res.send({ result: null, err: "Can't get the active orders" });
 	}
 };
@@ -147,6 +148,7 @@ exports.modifyOrder = (req, res, next) => {
 			order.payment = req.body.payment || order.payment;
 			order.client = req.body.client || order.client;
 			order.address = req.body.address || order.address;
+			order.total_price = req.body.total_price || order.total_price
 			order.statusCorrect =
 				req.body.statusCorrect === undefined
 					? order.statusCorrect

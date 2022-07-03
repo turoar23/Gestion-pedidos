@@ -1,7 +1,6 @@
 const SERVER_URL = `${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}${process.env.REACT_APP_API}`;
 
 export async function getAllActiveOrders() {
-	console.log(SERVER_URL);
 	const response = await fetch(`${SERVER_URL}/ordersActive`);
 	const data = await response.json();
 
@@ -313,3 +312,22 @@ export async function getReviews() {
 	}
 	return data;
 }
+
+export async function login(username, password){
+	const url = `${SERVER_URL}/login`;
+	const response = await fetch(url, {
+		method: 'POST',
+		body: JSON.stringify({email: username, password}),
+		headers: {
+			'Content-Type': 'application/json',
+			Accept: 'application/json',
+		},
+	});
+	const data = await response.json();
+
+	if(!response.ok)
+		throw new Error(data.message || 'There was an error');
+
+	return data;
+}
+

@@ -1,41 +1,70 @@
-import { Switch, Route, Link } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import React, { Suspense } from 'react';
 
-// import Orders from './components/pages/Orders';
-// import Rider from './components/pages/Rider';
-// import RiderLogin from './components/pages/RiderLogin';
+import Page404 from './components/pages/errors/404';
+import { getUser } from './components/lib/jwt';
 
-const OrdersPage = React.lazy(() => import('./components/pages/OrdersPage'));
+import PanelRiders from './components/restaurants/riders/PanelRiders';
+import Home from './components/restaurants/home/Home';
+import PanelReportingOrders from './components/restaurants/reporting/PanelReportingOrders';
+import PanelReportingResumenOrders from './components/restaurants/reporting/PanelReportingResumenOrders';
+import PanelReviews from './components/restaurants/reviews/PanelReviews';
+import UsersPage from './components/pages/UsersPage';
+import RequireAuth from './components/lib/auth/RequireAuth';
+import RequireRol from './components/lib/auth/RequireRole';
+import OrdersPage from './components/pages/OrdersPage';
+
+// const OrdersPage = React.lazy(() => import('./components/pages/OrdersPage'));
 const RiderPage = React.lazy(() => import('./components/pages/RiderPage'));
-const AdminPage = React.lazy(() => import('./components/pages/AdminPage'));
 const HomePage = React.lazy(() => import('./components/pages/HomePage'));
-const RiderLoginPage = React.lazy(() =>
-	import('./components/pages/RiderLoginPage')
-);
 
 function App() {
-	return (
-		<Suspense fallback={<p>Loading ...</p>}>
-			<Switch>
-				<Route path='/' exact>
-					<HomePage />
-				</Route>
-				<Route path='/orders'>
-					<OrdersPage />
-				</Route>
-				{/* App of the riders */}
-				<Route path='/rider' exact>
-					<RiderLoginPage />
-				</Route>
-				<Route path='/rider/:riderId'>
-					<RiderPage />
-				</Route>
-				{/*  */}
-				{/* Import all the routes and nav from admin */}
-				<AdminPage />
-			</Switch>
-		</Suspense>
-	);
+  const user = getUser();
+
+  return (
+    <Suspense fallback={<>...</>}>
+      <Routes>
+        <Route
+          index
+          path='/login'
+          element={
+            <React.Suspense>
+              <HomePage />
+            </React.Suspense>
+          }
+        />
+        <Route
+          path='/rider'
+          exact
+          element={
+            <React.Suspense>
+              {/* <RiderLoginPage /> */}
+              <RiderPage />
+            </React.Suspense>
+          }
+        />
+        <Route element={<RequireAuth />}>
+          <Route element={<RequireRol isAllowed={user && user.role === 'Admin'} />}>
+            <Route path='/riders' element={<PanelRiders />} />
+            <Route path='/users' element={<UsersPage />} />
+            <Route path='/reporting/resumen' element={<PanelReportingResumenOrders />} />
+          </Route>
+          <Route path='/reporting' exact element={<PanelReportingOrders />} />
+          <Route path='/orders' exact element={<OrdersPage />} />
+          <Route path='/reviews' element={<PanelReviews />} />
+          <Route path='/' exact element={<Home />} />
+        </Route>
+        <Route
+          path='*'
+          element={
+            <React.Suspense>
+              <Page404 />
+            </React.Suspense>
+          }
+        />
+      </Routes>
+    </Suspense>
+  );
 }
 
 export default App;
