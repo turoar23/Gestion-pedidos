@@ -47,7 +47,7 @@ export async function getAllOrders() {
 }
 
 export async function getOrdersByDate(dateBody) {
-	let url = `${SERVER_URL}/orders/${dateBody.begin}&${dateBody.end}`;
+	let url = `${SERVER_URL}/orders/dates/${dateBody.begin}/${dateBody.end}`;
 
 	const response = await fetch(url, {
 		// method: 'POST',
@@ -209,7 +209,7 @@ export async function getActiveRiderOrders(riderId) {
 }
 
 export async function updateOrderStatus(orderData) {
-	let url = `${SERVER_URL}/orders/addAction/`;
+	let url = `${SERVER_URL}/orders/action/`;
 
 	const response = await fetch(url, {
 		method: 'PUT',

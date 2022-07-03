@@ -6,22 +6,21 @@ import RiderContext from '../../../store/rider-context';
 import classes from './OrderOptions.module.css';
 
 const OrderOptions = props => {
-	const ctx = useContext(RiderContext);
-	const order = props.order;
+  const ctx = useContext(RiderContext);
+  const order = props.order;
 
-	const fulfill = moment(
-		order.times.find(time => {
-			return time.action === 'fulfill_at';
-		}).by
-	);
+  const fulfill = moment(
+    order.times.find(time => {
+      return time.action === 'fulfill_at';
+    }).by
+  );
 
-	const handleDesassign = () => {
-		props.onClose();
-		ctx.removeOrder(order._id);
-	};
-	let forLater = '';
-	if (typeof order.for_later !== 'undefined')
-		forLater = order.for_later ? <sup className='for-later'>P</sup> : '';
+  const handleDesassign = () => {
+    props.onClose();
+    ctx.removeOrder(order._id);
+  };
+  let forLater = '';
+  if (typeof order.for_later !== 'undefined') forLater = order.for_later ? <sup className='for-later'>P</sup> : '';
 
 	return (
 		<Modal
