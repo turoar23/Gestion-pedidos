@@ -20,7 +20,7 @@ const ModalUser = props => {
 
     let user = null;
     if(!isEdit){
-      newUser.password = passwordRef.current.value;
+      newUserData.password = passwordRef.current.value;
       
       user = await newUser(newUserData);
 
