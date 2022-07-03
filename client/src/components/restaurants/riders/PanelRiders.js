@@ -1,4 +1,4 @@
-import { useEffect, Fragment, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Container, Row, Table, Col } from 'react-bootstrap';
 
 import useHttp from '../../hooks/use-http';
@@ -6,7 +6,7 @@ import { getAllRiders } from '../../lib/api';
 import Rider from './Rider';
 import ModalNewRider from './ModalNewRider';
 
-const PaenelRiders = () => {
+const PanelRiders = () => {
 	const { sendRequest, status, data } = useHttp(getAllRiders, true);
 	const [showModal, setShowModal] = useState(false);
 
@@ -53,4 +53,4 @@ const PaenelRiders = () => {
 	);
 };
 
-export default PaenelRiders;
+export default PanelRiders;

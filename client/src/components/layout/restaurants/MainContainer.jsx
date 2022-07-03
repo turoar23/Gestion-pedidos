@@ -29,14 +29,14 @@ const MainContainer = props => {
         </Col>
       </Row>
       <Row className={classes.col}>
-        <Col md={widthNavigation} className={classes.navbar}>
+        <Col xs={1} md={widthNavigation} className={classes.navbar} style={{ height: '100%' }}>
           <span className={`${classes.arrow} ${classes.open}`} onClick={toggleSideNavBar}>
             {widthNavigation === 1 && <i className='fas fa-angle-double-right'></i>}
             {widthNavigation === 2 && <i className='fas fa-angle-double-left'></i>}
           </span>
           <Navigation />
         </Col>
-        <Col style={{ overflow: 'auto' }}>{props.children}</Col>
+        <Col style={{ overflow: 'auto', height: '100%' }}>{props.children}</Col>
       </Row>
     </Container>
   );
