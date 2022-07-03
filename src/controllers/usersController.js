@@ -30,6 +30,7 @@ module.exports.updateUser = async (req, res, next) => {
     if (!user) res.status(400).send('Cant find that user');
     else {
       user.role = req.body.role || user.role;
+      user.email = req.body.email || user.email;
       const userUpdated = await user.save();
       userUpdated.password = undefined;
 

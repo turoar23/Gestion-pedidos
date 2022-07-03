@@ -32,8 +32,8 @@ const LoginPage = props => {
         <h3>Login</h3>
         <Form onSubmit={handleLogin}>
           <Form.Group controlId='formBasicEmail'>
-            <Form.Label>Correo</Form.Label>
-            <Form.Control type='email' ref={usernameRef} />
+            <Form.Label>Usuario</Form.Label>
+            <Form.Control type='text' ref={usernameRef} />
           </Form.Group>
           <Form.Group controlId='formBasicPassword'>
             <Form.Label>Contraseña</Form.Label>
