@@ -48,10 +48,10 @@ const ModalUser = props => {
       title={isEdit ? 'Editar usuario' : 'Crear usuario nuevo'}
     >
       <Form.Group className='mb-3' controlId='formBasicEmail'>
-        <Form.Label>Usuario (Correo)</Form.Label>
+        <Form.Label>Usuario</Form.Label>
         <Form.Control
-          type='email'
-          placeholder='Email'
+          type='text'
+          placeholder='...'
           ref={usernameRef}
           defaultValue={isEdit ? props.editUser.email : ''}
           required
@@ -71,7 +71,7 @@ const ModalUser = props => {
       </Form.Group>
       <Form.Group className='mb-3' controlId='formBasicPassword'>
         <Form.Label>Contraseña</Form.Label>
-        <Form.Control type='password' placeholder='Contraseña' ref={passwordRef} required={!isEdit} disabled={isEdit} />
+        <Form.Control type='password' placeholder='...' ref={passwordRef} required={!isEdit} disabled={isEdit} />
       </Form.Group>
     </ModalForm>
   );
