@@ -17,7 +17,7 @@ const Navigation = () => {
         <Nav.Link href='/orders' className={path === '/orders' ? 'active' : ''}>
           Pedidos
         </Nav.Link>
-        {user.role === '' && (
+        {user.role === 'Admin' && (
           <Nav.Link href='/reporting/resumen' className={path === '/reporting/resumen' ? 'active' : ''}>
             Informe resumen
           </Nav.Link>

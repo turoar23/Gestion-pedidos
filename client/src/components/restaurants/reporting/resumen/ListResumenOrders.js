@@ -5,8 +5,10 @@ import moment from 'moment';
 import ResumenOrder from './ResumenOrder';
 import useHttp from '../../../hooks/use-http';
 import { getOrdersByDate } from '../../../lib/api';
+import { getUser } from '../../../lib/jwt';
 
 const ListResumenOrders = () => {
+	const user = getUser();
 	const [selectedDate, setSelectedDate] = useState(moment().format('Y-MM-DD'));
 	const dateRef = useRef();
 
@@ -72,7 +74,7 @@ const ListResumenOrders = () => {
 						<Col>Arrived</Col>
 						<Col>Completed</Col>
 						<Col>Fulfill</Col>
-						<Col>Updated correct</Col>
+						{user.role === 'Admin' && <Col>Updated correct</Col>}
 						<Col xs={1}>Actions</Col>
 					</Row>
 					{listOrders}

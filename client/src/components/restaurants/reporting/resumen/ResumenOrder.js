@@ -9,9 +9,11 @@ import {
 } from '../../../lib/utils';
 import useHttp from '../../../hooks/use-http';
 import { updateOrder } from '../../../lib/api';
+import { getUser } from '../../../lib/jwt';
 
 // Component
 const ResumenOrder = props => {
+	const user = getUser();
 	const [showOrderInfo, setShowOrderInfo] = useState(false);
 	const {sendRequest, status} = useHttp(updateOrder);
 
@@ -80,6 +82,7 @@ const ResumenOrder = props => {
 						{differentTwoDate(accepted_at, completed)}
 					</div>
 				</Col>
+				{user.role === 'Admin' &&
 				<Col>
 					<Form.Switch
 						type='switch'
@@ -88,6 +91,7 @@ const ResumenOrder = props => {
 						onClick={handleToggleUpdated}
 					/>
 				</Col>
+				}
 				<Col xs={1}>
 					<i
 						className='fas fa-info'
