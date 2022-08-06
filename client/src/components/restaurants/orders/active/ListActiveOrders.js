@@ -5,109 +5,97 @@ import ActiveOrder from './ActiveOrder';
 import useHttp from '../../../hooks/use-http';
 import { connectSocket } from '../../../lib/socket';
 
-import {
-	getAllActiveOrders,
-	getAllRiders,
-	updateOrderStatus,
-} from '../../../lib/api';
+import { getAllActiveOrders, getAllRiders, updateOrderStatus } from '../../../lib/api';
 import OrdersContext from '../../../../store/orders-context';
 import NewOrderModal from '../NewOrderModal';
 
 import classes from './ListActiveOrders.module.css';
 // import ListStatusRiders from './ListStatusRiders';
 
-
 const ListActiveOrders = () => {
-	const [showNewOrderModal, setShowNewOrderModal] = useState(false);
+  const [showNewOrderModal, setShowNewOrderModal] = useState(false);
 
-	// To get All riders
-	const {
-		sendRequest: sendRequestRiders,
-		status: statusRiders,
-		data: riders,
-	} = useHttp(getAllRiders, true);
-	// To get all the active orders
-	const {
-		sendRequest,
-		status,
-		data: loadedOrders,
-	} = useHttp(getAllActiveOrders, true);
-	// To cancel an order
-	const { sendRequest: sendRequestCancelOrder, status: statusCancelOrder } =
-		useHttp(updateOrderStatus);
+  // To get All riders
+  const {
+    sendRequest: sendRequestRiders,
+    status: statusRiders,
+    data: riders,
+  } = useHttp(getAllRiders, true);
+  // To get all the active orders
+  const { sendRequest, status, data: loadedOrders } = useHttp(getAllActiveOrders, true);
+  // To cancel an order
+  const { sendRequest: sendRequestCancelOrder, status: statusCancelOrder } =
+    useHttp(updateOrderStatus);
 
-	useEffect(() => {
-		sendRequestRiders();
-		sendRequest();
-	}, [sendRequestRiders, sendRequest]);
+  useEffect(() => {
+    sendRequestRiders();
+    sendRequest();
+  }, [sendRequestRiders, sendRequest]);
 
-	useEffect(() => {
-		const socket = connectSocket(updateHandler);
+  useEffect(() => {
+    const socket = connectSocket(updateHandler);
 
-		// CLEAN UP THE EFFECT
-		return () => socket.disconnect();
-		//
-	}, []);
+    // CLEAN UP THE EFFECT
+    return () => socket.disconnect();
+    //
+  }, []);
 
-	const handleCloseNewOrder = () => setShowNewOrderModal(false);
-	const handleShowNewOrder = () => setShowNewOrderModal(true);
+  const handleCloseNewOrder = () => setShowNewOrderModal(false);
+  const handleShowNewOrder = () => setShowNewOrderModal(true);
 
-	const updateHandler = async () => {
-		await sendRequest();
-	};
+  const updateHandler = async () => {
+    await sendRequest();
+  };
 
-	const cancelOrderHandler = async orderId => {
-		await sendRequestCancelOrder({
-			_id: orderId,
-			status: 'Cancelled',
-			action: 'Cancelled Manually',
-		});
-		await sendRequest();
-	};
+  const cancelOrderHandler = async orderId => {
+    await sendRequestCancelOrder({
+      _id: orderId,
+      status: 'Cancelled',
+      action: 'Cancelled Manually',
+    });
+    await sendRequest();
+  };
 
-	if (statusRiders === 'pending') {
-		return <div className='centered'>Loading riders...</div>;
-	}
+  if (statusRiders === 'pending') {
+    return <div className='centered'>Loading riders...</div>;
+  }
 
-	let listOrders = <div className='centered'>Loading orders...</div>;
-	if (status === 'completed' && loadedOrders) {
-		listOrders = loadedOrders.map(order => (
-			<ActiveOrder key={order._id} order={order} riders={riders} />
-		));
-	}
+  let listOrders = <div className='centered'>Loading orders...</div>;
+  if (status === 'completed' && loadedOrders) {
+    listOrders = loadedOrders.map(order => (
+      <ActiveOrder key={order._id} order={order} riders={riders} />
+    ));
+  }
 
-	return (
-		<OrdersContext.Provider
-			value={{
-				orders: loadedOrders,
-				updateOrders: updateHandler,
-				cancelOrder: cancelOrderHandler,
-			}}
-		>
-			{/* <ListStatusRiders orders={loadedOrders} riders={riders} /> */}
-			<Container fluid>
-				<div className='actions'>
-					<Button onClick={handleShowNewOrder}>Nuevo pedido</Button>
-				</div>
-				<Row className='order'>
-					<Col className={classes.col}>ID</Col>
-					<Col className={classes.col}>Dirección</Col>
-					<Col className={classes.col}>Entrega</Col>
-					<Col className={classes.col}>Duración</Col>
-					<Col className={classes.col}>Restante</Col>
-					<Col className={classes.col}>Restaurante</Col>
-					<Col className={classes.col}>Rider</Col>
-					<Col className={classes.col}>Estado</Col>
-					<Col className={classes.col}>Actions</Col>
-				</Row>
-				{listOrders}
-				<NewOrderModal
-					show={showNewOrderModal}
-					handleClose={handleCloseNewOrder}
-				/>
-			</Container>
-		</OrdersContext.Provider>
-	);
+  return (
+    <OrdersContext.Provider
+      value={{
+        orders: loadedOrders,
+        updateOrders: updateHandler,
+        cancelOrder: cancelOrderHandler,
+      }}
+    >
+      {/* <ListStatusRiders orders={loadedOrders} riders={riders} /> */}
+      <Container fluid>
+        <div className='actions'>
+          <Button onClick={handleShowNewOrder}>Nuevo pedido</Button>
+        </div>
+        <Row className='order'>
+          <Col className={classes.col}>ID</Col>
+          <Col className={classes.col}>Dirección</Col>
+          <Col className={classes.col}>Entrega</Col>
+          <Col className={classes.col}>Duración</Col>
+          <Col className={classes.col}>Restante</Col>
+          <Col className={classes.col}>Restaurante</Col>
+          <Col className={classes.col}>Rider</Col>
+          <Col className={classes.col}>Estado</Col>
+          <Col className={classes.col}>Actions</Col>
+        </Row>
+        {listOrders}
+        <NewOrderModal show={showNewOrderModal} handleClose={handleCloseNewOrder} />
+      </Container>
+    </OrdersContext.Provider>
+  );
 };
 
 export default ListActiveOrders;

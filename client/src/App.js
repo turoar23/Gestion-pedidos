@@ -17,6 +17,7 @@ import OrdersPage from './components/pages/OrdersPage';
 // const OrdersPage = React.lazy(() => import('./components/pages/OrdersPage'));
 const RiderPage = React.lazy(() => import('./components/pages/RiderPage'));
 const HomePage = React.lazy(() => import('./components/pages/HomePage'));
+const TrackingPage = React.lazy(() => import('./components/pages/TrackingPage'));
 
 function App() {
   const user = getUser();
@@ -38,7 +39,6 @@ function App() {
           exact
           element={
             <React.Suspense>
-              {/* <RiderLoginPage /> */}
               <RiderPage />
             </React.Suspense>
           }
@@ -62,6 +62,7 @@ function App() {
             </React.Suspense>
           }
         />
+        <Route path='/tracking/:id' element={<TrackingPage />} />
       </Routes>
     </Suspense>
   );

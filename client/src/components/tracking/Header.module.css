@@ -1,0 +1,16 @@
+.header {
+  display: flex;
+  border: 1px solid var(--main-color);
+}
+
+.order-text {
+  padding: 12px 0px;
+  flex: 0.333;
+}
+
+.order-number {
+  padding: 12px 0px;
+  flex: 0.666;
+  background-color: var(--main-color);
+  color: white;
+}

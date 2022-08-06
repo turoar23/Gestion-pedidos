@@ -1,5 +1,5 @@
 const Order = require('../models/order');
-const webSocket = require('../lib/socket');
+const webSocket = require('../utils/socket');
 
 /**
  * Recive a new order from GloriaFood

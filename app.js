@@ -4,7 +4,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
-const webSocket = require('./src/lib/socket');
+const webSocket = require('./src/utils/socket');
 
 // Configurations
 dotenv.config();
@@ -44,15 +44,17 @@ const routes = require('./src/routes');
 // Add the routes to express
 app.use('/api/v1', routes);
 
-// Any route than dosent exist in the routes before, will be forwaded to the client
-app.get('*', (req, res) => {
-	res.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
-});
+if(process.env.NODE_ENV === 'production'){
+	// Any route than dosent exist in the routes before, will be forwaded to the client
+	app.get('*', (req, res) => {
+		res.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
+	});
+}
 
 mongoose
 	.connect(process.env.DATABASE)
 	.then(result => {
-		const server = app.listen(PORT);
+		const server = app.listen(PORT || 3000);
 		const io = webSocket.init(server);
 		io.on('connection', socket => {
 			// console.log("hola");
