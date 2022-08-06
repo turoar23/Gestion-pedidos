@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Experiencia</title>
+    <style>
+
+        h2 {
+            color: {mainColor};
+        }
+
+        a,
+        a:hover,
+        a:focus {
+            text-decoration: none;
+            color: white !important;
+            background-color: {mainColor};
+            padding: 10px 20px;
+            text-align: center;
+            margin: 20px 0px 20px 0px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <h2>¡Hola {name}!</h2>
+        <p>Gracias por hacer un pedidos con nosotros. Aquí tienes un enlace donde podras tener un seguimiento de como va
+            tu pedido</p>
+        <p>Cualquier pregunta o comentario, no dudes en contactar con nosotros</p>
+        <p style="margin-top: 40px;margin-bottom: 20px;">
+            <a href="{domain}/tracking/{orderId}" target="_blank">Seguimiento de mi pedido</a>
+        </p>
+    </div class="main">
+</body>
+
+</html>

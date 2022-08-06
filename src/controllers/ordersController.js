@@ -3,7 +3,7 @@ const Rider = require('../models/rider');
 const Group = require('../models/group');
 
 const webSocket = require('../utils/socket');
-const utils = require('../utils/utils');
+const emailUtils = require('../utils/email');
 
 // const mongoose = require('mongoose');
 const Moment = require('moment-timezone');
@@ -261,13 +261,13 @@ exports.addAction = (req, res, next) => {
           timeSurvey = 60;
         }
         setTimeout(() => {
-          utils
+          emailUtils
             .sendSurvey(order)
             .then(order => {
               console.log(order);
             })
             .catch(err => console.log(err));
-        }, timeSurvey * 60 * 1000); // Se envia a los 60 minutos
+        }, timeSurvey * timeSurvey * 1000); // Se envia a los 60 minutos
       }
       return order.save();
     })
