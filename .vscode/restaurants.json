@@ -1,0 +1,68 @@
+[
+  {
+    "name": "Umbrella",
+    "phone": "+34623411696",
+    "address": {
+      "street": "Carrer Llinares 6",
+      "city": "Alicante",
+      "zipcode": "03010",
+      "country": "Spain"
+    },
+    "emails": {
+      "global": "info@umbrellash.es",
+      "noreply": "noresponder@umbrellash.es"
+    },
+    "colors": {
+      "mainColor": "#ee2737"
+    },
+    "integrations": [
+      {
+        "name": "GloriaFood",
+        "key": "HmoS9i1QJsFlyrJmHs"
+      }
+    ]
+  },
+  {
+    "name": "Tepuy Burger",
+    "internalName": "Tepuy Garbinet",
+    "phone": "+34689613051",
+    "address": {
+      "street": "Avenida Periodista Rodolfo Salazar 29",
+      "city": "Alicante",
+      "zipcode": "03015",
+      "country": "Spain"
+    },
+    "emails": {
+      "global": "info@tepuyburger.es",
+      "noreply": "noresponder@tepuyburger.es"
+    },
+    "colors": {
+      "mainColor": "#ff9c03"
+    },
+    "integrations": []
+  },
+  {
+    "name": "Tepuy Burger",
+    "internalName": "Tepuy Bazan",
+    "phone": "+34670113435",
+    "address": {
+      "street": "Calle Bazan 47",
+      "city": "Alicante",
+      "zipcode": "03004",
+      "country": "Spain"
+    },
+    "emails": {
+      "global": "info@tepuyburger.es",
+      "noreply": "noresponder@tepuyburger.es"
+    },
+    "colors": {
+      "mainColor": "#ff9c03"
+    },
+    "integrations": [
+      {
+        "name": "GloriaFood",
+        "key": "GmoV9inQJs7lyrqmBD"
+      }
+    ]
+  }
+]

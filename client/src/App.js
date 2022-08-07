@@ -13,6 +13,7 @@ import UsersPage from './components/pages/UsersPage';
 import RequireAuth from './components/lib/auth/RequireAuth';
 import RequireRol from './components/lib/auth/RequireRole';
 import OrdersPage from './components/pages/OrdersPage';
+import RestaurantsPage from './components/pages/RestaurantsPage';
 
 // const OrdersPage = React.lazy(() => import('./components/pages/OrdersPage'));
 const RiderPage = React.lazy(() => import('./components/pages/RiderPage'));
@@ -48,6 +49,7 @@ function App() {
             <Route path='/riders' element={<PanelRiders />} />
             <Route path='/users' element={<UsersPage />} />
             <Route path='/reporting/resumen' element={<PanelReportingResumenOrders />} />
+            <Route path='/restaurants' element={<RestaurantsPage />} />
           </Route>
           <Route path='/reporting' exact element={<PanelReportingOrders />} />
           <Route path='/orders' exact element={<OrdersPage />} />

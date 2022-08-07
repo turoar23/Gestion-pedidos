@@ -18,7 +18,10 @@ const Navigation = () => {
           Pedidos
         </Nav.Link>
         {user.role === 'Admin' && (
-          <Nav.Link href='/reporting/resumen' className={path === '/reporting/resumen' ? 'active' : ''}>
+          <Nav.Link
+            href='/reporting/resumen'
+            className={path === '/reporting/resumen' ? 'active' : ''}
+          >
             Informe resumen
           </Nav.Link>
         )}
@@ -29,14 +32,17 @@ const Navigation = () => {
           Reseñas
         </Nav.Link>
         {user.role === 'Admin' && (
-          <Nav.Link href='/riders' className={path === '/riders' ? 'active' : ''}>
-            Riders
-          </Nav.Link>
-        )}
-        {user.role === 'Admin' && (
-          <Nav.Link href='/users' className={path === '/users' ? 'active' : ''}>
-            Usuarios
-          </Nav.Link>
+          <>
+            <Nav.Link href='/riders' className={path === '/riders' ? 'active' : ''}>
+              Riders
+            </Nav.Link>
+            <Nav.Link href='/users' className={path === '/users' ? 'active' : ''}>
+              Usuarios
+            </Nav.Link>
+            <Nav.Link href='/restaurants' className={path === '/restaurants' ? 'active' : ''}>
+              Restaurantes
+            </Nav.Link>
+          </>
         )}
       </Nav>
     </Navbar>

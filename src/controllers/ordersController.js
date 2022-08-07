@@ -102,9 +102,9 @@ exports.getOrderTracking = (req, res, next) => {
     })
     .then(order => {
       const date = new Date(order.times[order.times.length - 1]?.by);
-      const dateUpdated = date.setTime(date.getTime() + 1 * 60 * 60 * 1000); // After an hour
+      const dateLimit = date.setTime(date.getTime() + 1 * 60 * 60 * 1000); // After an hour
 
-      if (new Date() > dateUpdated && date.status === 'Completed') throw new Error();
+      if (new Date() > dateLimit && date.status === 'Completed') throw new Error();
 
       const orderParsed = {
         _id: order._id,

@@ -5,7 +5,7 @@ const {
   getRestaurants,
   createRestaurant,
   getRestaurant,
-} = require('../controllers/resturants.controller');
+} = require('../controllers/restaurants.controller');
 
 Router.get('/restaurants', getRestaurants);
 Router.get('/restaurants/:id', getRestaurant);
