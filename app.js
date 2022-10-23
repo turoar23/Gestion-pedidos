@@ -11,8 +11,6 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT;
 
-// app.set('view engine', 'ejs');
-// app.set('views', 'views');
 app.set('public', 'public');
 
 // Middleware
@@ -34,6 +32,9 @@ app.use((req, res, next) => {
 
 // Routes
 const routes = require('./src/routes');
+const { sendTrackerEmail } = require('./src/utils/email');
+const order = require('./src/models/order');
+const { findRestaurantByName } = require('./src/services/restaurant.service');
 
 // Add the routes to express
 app.use('/api/v1', routes);
@@ -44,6 +45,14 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
   });
 }
+// order
+//   .findOne()
+//   .then(order => {
+//     findRestaurantByName(order.restaurant).then(restaurant => {
+//       return sendTrackerEmail(order, restaurant);
+//     });
+//   })
+//   .then(result => console.log(result));
 
 mongoose
   .connect(process.env.DATABASE)

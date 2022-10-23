@@ -24,7 +24,18 @@ const Order = props => {
   };
 
   return (
-    <div style={{ width: '100%', height: '100vh', textAlign: 'center', fontSize: '1.1rem' }}>
+    <div
+      style={{
+        width: '100%',
+        maxWidth: '400px',
+        height: '100vh',
+        maxHeight: '600px',
+        textAlign: 'center',
+        fontSize: '1.1rem',
+        position: 'relative',
+        margin: 'auto',
+      }}
+    >
       <Header id={order.id} />
       <Container status={order.status} />
       <Footer order={order} />

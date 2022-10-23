@@ -1,5 +1,10 @@
+# Server configuration
 .env
-client/build
-client/.env
 node_modules
 key.json
+./.vscode
+
+# Client configuration
+client/build
+client/.env
+client/.env.production

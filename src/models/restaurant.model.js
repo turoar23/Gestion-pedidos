@@ -33,6 +33,13 @@ const restaurantSchema = new Schema(
         required: true,
       },
     ],
+    settings: {
+      survey: {
+        send: { type: Boolean, default: false },
+        key: { type: String },
+      },
+      tracking: { type: Boolean, default: false },
+    },
   },
   {
     versionKey: false,

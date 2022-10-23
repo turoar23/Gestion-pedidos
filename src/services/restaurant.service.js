@@ -9,3 +9,8 @@ module.exports.findRestaurantByIntegrationKey = async (name, key) => {
     { name: 1 }
   );
 };
+
+// FIXME: Changing the value of restaurant in the collection of order, this will be useless
+module.exports.findRestaurantByName = async name => {
+  return await restaurantModel.findOne({ name });
+};
