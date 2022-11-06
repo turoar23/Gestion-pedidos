@@ -42,6 +42,9 @@ const Navigation = () => {
             <Nav.Link href='/restaurants' className={path === '/restaurants' ? 'active' : ''}>
               Restaurantes
             </Nav.Link>
+            <Nav.Link href='/zones' className={path === '/zones' ? 'active' : ''}>
+              Zonas
+            </Nav.Link>
           </>
         )}
       </Nav>

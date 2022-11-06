@@ -40,6 +40,10 @@ const restaurantSchema = new Schema(
       },
       tracking: { type: Boolean, default: false },
     },
+    zone: {
+      type: Schema.Types.ObjectId,
+      ref: 'Zone',
+    },
   },
   {
     versionKey: false,

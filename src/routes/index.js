@@ -10,6 +10,7 @@ const reviewsRoutes = require('./reviews');
 const clientRoutes = require('./clients');
 const usersRoutes = require('./users');
 const restaurantsRoutes = require('./restaurants.route');
+const zonesRoutes = require('./zones.route');
 
 // Add the routes to express
 Router.use(ordersRoutes);
@@ -20,6 +21,7 @@ Router.use(reviewsRoutes);
 Router.use(clientRoutes);
 Router.use(usersRoutes);
 Router.use(restaurantsRoutes);
+Router.use(zonesRoutes);
 
 Router.use((req, res, next) => {
   res.status(404);

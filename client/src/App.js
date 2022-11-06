@@ -14,6 +14,7 @@ import RequireAuth from './components/lib/auth/RequireAuth';
 import RequireRol from './components/lib/auth/RequireRole';
 import OrdersPage from './components/pages/OrdersPage';
 import RestaurantsPage from './components/pages/RestaurantsPage';
+import ZonesPage from './components/pages/ZonesPage';
 
 // const OrdersPage = React.lazy(() => import('./components/pages/OrdersPage'));
 const RiderPage = React.lazy(() => import('./components/pages/RiderPage'));
@@ -50,6 +51,7 @@ function App() {
             <Route path='/users' element={<UsersPage />} />
             <Route path='/reporting/resumen' element={<PanelReportingResumenOrders />} />
             <Route path='/restaurants' element={<RestaurantsPage />} />
+            <Route path='/zones' element={<ZonesPage />} />
           </Route>
           <Route path='/reporting' exact element={<PanelReportingOrders />} />
           <Route path='/orders' exact element={<OrdersPage />} />
