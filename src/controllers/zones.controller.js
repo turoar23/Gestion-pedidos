@@ -43,7 +43,8 @@ exports.addZone = async (req, res, next) => {
 
 exports.addRestaurantZone = async (req, res, next) => {
   try {
-    const { zoneId, restaurantId } = req.body;
+    const zoneId = req.params.zoneId;
+    const { restaurantId } = req.body;
     if (!zoneId || !restaurantId) throw new Error();
 
     await addRestaurant(zoneId, restaurantId);
@@ -57,7 +58,8 @@ exports.addRestaurantZone = async (req, res, next) => {
 
 exports.removeRestaurantZone = async (req, res, next) => {
   try {
-    const { zoneId, restaurantId } = req.body;
+    const zoneId = req.params.zoneId;
+    const { restaurantId } = req.body;
     if (!zoneId || !restaurantId) throw new Error();
 
     await removeRestaurant(zoneId, restaurantId);

@@ -14,7 +14,7 @@ Router.get('/zones/:zoneId/restaurants', getRestaurantsZone);
 
 Router.post('/zones', addZone);
 
-Router.put('/zones/add', addRestaurantZone);
-Router.put('/zones/remove', removeRestaurantZone);
+Router.put('/zones/:zoneId/add', addRestaurantZone);
+Router.put('/zones/:zoneId/remove', removeRestaurantZone);
 
 module.exports = Router;
