@@ -26,7 +26,7 @@ exports.postNewOrderGloriaFood = async (req, res, next) => {
               order['restaurant_token']
             );
             // FIXME: Change this to the _id of the restaurant
-            order['app'] = restaurant.name;
+            // order['app'] = restaurant.name;
 
             // Check the status of the order
             let status = 'Active';
@@ -62,6 +62,7 @@ exports.postNewOrderGloriaFood = async (req, res, next) => {
               status: status,
               items: order['items'],
             });
+            ord.restaurant = restaurant;
             ord.save();
             webSocket.getIO().emit('Orders', {
               action: 'New Order from GloriaFod',

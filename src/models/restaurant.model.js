@@ -12,7 +12,6 @@ const integrationsSchema = new Schema(
 const restaurantSchema = new Schema(
   {
     name: { type: String, required: true },
-    internalName: { type: String },
     phone: { type: String, required: true },
     address: {
       street: { type: String, required: true },
@@ -43,6 +42,10 @@ const restaurantSchema = new Schema(
     zone: {
       type: Schema.Types.ObjectId,
       ref: 'Zone',
+    },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
     },
   },
   {

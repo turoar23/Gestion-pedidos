@@ -29,13 +29,17 @@ exports.getOrders = (req, res, next) => {
 // TODO: Find a better way to make this request
 exports.getActiveOrders = async (req, res, next) => {
   try {
-    let orders = await Order.find({
+    const orders = await Order.find({
       status: ['Active', 'Delivering', 'Arrived'],
-    });
-    orders = await Order.populate(orders, {
-      path: 'rider',
-      select: 'name',
-    });
+    })
+      .populate({
+        path: 'rider',
+        select: 'name',
+      })
+      .populate({
+        path: 'restaurant',
+        select: 'name',
+      });
     var ordersClients = await Order.aggregate([
       {
         $match: {
