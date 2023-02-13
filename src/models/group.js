@@ -18,7 +18,7 @@ const groupSchema = new Schema(
       },
     ],
   },
-  { versionKey: false }
+  { versionKey: false, timestamps: true }
 );
 
 module.exports = mongoose.model('Group', groupSchema);

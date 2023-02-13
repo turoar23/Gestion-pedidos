@@ -11,7 +11,7 @@ const ZoneSchema = new Schema(
       },
     ],
   },
-  { versionKey: false }
+  { versionKey: false, timestamps: true }
 );
 
 module.exports = mongoose.model('Zone', ZoneSchema);
