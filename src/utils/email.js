@@ -31,9 +31,10 @@ exports.sendEmail = async (
 
 exports.sendSurvey = async (order, restaurant) => {
   const pathTemplate = path.join(process.cwd(), 'src/templates/survey.html');
+  const restaurantOrder = restaurant || order.restaurant;
   const name = order.client.name.split(' ')[0];
   const orderId = order.gloriaId;
-  const mainColor = restaurant.colors.mainColor || '#0d6efd';
+  const mainColor = restaurantOrder?.colors?.mainColor || '#0d6efd';
   // Si el entorno es de produccion, enviar al correo del cliente
   const sendTo =
     process.env.NODE_ENV === 'production' ? order.client.email : 'turoar2006@gmail.com';

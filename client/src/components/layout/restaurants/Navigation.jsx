@@ -39,10 +39,10 @@ const Navigation = () => {
             <Nav.Link href='/users' className={path === '/users' ? 'active' : ''}>
               Usuarios
             </Nav.Link>
-            {/* <Nav.Link href='/restaurants' className={path === '/restaurants' ? 'active' : ''}>
+            <Nav.Link href='/restaurants' className={path === '/restaurants' ? 'active' : ''}>
               Restaurantes
             </Nav.Link>
-            <Nav.Link href='/zones' className={path === '/zones' ? 'active' : ''}>
+            {/* <Nav.Link href='/zones' className={path === '/zones' ? 'active' : ''}>
               Zonas
             </Nav.Link> */}
           </>
