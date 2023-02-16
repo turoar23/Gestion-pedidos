@@ -107,7 +107,7 @@ export default function ModalRestaurant(props) {
             <Form.Group as={Col}>
               <Form.Label>Color principal</Form.Label>
               <Form.Control
-                type='text'
+                type='color'
                 placeholder='#000000'
                 ref={mainColorRef}
                 defaultValue={restaurant?.colors.mainColor}

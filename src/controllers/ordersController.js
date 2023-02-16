@@ -261,7 +261,7 @@ exports.addAction = (req, res, next) => {
         order.rider !== null &&
         !order.surveySent
       ) {
-        console.log("Enviando ...");
+        console.log('Enviando ...');
         order.surveySent = true;
         // Se coloca este tiempo para que la envia al instante en dev
         let timeSurvey = 0.01; // segundos
@@ -297,10 +297,10 @@ exports.addAction = (req, res, next) => {
 };
 
 exports.postNewOrder = async (req, res, next) => {
-  const restaurant = await restaurantModel.findOne({ name: req.body.restaurant });
+  const restaurant = await restaurantModel.findById(req.body.restaurant);
 
   if (!restaurant) {
-    res.status(401);
+    res.status(401).send();
   } else {
     const order = new Order({
       gloriaId: req.body.id,

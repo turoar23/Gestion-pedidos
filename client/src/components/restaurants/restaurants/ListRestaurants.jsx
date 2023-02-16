@@ -7,7 +7,7 @@ import { getRestaurants } from '../../lib/api/restaurants-api';
 import ModalRestaurant from './ModalRestaurant';
 
 const ListRestaurants = () => {
-  const { sendRequest, status, data, error } = useHttp(getRestaurants, true);
+  const { sendRequest, status, data: restaurantsData, error } = useHttp(getRestaurants, true);
   const [showModal, setShowModal] = useState(false);
   const [restaurantEdit, setRestaurantEdit] = useState(undefined);
   let restaurants = <></>;
@@ -32,7 +32,7 @@ const ListRestaurants = () => {
   };
 
   if (status === 'completed' && !error)
-    restaurants = data.map(restaurant => (
+    restaurants = restaurantsData.map(restaurant => (
       <tr key={restaurant._id}>
         <td>{restaurant.name}</td>
         <td>{restaurant.address.street}</td>
@@ -66,7 +66,11 @@ const ListRestaurants = () => {
         </thead>
         <tbody>{restaurants}</tbody>
       </Table>
-      <ModalRestaurant show={showModal} handleClose={handleCloseModal} restaurant={restaurantEdit} />
+      <ModalRestaurant
+        show={showModal}
+        handleClose={handleCloseModal}
+        restaurant={restaurantEdit}
+      />
     </>
   );
 };
