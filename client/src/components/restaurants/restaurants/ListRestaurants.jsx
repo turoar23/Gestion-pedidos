@@ -16,12 +16,12 @@ const ListRestaurants = () => {
     sendRequest();
   }, []);
 
-  const handlCloseModal = () => {
+  const handleCloseModal = () => {
     setShowModal(false);
     setRestaurantEdit(undefined);
   };
 
-  const handlOpenModal = () => {
+  const handleOpenModal = () => {
     setShowModal(true);
     setRestaurantEdit(undefined);
   };
@@ -52,7 +52,7 @@ const ListRestaurants = () => {
     ));
   return (
     <>
-      <Button onClick={handlOpenModal}>Crear nuevo restaurante</Button>
+      <Button onClick={handleOpenModal}>Crear nuevo restaurante</Button>
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -66,7 +66,7 @@ const ListRestaurants = () => {
         </thead>
         <tbody>{restaurants}</tbody>
       </Table>
-      <ModalRestaurant show={showModal} handleClose={handlCloseModal} restaurant={restaurantEdit} />
+      <ModalRestaurant show={showModal} handleClose={handleCloseModal} restaurant={restaurantEdit} />
     </>
   );
 };
