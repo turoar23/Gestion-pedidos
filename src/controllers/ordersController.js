@@ -8,6 +8,7 @@ const emailUtils = require('../utils/email');
 // const mongoose = require('mongoose');
 const Moment = require('moment-timezone');
 const restaurantModel = require('../models/restaurant.model');
+const { createTask } = require('../services/integrations/tookan');
 // const group = require('../models/group');
 
 exports.getOrders = (req, res, next) => {
@@ -457,4 +458,13 @@ exports.removeRider = (req, res, next) => {
       // console.log(err);
       res.send({ result: null, err: err });
     });
+};
+
+exports.sendTookan = async (req, res, next) => {
+  const orderId = req.params.id;
+  const order = await Order.findById(orderId).populate('restaurant');
+
+  const response = await createTask(order, order.restaurant);
+
+  res.send(response);
 };
