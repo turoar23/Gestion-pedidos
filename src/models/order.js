@@ -73,6 +73,11 @@ const orderSchema = new Schema(
       default: [],
       required: false,
     },
+    partner: {
+      name: { type: String },
+      id: { type: String },
+      original: { type: Schema.Types.Mixed },
+    },
   },
   { versionKey: false, timestamps: true }
 );

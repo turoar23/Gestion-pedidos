@@ -3,7 +3,7 @@ const { findRestaurantByIntegrationKey } = require('../services/restaurant.servi
 const webSocket = require('../utils/socket');
 
 /**
- * Recieve a new order from GloriaFood
+ * Receive a new order from GloriaFood
  * @param {*} req
  * @param {*} res
  * @param {*} next

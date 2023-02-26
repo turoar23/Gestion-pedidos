@@ -460,7 +460,7 @@ exports.removeRider = (req, res, next) => {
     });
 };
 
-exports.sendTookan = async (req, res, next) => {
+exports.sendPartner = async (req, res, next) => {
   const orderId = req.params.id;
   const order = await Order.findById(orderId).populate('restaurant');
 
