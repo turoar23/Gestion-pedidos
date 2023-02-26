@@ -38,6 +38,7 @@ const restaurantSchema = new Schema(
         key: { type: String },
       },
       tracking: { type: Boolean, default: false },
+      automaticPartner: { type: Boolean, default: false },
     },
     zone: {
       type: Schema.Types.ObjectId,

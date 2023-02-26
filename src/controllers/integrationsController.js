@@ -1,4 +1,5 @@
 const Order = require('../models/order');
+const { createTask } = require('../services/integrations/tookan');
 const { findRestaurantByIntegrationKey } = require('../services/restaurant.service');
 const webSocket = require('../utils/socket');
 
@@ -21,10 +22,6 @@ exports.postNewOrderGloriaFood = async (req, res, next) => {
           if (!(await Order.findOne({ gloriaId: order['id'] }))) {
             // if (order['restaurant_token'] == 'GmoV9inQJs7lyrqmBD') order['app'] = 'Tepuy Burger';
             // else order['app'] = 'Umbrella';
-            const restaurant = await findRestaurantByIntegrationKey(
-              'GloriaFood',
-              order['restaurant_token']
-            );
             // FIXME: Change this to the _id of the restaurant
             // order['app'] = restaurant.name;
 
@@ -62,8 +59,17 @@ exports.postNewOrderGloriaFood = async (req, res, next) => {
               status: status,
               items: order['items'],
             });
+            const restaurant = await findRestaurantByIntegrationKey(
+              'GloriaFood',
+              order['restaurant_token']
+            );
             ord.restaurant = restaurant;
-            ord.save();
+            const orderInserted = await ord.save();
+
+            if (restaurant.settings.automaticPartner === true) {
+              await createTask(orderInserted, restaurant);
+            }
+
             webSocket.getIO().emit('Orders', {
               action: 'New Order from GloriaFod',
               order: ord,
