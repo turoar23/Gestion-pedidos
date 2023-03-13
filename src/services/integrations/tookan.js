@@ -1,12 +1,15 @@
 const moment = require('moment');
 const fetch = require('node-fetch');
+const BaseError = require('../../errors/baseError');
 // import fetch from 'node-fetch';
-const { parseAddress } = require('../../utils/utils');
+const { parseAddress, isObjectEmpty } = require('../../utils/utils');
 // FIXME: hide this
-const TOOKAN_TOKEN = '5b606280f64b5d1e5e48756c554225401be1c6fd2fd87c37591909';
+const TOOKAN_TOKEN = process.env.TOOKAN_TOKEN;
 
 module.exports.createTask = async (order, restaurant) => {
-  // if (order.partner !== undefined) return 'error';
+  if (!isObjectEmpty(order.partner))
+    throw new BaseError('This order already had been send to a partner', 401);
+
   // const response = await fetch(
   //   'https://api.tookanapp.com/v2/create_task',
   //   {
@@ -21,12 +24,12 @@ module.exports.createTask = async (order, restaurant) => {
   //       auto_assignment: '1',
   //       // job_description: 'Delivery ' + restaurant.name,
   //       job_pickup_phone: restaurant.phone,
-  //       job_pickup_name: 'Delivery ' + restaurant.name,
+  //       job_pickup_name: restaurant.name,
   //       // job_pickup_email: '',
   //       job_pickup_address: parseAddress(restaurant.address),
   //       // job_pickup_latitude: '30.7188978',
   //       // job_pickup_longitude: '76.810296',
-  //       job_pickup_datetime: moment(),
+  //       job_pickup_datetime: moment().toDate(),
   //       // customer_email: 'john@example.com',
   //       // customer_username: 'John Doe',
   //       // customer_phone: '+12015555555',
@@ -34,17 +37,26 @@ module.exports.createTask = async (order, restaurant) => {
   //       // latitude: '30.7188978',
   //       // longitude: '76.810298',
   //       // job_delivery_datetime: new Date(order.times.find(time => time.action === 'fulfill_at').by),
-  //       job_delivery_datetime: moment().add(30, 'minutes'),
+  //       job_delivery_datetime: moment().add(30, 'minutes').toDate(), // Cambiar a 20 el tiempo de la recogida
   //       has_pickup: '1',
   //       has_delivery: '1',
   //       layout_type: '0',
   //       tracking_link: 1,
-  //       timezone: moment().utcOffset(),
+  //       timezone: '+60',
   //       // custom_field_template: 'Template_1',
-  //       // meta_data: [
-  //       //   { label: 'Price', data: '100' },
-  //       //   { label: 'Quantity', data: '100' },
-  //       // ],
+  //       custom_field_template	:'ENTREGA-AZAPE',
+  //       meta_data: [
+  //         // { label: 'nOMBRE', data: '100' },
+  //         { label: 'Cobrar', data: '100' },
+  //         // { label: 'paymentMethod', data: 'Efectivo' },
+  //       ],
+  //       pickup_custom_field_template: 'RECOGIDA-AZAPE',
+  //       pickup_meta_data: [
+  //         // { label: 'nOMBRE', data: '100' },
+  //         { label: 'Suplido', data: '100' }, // Mismo que el precio del pedido
+  //         { label: 'Metodo de pago', data: 'Efectivo' },
+  //         { label: 'Detalles de la Dirección', data: 'Piso 3J' },
+  //       ],
   //       // pickup_custom_field_template: 'Template_2',
   //       // pickup_meta_data: [
   //       //   { label: 'Price', data: '100' },

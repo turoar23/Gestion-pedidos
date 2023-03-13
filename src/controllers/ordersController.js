@@ -464,7 +464,11 @@ exports.sendPartner = async (req, res, next) => {
   const orderId = req.params.id;
   const order = await Order.findById(orderId).populate('restaurant');
 
-  const response = await createTask(order, order.restaurant);
+  try {
+    const response = await createTask(order, order.restaurant);
 
-  res.send(response);
+    res.send(response);
+  } catch (error) {
+    next(error);
+  }
 };

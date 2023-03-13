@@ -38,6 +38,7 @@ const { findRestaurantByName } = require('./src/services/restaurant.service');
 
 // Add the routes to express
 app.use('/api/v1', routes);
+process.env.TZ = 'Etc/Universal';
 
 if (process.env.NODE_ENV === 'production') {
   // Any route than dosent exist in the routes before, will be forwaded to the client

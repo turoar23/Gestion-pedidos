@@ -53,3 +53,7 @@ exports.parseAddress = address => {
 
   return direction;
 };
+
+exports.isObjectEmpty = object => {
+  return object === undefined || JSON.stringify(object) === '{}';
+};
