@@ -66,7 +66,7 @@ exports.postNewOrderGloriaFood = async (req, res, next) => {
             ord.restaurant = restaurant;
             const orderInserted = await ord.save();
 
-            if (restaurant.settings.automaticPartner === true) {
+            if (restaurant.settings?.automaticPartner === true) {
               await createTask(orderInserted, restaurant);
             }
 
