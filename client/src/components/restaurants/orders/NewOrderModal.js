@@ -19,6 +19,7 @@ const NewOrderModal = props => {
   const clientPhoneRef = useRef();
   const paymentRef = useRef();
   const restaurantRef = useRef();
+  const timeRef = useRef();
 
   const createOrderHandler = async event => {
     event.preventDefault();
@@ -37,6 +38,7 @@ const NewOrderModal = props => {
       payment: paymentRef.current.value,
       total_price: priceRef.current.value,
       restaurant: restaurantRef.current.value,
+      time: timeRef.current.value,
     };
 
     await sendRequest(newOrder);
@@ -93,9 +95,12 @@ const NewOrderModal = props => {
           <Form.Group className='mb-3' controlId='restaurant'>
             <Form.Label>Restaurante</Form.Label>
             <Form.Select aria-label='restaurant-selector' ref={restaurantRef} required={true}>
-              {restaurants && restaurants.map(restaurant => (
-                <option key={restaurant._id} value={restaurant._id}>{restaurant.name}</option>
-              ))}
+              {restaurants &&
+                restaurants.map(restaurant => (
+                  <option key={restaurant._id} value={restaurant._id}>
+                    {restaurant.name}
+                  </option>
+                ))}
             </Form.Select>
           </Form.Group>
           <Row className='mb-3'>
@@ -108,12 +113,15 @@ const NewOrderModal = props => {
             </Form.Group>
             <Form.Group as={Col} controlId='price'>
               <Form.Label>Precio</Form.Label>
-              <Form.Control
-                type='text'
-                ref={priceRef}
-                // required={true}
-              />
+              <Form.Control type='text' ref={priceRef} required={true} />
             </Form.Group>
+          </Row>
+          <Row className='mb-3'>
+            <Form.Group as={Col} controlId='time'>
+              <Form.Label>Tiempo (minutos)</Form.Label>
+              <Form.Control type='number' ref={timeRef} required={true} min={0} step={1} />
+            </Form.Group>
+            <Form.Group as={Col}></Form.Group>
           </Row>
         </Modal.Body>
         <Modal.Footer>

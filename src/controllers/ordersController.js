@@ -330,7 +330,11 @@ exports.postNewOrder = async (req, res, next) => {
         {
           by:
             Date.parse(req.body.fulfill_at) ||
-            Moment(new Date()).tz('Europe/Madrid').add(45, 'm').toDate().valueOf(),
+            Moment(new Date())
+              .tz('Europe/Madrid')
+              .add(req.body.time || 45, 'm')
+              .toDate()
+              .valueOf(),
           action: 'fulfill_at',
         },
       ],
