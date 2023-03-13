@@ -1,4 +1,3 @@
-
 exports.parseStreet = function (_street) {
   let parts = _street.split(' ');
   var find = false;
@@ -43,3 +42,18 @@ function checkIfEqual(arr1, arr2) {
   }
   return find;
 }
+
+exports.parseAddress = address => {
+  const { street, zipcode, city } = address;
+  let direction = street;
+
+  if (zipcode) direction += `, ${zipcode}`;
+
+  if (city) direction += `, ${city}`;
+
+  return direction;
+};
+
+exports.isObjectEmpty = object => {
+  return object === undefined || JSON.stringify(object) === '{}';
+};

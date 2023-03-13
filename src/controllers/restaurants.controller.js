@@ -1,11 +1,20 @@
 const restaurantModel = require('../models/restaurant.model');
+const UserModel = require('../models/user');
 
 exports.getRestaurants = async (req, res, next) => {
   try {
-    const restaurants = await restaurantModel.find();
+    const user = await UserModel.findById(req.user._id);
+    if (!user) throw new Error();
+
+    const restaurants = [];
+
+    if (user.role === 'Admin')
+      restaurants.push(...(await restaurantModel.find({ owner: user._id })));
+    else restaurants.push(...(await restaurantModel.find({ _id: user.restaurants })));
 
     res.send({ result: restaurants, err: null });
   } catch (err) {
+    console.error(err);
     res.status(500);
     res.send({ result: null, err: "Can't get the restaurants" });
   }
@@ -14,10 +23,17 @@ exports.getRestaurants = async (req, res, next) => {
 exports.getRestaurant = async (req, res, next) => {
   try {
     const restaurantId = req.params.id;
-    const restaurant = await restaurantModel.findById(restaurantId);
+    const user = await UserModel.findById(req.user._id);
+    if (!user) throw new Error();
+
+    const restaurant = await restaurantModel.findOne({
+      _id: restaurantId,
+      $or: [{ owner: user._id }, { restaurants: user.restaurants }],
+    });
 
     res.send({ result: restaurant, err: null });
   } catch (err) {
+    console.error(err);
     res.status(404);
     res.send({ result: null, err: "Can't get the restaurant" });
   }

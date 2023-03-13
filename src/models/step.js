@@ -5,7 +5,7 @@ const stepSchema = new Schema(
   {
     steps: [String],
   },
-  { versionKey: false }
+  { versionKey: false, timestamps: true }
 );
 
 module.exports = mongoose.model('Step', stepSchema);

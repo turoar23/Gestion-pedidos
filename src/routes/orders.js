@@ -14,6 +14,7 @@ Router.get('/orders/dates/:begin/:end', ordersController.getOrdersByDate);
 //FIXME: Think how improve this. Currently this is used to check the orders that are available from the view of a rider
 Router.post('/getOrderFilter', ordersController.postOrdersFilter);
 Router.post('/orders', ordersController.postNewOrder);
+Router.post('/orders/:id/sendPartner', ordersController.sendPartner);
 
 Router.put('/orders/action', ordersController.addAction);
 Router.put('/orders/assignRider', ordersController.addRider);

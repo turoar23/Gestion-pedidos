@@ -1,36 +1,43 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
+import useHttp from '../../hooks/use-http';
+import { getRestaurants } from '../../lib/api/restaurants-api';
 
-export default function ModalRestaurant(props) {
-  const restaurant = props.restaurant;
-  const isEdit = !!restaurant;
+export default function ModalZone(props) {
+  const { sendRequest, status, data, error } = useHttp(getRestaurants, true);
+  const zone = props.zone;
+  const isEdit = !!zone;
+  const [zoneRestaurants, setZoneRestaurants] = useState([]);
+  // const [restaurantsAvailable, setRestaurantsAvailable] = useState([]);
+  let restaurantsAvailable = [];
+  console.log(zoneRestaurants);
 
   const nameRef = useRef();
   const phoneRef = useRef();
-  const streetRef = useRef();
-  const cityRef = useRef();
-  const zipcodeRef = useRef();
-  const countryRef = useRef();
-  const globalEmailRef = useRef();
-  const mainColorRef = useRef();
-  const gloriaFoodRef = useRef();
+
+  useEffect(() => {
+    sendRequest();
+
+    if (zone) setZoneRestaurants(zone.resturants);
+  }, []);
+
+  // useEffect(() => {
+  //   setZoneRestaurants(zone.restaurants);
+  // }, [zone]);
+
+  if (status === 'completed' && !error) {
+    const newListRestaurants = data.filter(
+      restaurant =>
+        zoneRestaurants.find(zoneRestaurant => zoneRestaurant === restaurant._id) === undefined
+    );
+
+    restaurantsAvailable = newListRestaurants;
+  }
 
   const handleConfirm = () => {
     const name = nameRef.current.value;
     const phone = phoneRef.current.value;
-    const street = streetRef.current.value;
-    const city = cityRef.current.value;
-    const zipcode = zipcodeRef.current.value;
-    const country = countryRef.current.value;
-
-    console.log({
-      name,
-      phone,
-      street,
-      city,
-      zipcode,
-      country,
-    });
 
     props.handleClose();
   };
@@ -45,15 +52,19 @@ export default function ModalRestaurant(props) {
           <Row>
             <Form.Group as={Col}>
               <Form.Label>Nombre</Form.Label>
-              <Form.Control type='text' ref={nameRef} defaultValue={restaurant?.name} required />
-            </Form.Group>
-
-            <Form.Group as={Col}>
-              <Form.Label>Teléfono</Form.Label>
-              <Form.Control type='text' ref={phoneRef} defaultValue={restaurant?.phone} required />
+              <Form.Control type='text' ref={nameRef} defaultValue={zone?.name} required />
             </Form.Group>
           </Row>
           <Row>
+            <Form.Select>
+              {restaurantsAvailable.map(restaurant => (
+                <option key={restaurant._id} value={restaurant._id}>
+                  {restaurant.name}
+                </option>
+              ))}
+            </Form.Select>
+          </Row>
+          {/* <Row>
             <Form.Group as={Col}>
               <Form.Label>Calle</Form.Label>
               <Form.Control
@@ -107,7 +118,7 @@ export default function ModalRestaurant(props) {
             <Form.Group as={Col}>
               <Form.Label>Color principal</Form.Label>
               <Form.Control
-                type='color'
+                type='text'
                 placeholder='#000000'
                 ref={mainColorRef}
                 defaultValue={restaurant?.colors.mainColor}
@@ -127,7 +138,7 @@ export default function ModalRestaurant(props) {
                 }
               />
             </Form.Group>
-          </Row>
+          </Row> */}
         </Form>
       </Modal.Body>
       <Modal.Footer>

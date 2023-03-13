@@ -38,6 +38,7 @@ const { findRestaurantByName } = require('./src/services/restaurant.service');
 
 // Add the routes to express
 app.use('/api/v1', routes);
+process.env.TZ = 'Etc/Universal';
 
 if (process.env.NODE_ENV === 'production') {
   // Any route than dosent exist in the routes before, will be forwaded to the client
@@ -45,6 +46,9 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
   });
 }
+const { errorHandler } = require('./src/middlewares/error.middleware');
+
+app.use(errorHandler);
 // order
 //   .findOne()
 //   .then(order => {

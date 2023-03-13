@@ -16,8 +16,8 @@ const orderSchema = new Schema(
       required: true,
     },
     restaurant: {
-      type: String,
-      required: true,
+      type: Schema.Types.ObjectId,
+      ref: 'Restaurant',
     },
     times: [
       {
@@ -73,8 +73,13 @@ const orderSchema = new Schema(
       default: [],
       required: false,
     },
+    partner: {
+      name: { type: String },
+      id: { type: String },
+      original: { type: Schema.Types.Mixed },
+    },
   },
-  { versionKey: false }
+  { versionKey: false, timestamps: true }
 );
 
 module.exports = mongoose.model('Order', orderSchema);

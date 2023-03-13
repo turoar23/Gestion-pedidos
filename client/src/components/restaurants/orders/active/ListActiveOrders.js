@@ -10,6 +10,7 @@ import OrdersContext from '../../../../store/orders-context';
 import NewOrderModal from '../NewOrderModal';
 
 import classes from './ListActiveOrders.module.css';
+import { getRestaurants } from '../../../lib/api/restaurants-api';
 // import ListStatusRiders from './ListStatusRiders';
 
 const ListActiveOrders = () => {
@@ -27,10 +28,16 @@ const ListActiveOrders = () => {
   const { sendRequest: sendRequestCancelOrder, status: statusCancelOrder } =
     useHttp(updateOrderStatus);
 
+  const {
+    sendRequest: sendRequestRestaurants,
+    status: statusRestaurants,
+    data: restaurants,
+    error,
+  } = useHttp(getRestaurants, true);
+
   useEffect(() => {
-    sendRequestRiders();
-    sendRequest();
-  }, [sendRequestRiders, sendRequest]);
+    Promise.all([sendRequestRiders(), sendRequest(), sendRequestRestaurants()]);
+  }, [sendRequestRiders, sendRequest, sendRequestRestaurants]);
 
   useEffect(() => {
     const socket = connectSocket(updateHandler);
@@ -92,7 +99,7 @@ const ListActiveOrders = () => {
           <Col className={classes.col}>Actions</Col>
         </Row>
         {listOrders}
-        <NewOrderModal show={showNewOrderModal} handleClose={handleCloseNewOrder} />
+        <NewOrderModal show={showNewOrderModal} handleClose={handleCloseNewOrder} restaurants={restaurants}/>
       </Container>
     </OrdersContext.Provider>
   );

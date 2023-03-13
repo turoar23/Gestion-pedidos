@@ -5,8 +5,7 @@ module.exports.findRestaurantByIntegrationKey = async (name, key) => {
   if (!key || typeof key !== 'string') throw new Error('Key must be a string');
 
   return await restaurantModel.findOne(
-    { 'integrations.name': name, 'integrations.key': key },
-    { name: 1 }
+    { 'integrations.name': name, 'integrations.key': key }
   );
 };
 

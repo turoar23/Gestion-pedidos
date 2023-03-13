@@ -17,7 +17,7 @@ export async function getAllActiveOrders() {
 			...data.result[key],
 		};
 
-		transformedOrders.push(quoteObj);
+		transformedOrders.push({...quoteObj, restaurant: quoteObj.restaurant.name});
 	}
 
 	return transformedOrders;
@@ -40,7 +40,7 @@ export async function getAllOrders() {
 			...data.result[key],
 		};
 
-		transformedOrders.push(quoteObj);
+		transformedOrders.push({...quoteObj, restaurant: quoteObj.restaurant.name});
 	}
 
 	return transformedOrders;
@@ -71,7 +71,7 @@ export async function getOrdersByDate(dateBody) {
 			...data.result[key],
 		};
 
-		transformedOrders.push(quoteObj);
+		transformedOrders.push({...quoteObj, restaurant: quoteObj.restaurant.name});
 	}
 
 	return transformedOrders;

@@ -18,6 +18,12 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
+    restaurants: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: 'Restaurant',
+      },
+    ],
   },
   { versionKey: false, timestamps: true }
 );

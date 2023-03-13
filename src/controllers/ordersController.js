@@ -7,6 +7,8 @@ const emailUtils = require('../utils/email');
 
 // const mongoose = require('mongoose');
 const Moment = require('moment-timezone');
+const restaurantModel = require('../models/restaurant.model');
+const { createTask } = require('../services/integrations/tookan');
 // const group = require('../models/group');
 
 exports.getOrders = (req, res, next) => {
@@ -29,13 +31,17 @@ exports.getOrders = (req, res, next) => {
 // TODO: Find a better way to make this request
 exports.getActiveOrders = async (req, res, next) => {
   try {
-    let orders = await Order.find({
+    const orders = await Order.find({
       status: ['Active', 'Delivering', 'Arrived'],
-    });
-    orders = await Order.populate(orders, {
-      path: 'rider',
-      select: 'name',
-    });
+    })
+      .populate({
+        path: 'rider',
+        select: 'name',
+      })
+      .populate({
+        path: 'restaurant',
+        select: 'name',
+      });
     var ordersClients = await Order.aggregate([
       {
         $match: {
@@ -94,6 +100,7 @@ exports.getOrder = (req, res, next) => {
 exports.getOrderTracking = (req, res, next) => {
   const _id = req.params.orderId;
   Order.findById(_id)
+    .populate('restaurant', 'name')
     .then(orders => {
       return Order.populate(orders, {
         path: 'rider',
@@ -111,8 +118,8 @@ exports.getOrderTracking = (req, res, next) => {
         id: order.gloriaId || null,
         status: order.status,
         restaurant: {
-          name: order.restaurant,
-          phone: order.restaurant === 'Umbrella' ? '+34623411696' : '+34670113435', //TODO: Actualizar con info mas detallada de la entidad de cada restaurante
+          name: order.restaurant.name,
+          phone: order.restaurant.name === 'Umbrella' ? '+34623411696' : '+34670113435', //TODO: Actualizar con info mas detallada de la entidad de cada restaurante
           colors: {
             main: '#ee2737',
           },
@@ -206,6 +213,7 @@ exports.addAction = (req, res, next) => {
   let id = req.body._id;
 
   Order.findById(id)
+    .populate('restaurant')
     // Actualizamos el pedido
     .then(order => {
       order.status = req.body.status || order.status;
@@ -247,12 +255,14 @@ exports.addAction = (req, res, next) => {
           throw err;
         });
       // Si el pedido se acaba de completar, se envia la encuesta a los 60 minutos
+      console.log(order);
       if (
         order.status === 'Completed' &&
-        order.restaurant === 'Umbrella' &&
+        order.restaurant.name === 'Umbrella' &&
         order.rider !== null &&
         !order.surveySent
       ) {
+        console.log('Enviando ...');
         order.surveySent = true;
         // Se coloca este tiempo para que la envia al instante en dev
         let timeSurvey = 0.01; // segundos
@@ -286,57 +296,68 @@ exports.addAction = (req, res, next) => {
       res.send({ result: null, err: "Can't add the time" });
     });
 };
-exports.postNewOrder = (req, res, next) => {
-  const order = new Order({
-    gloriaId: req.body.id,
-    client: {
-      name: req.body.client.name,
-      email: req.body.client.email || undefined,
-      phone: req.body.client.phone,
-    },
-    address: {
-      street: req.body.direction.street,
-      city: req.body.direction.city,
-      zipcode: req.body.direction.zipcode,
-      floor: req.body.direction.floor || undefined,
-      latitue: undefined,
-      longitude: undefined,
-    },
-    total_price: req.body.total_price
-      ? parseFloat(req.body.total_price.replace(',', '.'))
-      : undefined,
-    restaurant: req.body.restaurant,
-    times: [
-      {
-        by: Date.parse(new Date()),
-        action: 'accepted_at',
+
+exports.postNewOrder = async (req, res, next) => {
+  const restaurant = await restaurantModel.findById(req.body.restaurant);
+
+  if (!restaurant) {
+    res.status(401).send();
+  } else {
+    const order = new Order({
+      gloriaId: req.body.id,
+      client: {
+        name: req.body.client.name,
+        email: req.body.client.email || undefined,
+        phone: req.body.client.phone,
       },
-      {
-        by:
-          Date.parse(req.body.fulfill_at) ||
-          Moment(new Date()).tz('Europe/Madrid').add(45, 'm').toDate().valueOf(),
-        action: 'fulfill_at',
+      address: {
+        street: req.body.direction.street,
+        city: req.body.direction.city,
+        zipcode: req.body.direction.zipcode,
+        floor: req.body.direction.floor || undefined,
+        latitue: undefined,
+        longitude: undefined,
       },
-    ],
-    payment: req.body.payment,
-    status: 'Active',
-  });
-  order
-    .save()
-    .then(result => {
-      webSocket.getIO().emit('Orders', {
-        action: 'New Order',
-        order: result,
-      });
-      res.send({ result: 'New order added', error: null });
-    })
-    .catch(err => {
-      console.log(err);
-      res.send({
-        result: null,
-        error: "An error ocurred, can't add the new order",
-      });
+      total_price: req.body.total_price
+        ? parseFloat(req.body.total_price.replace(',', '.'))
+        : undefined,
+      restaurant: restaurant._id,
+      times: [
+        {
+          by: Date.parse(new Date()),
+          action: 'accepted_at',
+        },
+        {
+          by:
+            Date.parse(req.body.fulfill_at) ||
+            Moment(new Date())
+              .tz('Europe/Madrid')
+              .add(req.body.time || 45, 'm')
+              .toDate()
+              .valueOf(),
+          action: 'fulfill_at',
+        },
+      ],
+      payment: req.body.payment,
+      status: 'Active',
     });
+    order
+      .save()
+      .then(result => {
+        webSocket.getIO().emit('Orders', {
+          action: 'New Order',
+          order: result,
+        });
+        res.send({ result: 'New order added', error: null });
+      })
+      .catch(err => {
+        console.log(err);
+        res.send({
+          result: null,
+          error: "An error ocurred, can't add the new order",
+        });
+      });
+  }
 };
 //TODO: Comprobar si se quiere agregar a al mismo rider no hacer nada
 // Se comprueba si el pedido tiene un grupo, y si tiene se borra de el.
@@ -441,4 +462,17 @@ exports.removeRider = (req, res, next) => {
       // console.log(err);
       res.send({ result: null, err: err });
     });
+};
+
+exports.sendPartner = async (req, res, next) => {
+  const orderId = req.params.id;
+  const order = await Order.findById(orderId).populate('restaurant');
+
+  try {
+    const response = await createTask(order, order.restaurant);
+
+    res.send(response);
+  } catch (error) {
+    next(error);
+  }
 };
