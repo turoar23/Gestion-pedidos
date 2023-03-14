@@ -1,5 +1,5 @@
 const Order = require('../models/order');
-const { createTask } = require('../services/integrations/tookan');
+const { createTask, getInfoTask } = require('../services/integrations/tookan');
 const { findRestaurantByIntegrationKey } = require('../services/restaurant.service');
 const webSocket = require('../utils/socket');
 
@@ -83,4 +83,12 @@ exports.postNewOrderGloriaFood = async (req, res, next) => {
     }
     res.sendStatus(200);
   } else res.sendStatus(404);
+};
+
+exports.getTookanTaskInfo = async (req, res, next) => {
+  const orderId = req.params.id;
+
+  const taskDetails = await getInfoTask(orderId);
+
+  res.status(200).send(taskDetails);
 };

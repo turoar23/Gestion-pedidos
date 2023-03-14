@@ -107,10 +107,12 @@ module.exports.createTask = async (order, restaurant) => {
     };
   }
 
+  const bodyParsed = JSON.parse(body);
+
   order.partner = {
-    id: body.data.job_id,
+    id: bodyParsed.data.job_id,
     name: 'Tookan',
-    original: body.data,
+    original: bodyParsed.data,
   };
 
   await order.save();
@@ -118,11 +120,63 @@ module.exports.createTask = async (order, restaurant) => {
   return body.message;
 };
 
-// Ejemplo de respuesta de tarea creada
-// {"message":"The task has been
-// created.","status":200,"data":{"job_id":469202494,"pickup_job_id":469202494,"delivery_job_id":469202495,"job_hash":"05961141951e6de5a27505564679c85c","pickup_job_hash":"30fb8513c3dd5f82663688db8eb9d0ce","delivery_job_hash":"05961141951e6de5a27505564679c85c","customer_address":"Avenida
-// periodista Rodolfo salazar 29, 03015, Alicante","job_pickup_name":"Delivery Umbrella","job_pickup_address":"Carrer
-// Llinares 6, 03010,
-// Alicante","job_token":"469202494215216769338950924381","pickup_tracking_link":"https://jngl.ml/U8db8Zeb9","delivery_tracing_link":"https://jngl.ml/C55D64679","order_id":"63eea4411582cf104d1e0b9d","pickupOrderId":"63eea4411582cf104d1e0b9d","deliveryOrderId":"63eea4411582cf104d1e0b9d","pickupAddressNotFound":false,"deliveryAddressNotFound":false}}
+/**
+ * Make the request to tookan api and remove unnecessary fields
+ * @param {string} orderId
+ */
+module.exports.getInfoTask = async orderId => {
+  const tasks = await getInfoTaskRequest(orderId);
 
-// importe del pedido, metodo de pago
+  const taskFiltered = tasks.find(task => task.job_pickup_address !== task.job_address);
+
+  return { ...taskFiltered, times: filterTimes(taskFiltered) };
+};
+
+// -----------------
+// Private functions
+// -----------------
+
+/**
+ * Request to tookan API and return the tasks with the orderId
+ * @param {*} orderId
+ * @returns {array}
+ */
+const getInfoTaskRequest = async orderId => {
+  const response = await fetch('https://api.tookanapp.com/v2/get_job_details_by_order_id', {
+    method: 'POST',
+    url: 'https://api.tookanapp.com/v2/get_job_details_by_order_id',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      api_key: TOOKAN_TOKEN,
+      order_ids: [orderId],
+      include_task_history: 1,
+    }),
+  });
+  const responseParsed = await response.json();
+
+  return responseParsed.data;
+};
+
+const filterTimes = task => {
+  const history = task.task_history;
+
+  const times = history.map(item => {
+    return {
+      action: parseStatus(item.description),
+      by: item.creation_datetime,
+    };
+  });
+
+  return times;
+};
+
+const parseStatus = status => {
+  if (status.includes('Created By')) return 'created';
+  else if (status === 'Accepted at') return 'accepted';
+  else if (status === 'Started at') return 'delivering';
+  else if (status === 'Arrived at') return 'arrived';
+  else if (status === 'Successful at') return 'completed';
+  else return status;
+};
