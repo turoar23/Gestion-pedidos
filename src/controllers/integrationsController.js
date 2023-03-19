@@ -1,5 +1,10 @@
 const Order = require('../models/order');
-const { createTask, getInfoTask, filterTimes } = require('../services/integrations/tookan');
+const {
+  createTask,
+  getInfoTask,
+  filterTimes,
+  getStatus,
+} = require('../services/integrations/tookan');
 const { findRestaurantByIntegrationKey } = require('../services/restaurant.service');
 const webSocket = require('../utils/socket');
 
@@ -115,6 +120,8 @@ exports.postTookanWebhook = async (req, res, next) => {
         name: 'Tookan',
         original: bodyParsed,
       };
+
+      order.status = getStatus(bodyParsed);
 
       await order.save();
 

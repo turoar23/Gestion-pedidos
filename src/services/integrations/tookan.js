@@ -1,5 +1,6 @@
 const moment = require('moment');
 const fetch = require('node-fetch');
+const orderStatus = require('../../enum/orderStatus.enum');
 const BaseError = require('../../errors/baseError');
 const { parseTookanEpaPaymentMethod } = require('../../utils/parsers');
 // import fetch from 'node-fetch';
@@ -133,16 +134,35 @@ module.exports.getInfoTask = async orderId => {
 };
 
 module.exports.filterTimes = task => {
-  const history = task.task_history || [];
+  const history = task.task_history?.filter(task => task.type === 'state_changed') || [];
 
   const times = history.map(item => {
     return {
-      action: parseStatus(item.description),
+      action: parseAction(item.description),
       by: Date.parse(new Date(item.creation_datetime.replace(/ /g, ''))),
     };
   });
 
   return times;
+};
+
+module.exports.getStatus = task => {
+  const history = task.task_history || [];
+  let indexTime = -1;
+
+  for (let i = history.length - 1; i >= 0 && indexTime === -1; i--) {
+    const correctAction = parseAction(history[i].description) !== history[i].description;
+
+    if (correctAction) indexTime = i;
+  }
+
+  if (indexTime !== -1) {
+    const status = parseStatus(history[indexTime].description);
+
+    return status === history[indexTime].description ? undefined : status;
+  }
+
+  return undefined;
 };
 
 // -----------------
@@ -172,11 +192,18 @@ const getInfoTaskRequest = async orderId => {
   return responseParsed.data;
 };
 
+const parseAction = action => {
+  if (action.includes('Created By')) return 'created';
+  else if (action === 'Accepted at') return 'Accepted by rider';
+  else if (action === 'Started at') return 'Start delivering';
+  else if (action === 'Arrived at') return 'Arrived destination';
+  else if (action === 'Successful at') return 'Completed';
+  else return action;
+};
+
 const parseStatus = status => {
-  if (status.includes('Created By')) return 'created';
-  else if (status === 'Accepted at') return 'accepted';
-  else if (status === 'Started at') return 'delivering';
-  else if (status === 'Arrived at') return 'arrived';
-  else if (status === 'Successful at') return 'completed';
+  if (status === 'Started at') return orderStatus.DELIVERING;
+  else if (status === 'Arrived at') return orderStatus.ARRIVED;
+  else if (status === 'Successful at') return orderStatus.COMPLETED;
   else return status;
 };
