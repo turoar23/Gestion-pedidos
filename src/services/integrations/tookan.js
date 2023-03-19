@@ -132,6 +132,19 @@ module.exports.getInfoTask = async orderId => {
   return { ...taskFiltered, times: filterTimes(taskFiltered) };
 };
 
+module.exports.filterTimes = task => {
+  const history = task.task_history || [];
+
+  const times = history.map(item => {
+    return {
+      action: parseStatus(item.description),
+      by: Date.parse(new Date(item.creation_datetime.replace(/ /g, ''))),
+    };
+  });
+
+  return times;
+};
+
 // -----------------
 // Private functions
 // -----------------
@@ -157,19 +170,6 @@ const getInfoTaskRequest = async orderId => {
   const responseParsed = await response.json();
 
   return responseParsed.data;
-};
-
-const filterTimes = task => {
-  const history = task.task_history;
-
-  const times = history.map(item => {
-    return {
-      action: parseStatus(item.description),
-      by: item.creation_datetime,
-    };
-  });
-
-  return times;
 };
 
 const parseStatus = status => {

@@ -1,5 +1,5 @@
 const Order = require('../models/order');
-const { createTask, getInfoTask } = require('../services/integrations/tookan');
+const { createTask, getInfoTask, filterTimes } = require('../services/integrations/tookan');
 const { findRestaurantByIntegrationKey } = require('../services/restaurant.service');
 const webSocket = require('../utils/socket');
 
@@ -91,4 +91,38 @@ exports.getTookanTaskInfo = async (req, res, next) => {
   const taskDetails = await getInfoTask(orderId);
 
   res.status(200).send(taskDetails);
+};
+
+exports.postTookanWebhook = async (req, res, next) => {
+  try {
+    const bodyParsed = req.body;
+
+    if (bodyParsed.tookan_shared_secret === process.env.SHARED_SECRET_TOOKAN) {
+      const order = await Order.findOne({ gloriaId: bodyParsed.job_id });
+
+      if (!order) throw new Error('Cant find this order');
+
+      const times = filterTimes(bodyParsed);
+
+      times.forEach(time => {
+        const exists = order.times.find(orderTime => orderTime.action === time.action);
+
+        if (exists === undefined) order.times.push(time);
+      });
+
+      order.partner = {
+        id: bodyParsed.job_id,
+        name: 'Tookan',
+        original: bodyParsed,
+      };
+
+      await order.save();
+
+      res.status(200).send();
+    } else {
+      throw new Error('Error in the verification');
+    }
+  } catch (error) {
+    next(error);
+  }
 };
