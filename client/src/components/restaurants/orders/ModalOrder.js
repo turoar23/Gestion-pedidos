@@ -29,7 +29,6 @@ const ModalOrder = props => {
 	};
 
 	const updateOrderHandler = () => {
-		// console.log(streetRef.current.value);
 		let updatedOrder = { ...order };
 
 		updatedOrder.address.street = streetRef.current.value;

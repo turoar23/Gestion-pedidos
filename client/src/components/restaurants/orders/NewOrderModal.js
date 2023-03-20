@@ -23,7 +23,7 @@ const NewOrderModal = props => {
 
   const createOrderHandler = async event => {
     event.preventDefault();
-    // console.log(streetRef.current.value);
+
     let newOrder = {
       direction: {
         street: streetRef.current.value,

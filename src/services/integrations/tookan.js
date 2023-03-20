@@ -186,8 +186,6 @@ module.exports.updateOrderTookanTask = async (order, tookanTask) => {
 
   order.status = this.getStatus(tookanTask);
 
-  console.log(JSON.stringify(order));
-
   await order.save();
 };
 

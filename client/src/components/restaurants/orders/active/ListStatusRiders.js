@@ -35,8 +35,6 @@ const ListStatusRiders = props => {
 
 	let allOrders = [];
 
-	console.log(loadedOrders);
-
 	// Añadimos las que ya fueron completadas
 	if (loadedOrders) allOrders = allOrders.concat(loadedOrders);
 	// Añadimos los pedidos en curso
@@ -47,7 +45,6 @@ const ListStatusRiders = props => {
 	let ordersRiders = [];
 
 	if (allOrders) {
-		console.log(allOrders);
 		riders.forEach(rider => {
 			const data = {
 				rider: rider.name,
@@ -58,7 +55,6 @@ const ListStatusRiders = props => {
 			if (data.orders.length > 0) ordersRiders.push(data);
 		});
 	}
-	console.log(ordersRiders);
 
 	return (
 		<Card>
