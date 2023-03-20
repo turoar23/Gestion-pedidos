@@ -8,7 +8,7 @@ const emailUtils = require('../utils/email');
 // const mongoose = require('mongoose');
 const Moment = require('moment-timezone');
 const restaurantModel = require('../models/restaurant.model');
-const { createTask } = require('../services/integrations/tookan');
+const { createTask, updateOrderTookan } = require('../services/integrations/tookan');
 // const group = require('../models/group');
 
 exports.getOrders = (req, res, next) => {
@@ -472,6 +472,18 @@ exports.sendPartner = async (req, res, next) => {
     const response = await createTask(order, order.restaurant);
 
     res.send(response);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateOrderTookan = async (req, res, next) => {
+  try {
+    const orderId = req.params.orderId;
+
+    await updateOrderTookan(orderId);
+
+    res.status(200).send();
   } catch (error) {
     next(error);
   }

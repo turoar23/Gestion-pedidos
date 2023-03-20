@@ -6,6 +6,7 @@ const { parseTookanEpaPaymentMethod } = require('../../utils/parsers');
 // import fetch from 'node-fetch';
 const { parseAddress, isObjectEmpty } = require('../../utils/utils');
 const TOOKAN_TOKEN = process.env.TOOKAN_TOKEN;
+const Order = require('../../models/order');
 
 module.exports.createTask = async (order, restaurant) => {
   if (!isObjectEmpty(order.partner))
@@ -130,7 +131,9 @@ module.exports.getInfoTask = async orderId => {
 
   const taskFiltered = tasks.find(task => task.job_pickup_address !== task.job_address);
 
-  return { ...taskFiltered, times: filterTimes(taskFiltered) };
+  if (!taskFiltered) throw new BaseError('Cant find info for this task in tookan', 404);
+
+  return { ...taskFiltered, times: this.filterTimes(taskFiltered) };
 };
 
 module.exports.filterTimes = task => {
@@ -163,6 +166,41 @@ module.exports.getStatus = task => {
   }
 
   return undefined;
+};
+
+module.exports.updateOrderTookanTask = async (order, tookanTask) => {
+  const times = this.filterTimes(tookanTask);
+
+  times.forEach(time => {
+    const exists = order.times.find(orderTime => orderTime.action === time.action);
+
+    if (exists === undefined) order.times.push(time);
+  });
+
+  if (!order.partner)
+    order.partner = {
+      id: tookanTask.job_id,
+      name: 'Tookan',
+      original: tookanTask,
+    };
+
+  order.status = this.getStatus(tookanTask);
+
+  console.log(JSON.stringify(order));
+
+  await order.save();
+};
+
+module.exports.updateOrderTookan = async orderId => {
+  const order = await Order.findById(orderId);
+  if (!order) throw new BaseError('Cant find this order', 404);
+
+  const jobId = order.gloriaId || order.partner?.id;
+  if (!jobId) throw new BaseError("This error don't have id to fetch info");
+
+  const taskInfo = await this.getInfoTask(jobId);
+
+  await this.updateOrderTookanTask(order, taskInfo);
 };
 
 // -----------------

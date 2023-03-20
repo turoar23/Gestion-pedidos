@@ -91,11 +91,15 @@ exports.postNewOrderGloriaFood = async (req, res, next) => {
 };
 
 exports.getTookanTaskInfo = async (req, res, next) => {
-  const orderId = req.params.id;
+  try {
+    const orderId = req.params.id;
 
-  const taskDetails = await getInfoTask(orderId);
+    const taskDetails = await getInfoTask(orderId);
 
-  res.status(200).send(taskDetails);
+    res.status(200).send(taskDetails);
+  } catch (error) {
+    next(error);
+  }
 };
 
 exports.postTookanWebhook = async (req, res, next) => {

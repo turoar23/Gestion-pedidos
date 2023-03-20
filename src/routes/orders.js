@@ -10,6 +10,7 @@ Router.get('/ordersActive', ordersController.getActiveOrders);
 Router.get('/orders/:orderId', ordersController.getOrder);
 Router.get('/orders/tracking/:orderId', ordersController.getOrderTracking);
 Router.get('/orders/dates/:begin/:end', ordersController.getOrdersByDate);
+Router.get('/orders/tookan/:orderId', ordersController.updateOrderTookan);
 
 //FIXME: Think how improve this. Currently this is used to check the orders that are available from the view of a rider
 Router.post('/getOrderFilter', ordersController.postOrdersFilter);
