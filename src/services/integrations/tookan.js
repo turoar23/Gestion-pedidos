@@ -201,6 +201,33 @@ module.exports.updateOrderTookan = async orderId => {
   await this.updateOrderTookanTask(order, taskInfo);
 };
 
+module.exports.updateOrderTookanBetweenDates = async (from = new Date(), to = new Date()) => {
+  const startDate = moment(from).startOf('day').toDate();
+  const endDate = moment(to).endOf('day').toDate();
+
+  const orders = await Order.find({
+    createdAt: { $gte: startDate, $lte: endDate },
+    rider: { $exists: false },
+  });
+
+  const result = {
+    total: orders.length,
+    totalError: 0,
+    codeErrors: [],
+  };
+
+  for (const order of orders) {
+    try {
+      await this.updateOrderTookan(order._id);
+    } catch (error) {
+      result.totalError = result.totalError + 1;
+      result.codeErrors.push(order._id);
+    }
+  }
+
+  console.log(result);
+};
+
 // -----------------
 // Private functions
 // -----------------

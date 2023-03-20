@@ -33,8 +33,10 @@ app.use((req, res, next) => {
 // Routes
 const routes = require('./src/routes');
 const { sendTrackerEmail } = require('./src/utils/email');
-const order = require('./src/models/order');
+const Order = require('./src/models/order');
 const { findRestaurantByName } = require('./src/services/restaurant.service');
+const { errorHandler } = require('./src/middlewares/error.middleware');
+const { updateOrderTookanBetweenDates } = require('./src/services/integrations/tookan');
 
 // Add the routes to express
 app.use('/api/v1', routes);
@@ -46,17 +48,8 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
   });
 }
-const { errorHandler } = require('./src/middlewares/error.middleware');
 
 app.use(errorHandler);
-// order
-//   .findOne()
-//   .then(order => {
-//     findRestaurantByName(order.restaurant).then(restaurant => {
-//       return sendTrackerEmail(order, restaurant);
-//     });
-//   })
-//   .then(result => console.log(result));
 
 mongoose
   .connect(process.env.DATABASE)
