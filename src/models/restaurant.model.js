@@ -12,6 +12,7 @@ const integrationsSchema = new Schema(
 const restaurantSchema = new Schema(
   {
     name: { type: String, required: true },
+    internalName: { type: String, required: true },
     phone: { type: String, required: true },
     address: {
       street: { type: String, required: true },

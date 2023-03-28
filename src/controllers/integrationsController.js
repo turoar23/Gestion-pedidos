@@ -104,35 +104,35 @@ exports.getTookanTaskInfo = async (req, res, next) => {
 
 exports.postTookanWebhook = async (req, res, next) => {
   try {
-    const bodyParsed = req.body;
+    const bodyParsed = JSON.parse(JSON.stringify(req.body));
 
-    if (bodyParsed.tookan_shared_secret === process.env.SHARED_SECRET_TOOKAN) {
-      const order = await Order.findOne({ gloriaId: bodyParsed.job_id });
+    // if (bodyParsed.tookan_shared_secret === process.env.SHARED_SECRET_TOOKAN) {
+    const order = await Order.findOne({ gloriaId: bodyParsed.job_id });
 
-      if (!order) throw new Error('Cant find this order');
+    if (!order) throw new Error('Cant find this order');
 
-      const times = filterTimes(bodyParsed);
+    const times = filterTimes(bodyParsed);
 
-      times.forEach(time => {
-        const exists = order.times.find(orderTime => orderTime.action === time.action);
+    times.forEach(time => {
+      const exists = order.times.find(orderTime => orderTime.action === time.action);
 
-        if (exists === undefined) order.times.push(time);
-      });
+      if (exists === undefined) order.times.push(time);
+    });
 
-      order.partner = {
-        id: bodyParsed.job_id,
-        name: 'Tookan',
-        original: bodyParsed,
-      };
+    order.partner = {
+      id: bodyParsed.job_id,
+      name: 'Tookan',
+      original: bodyParsed,
+    };
 
-      order.status = getStatus(bodyParsed);
+    order.status = getStatus(bodyParsed);
 
-      await order.save();
+    await order.save();
 
-      res.status(200).send();
-    } else {
-      throw new Error('Error in the verification');
-    }
+    res.status(200).send();
+    // } else {
+    //   throw new Error('Error in the verification');
+    // }
   } catch (error) {
     next(error);
   }

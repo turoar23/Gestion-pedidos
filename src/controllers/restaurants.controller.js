@@ -8,9 +8,11 @@ exports.getRestaurants = async (req, res, next) => {
 
     const restaurants = [];
 
-    if (user.role === 'Admin')
-      restaurants.push(...(await restaurantModel.find({ owner: user._id })));
-    else restaurants.push(...(await restaurantModel.find({ _id: user.restaurants })));
+    // if (user.role === 'Admin')
+    //   restaurants.push(...(await restaurantModel.find({ owner: user._id })));
+    // else restaurants.push(...(await restaurantModel.find({ _id: user.restaurants })));
+
+    restaurants.push(...(await restaurantModel.find()));
 
     res.send({ result: restaurants, err: null });
   } catch (err) {

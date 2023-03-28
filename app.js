@@ -10,6 +10,7 @@ const webSocket = require('./src/utils/socket');
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT;
+process.env.TZ = 'Etc/Universal';
 
 app.set('public', 'public');
 
@@ -40,7 +41,6 @@ const { updateOrderTookanBetweenDates } = require('./src/services/integrations/t
 
 // Add the routes to express
 app.use('/api/v1', routes);
-process.env.TZ = 'Etc/Universal';
 
 if (process.env.NODE_ENV === 'production') {
   // Any route than dosent exist in the routes before, will be forwaded to the client
@@ -49,6 +49,7 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+// For errors
 app.use(errorHandler);
 
 mongoose

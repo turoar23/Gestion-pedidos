@@ -9,6 +9,7 @@ const emailUtils = require('../utils/email');
 const Moment = require('moment-timezone');
 const restaurantModel = require('../models/restaurant.model');
 const { createTask, updateOrderTookan } = require('../services/integrations/tookan');
+const BaseError = require('../errors/baseError');
 // const group = require('../models/group');
 
 exports.getOrders = (req, res, next) => {
@@ -40,7 +41,7 @@ exports.getActiveOrders = async (req, res, next) => {
       })
       .populate({
         path: 'restaurant',
-        select: 'name',
+        select: ['name', 'internalName'],
       });
     var ordersClients = await Order.aggregate([
       {
@@ -75,8 +76,7 @@ exports.getActiveOrders = async (req, res, next) => {
     });
     res.send({ result: result, err: null });
   } catch (err) {
-    res.status(500);
-    res.send({ result: null, err: "Can't get the active orders" });
+    next(err);
   }
 };
 
