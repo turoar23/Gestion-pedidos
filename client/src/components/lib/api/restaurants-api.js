@@ -48,3 +48,26 @@ export async function updateRestaurant(restaurant) {
 
   return data.result;
 }
+
+export async function removeRestaurant(restaurantId) {
+  const token = getJwt();
+
+  if (!token) throw new Error();
+
+  const response = await fetch(`${SERVER_URL}/restaurants/${restaurantId}`, {
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    method: 'DELETE',
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Could not fetch restaurants');
+  }
+
+  return data.result;
+}

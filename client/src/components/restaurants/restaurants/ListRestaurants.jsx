@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { Button, Table } from 'react-bootstrap';
 import useHttp from '../../hooks/use-http';
-import { getRestaurants } from '../../lib/api/restaurants-api';
+import { getRestaurants, removeRestaurant } from '../../lib/api/restaurants-api';
 import ModalRestaurant from './ModalRestaurant';
 
 const ListRestaurants = () => {
@@ -47,6 +47,23 @@ const ListRestaurants = () => {
     } else console.error('Error, cant find the restaurant by the _id');
   };
 
+  const handleRemove = restaurantId => {
+    removeRestaurant(restaurantId)
+      .then(() => {
+        const restaurantIndex = restaurants.findIndex(rest => rest._id === restaurantId);
+
+        if (restaurantIndex !== -1) {
+          const restaurantsUpdated = [...restaurants];
+          restaurantsUpdated.splice(restaurantIndex, 1);
+
+          setRestaurants(restaurantsUpdated);
+        } else console.error('Error, cant find the restaurant by the _id');
+      })
+      .catch(err => {
+        console.error('Cant remove restaurant', err);
+      });
+  };
+
   return (
     <>
       <Button onClick={handleOpenModal}>Crear nuevo restaurante</Button>
@@ -77,6 +94,7 @@ const ListRestaurants = () => {
                     handleEditModal(restaurant);
                   }}
                 ></i>
+                <i className="fas fa-trash-alt" aria-hidden="true" onClick={() => handleRemove(restaurant._id)}></i>
               </td>
             </tr>
           ))}

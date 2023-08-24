@@ -110,7 +110,7 @@ exports.updateRestaurant = async (req, res, next) => {
 exports.removeRestaurant = async (req, res, next) => {
   try {
     // await restaurantModel.deleteOne({ _id: req.params.id });
-    await restaurantModel.updateOne({ _id: req.params.id, removed: true });
+    await restaurantModel.updateOne({ _id: req.params.id }, { removed: true });
 
     res.send({ result: null, err: null });
   } catch (err) {
