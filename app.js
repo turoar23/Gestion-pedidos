@@ -1,5 +1,4 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const path = require('path');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
@@ -17,9 +16,8 @@ app.set('public', 'public');
 // Middleware
 require('./src/middlewares/passport-strategy');
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(express.static(path.join(__dirname, './client/build')));
 
 // Disable crossorigin
@@ -33,11 +31,6 @@ app.use((req, res, next) => {
 
 // Routes
 const routes = require('./src/routes');
-const { sendTrackerEmail } = require('./src/utils/email');
-const Order = require('./src/models/order');
-const { findRestaurantByName } = require('./src/services/restaurant.service');
-const { errorHandler } = require('./src/middlewares/error.middleware');
-const { updateOrderTookanBetweenDates } = require('./src/services/integrations/tookan');
 
 // Add the routes to express
 app.use('/api/v1', routes);
@@ -50,6 +43,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // For errors
+const { errorHandler } = require('./src/middlewares/error.middleware');
 app.use(errorHandler);
 
 mongoose

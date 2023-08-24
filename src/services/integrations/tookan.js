@@ -16,7 +16,16 @@ module.exports.createTask = async (order, restaurant) => {
   console.log('Enviando pedido ...');
 
   if (process.env.NODE_ENV === 'production') {
-    const dateToDeliver = new Date(order.times.find(time => time.action === 'fulfill_at').by);
+    // const alreadyInTookan = await this.getInfoTask(order.gloriaId);
+
+    // if (alreadyInTookan) {
+    //   await this.updateOrderTookanTask(order, order.gloriaId);
+    //   return 'Already created';
+    // }
+
+    const date = new Date(order.times.find(time => time.action === 'fulfill_at').by);
+    const dateToDeliver = moment(date).add(moment().tz('Europe/Madrid').utcOffset(), 'minutes');
+
     const response = await fetch('https://api.tookanapp.com/v2/create_task', {
       method: 'POST',
       headers: {
@@ -29,38 +38,39 @@ module.exports.createTask = async (order, restaurant) => {
         auto_assignment: '1',
         // job_description: 'Delivery ' + restaurant.name,
         job_pickup_phone: restaurant.phone,
-        job_pickup_name: restaurant.name,
+        job_pickup_name: restaurant.internalName || restaurant.name,
         // job_pickup_email: '',
         job_pickup_address: parseAddress(restaurant.address),
         // job_pickup_latitude: '30.7188978',
         // job_pickup_longitude: '76.810296',
         job_pickup_datetime: moment(dateToDeliver).add(-20, 'minutes').toDate(),
         // customer_email: 'john@example.com',
-        // customer_username: 'John Doe',
-        // customer_phone: '+12015555555',
+        customer_username: order.client.name,
+        customer_phone: order.client.phone,
         customer_address: parseAddress(order.address),
         // latitude: '30.7188978',
         // longitude: '76.810298',
-        job_delivery_datetime: dateToDeliver,
+        job_delivery_datetime: moment(dateToDeliver),
         // job_delivery_datetime: moment().add(20, 'minutes').toDate(), // Cambiar a 20 el tiempo de la recogida
         has_pickup: '1',
         has_delivery: '1',
         layout_type: '0',
         tracking_link: 1,
-        timezone: moment().tz('Europe/Madrid').utcOffset(),
+        timezone: 0,
         // custom_field_template: 'Template_1',
-        custom_field_template: 'ENTREGA-AZAPE',
+        custom_field_template: 'ENTREGA',
         meta_data: [
           // { label: 'nOMBRE', data: '100' },
-          { label: 'Cobrar', data: order.total_price },
+          // { label: 'Cobrar', data: order.total_price },
           // { label: 'paymentMethod', data: 'Efectivo' },
+          // { label: 'Metodo_de_pago', data: parseTookanEpaPaymentMethod(order.payment) },
+          { label: 'Detalles_de_la_dirección', data: order.address.floor },
         ],
-        pickup_custom_field_template: 'RECOGIDA-AZAPE',
+        pickup_custom_field_template: 'Recogida',
         pickup_meta_data: [
           // { label: 'nOMBRE', data: '100' },
-          { label: 'Suplido', data: order.total_price }, // Mismo que el precio del pedido
-          { label: 'Metodo de pago', data: parseTookanEpaPaymentMethod(order.payment) },
-          { label: 'Detalles de la Dirección', data: order.address.floor },
+          { label: 'Importe', data: order.total_price }, // Mismo que el precio del pedido
+          // { label: 'Metodo_de_pago', data: parseTookanEpaPaymentMethod(order.payment) },
         ],
         // pickup_custom_field_template: 'Template_2',
         // pickup_meta_data: [
@@ -82,9 +92,10 @@ module.exports.createTask = async (order, restaurant) => {
         // ride_type: 0,
       }),
     });
+
     body = await response.text();
   } else {
-    body = {
+    body = JSON.stringify({
       message: 'The task has been created.',
       status: 200,
       data: {
@@ -106,7 +117,7 @@ module.exports.createTask = async (order, restaurant) => {
         pickupAddressNotFound: false,
         deliveryAddressNotFound: false,
       },
-    };
+    });
   }
 
   const bodyParsed = JSON.parse(body);
@@ -119,7 +130,7 @@ module.exports.createTask = async (order, restaurant) => {
 
   await order.save();
 
-  return body.message;
+  return bodyParsed.message;
 };
 
 /**

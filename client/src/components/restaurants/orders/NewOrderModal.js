@@ -98,7 +98,7 @@ const NewOrderModal = props => {
               {restaurants &&
                 restaurants.map(restaurant => (
                   <option key={restaurant._id} value={restaurant._id}>
-                    {restaurant.name}
+                    {restaurant.internalName || restaurant.name}
                   </option>
                 ))}
             </Form.Select>

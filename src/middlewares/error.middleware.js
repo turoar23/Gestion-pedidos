@@ -1,4 +1,4 @@
-module.exports.errorHandler = (error, req, res) => {
+module.exports.errorHandler = (error, req, res, next) => {
   let _error = { ...error };
   let status = _error.status || 500;
   const ERRORS_NAME = ['MongoError', 'ValidationError'];

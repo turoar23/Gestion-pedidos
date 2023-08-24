@@ -43,6 +43,11 @@ function checkIfEqual(arr1, arr2) {
   return find;
 }
 
+/**
+ * 
+ * @param {{street: string; zipcode: string; city: string;}} address 
+ * @returns 
+ */
 exports.parseAddress = address => {
   const { street, zipcode, city } = address;
   let direction = street;
@@ -50,6 +55,8 @@ exports.parseAddress = address => {
   if (zipcode) direction += `, ${zipcode}`;
 
   if (city) direction += `, ${city}`;
+
+  direction+= ', España';
 
   return direction;
 };

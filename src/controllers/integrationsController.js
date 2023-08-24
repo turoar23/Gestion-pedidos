@@ -87,7 +87,7 @@ exports.postNewOrderGloriaFood = async (req, res, next) => {
       }
     }
     res.sendStatus(200);
-  } else res.sendStatus(404);
+  } else res.status(404).send('Error: authorization invalid');
 };
 
 exports.getTookanTaskInfo = async (req, res, next) => {

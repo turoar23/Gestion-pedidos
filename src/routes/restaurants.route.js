@@ -11,8 +11,8 @@ const {
   removeRestaurant,
 } = require('../controllers/restaurants.controller');
 
-Router.get('/restaurants', auth.authenticate, auth.authorize(['Admin']), getRestaurants);
-Router.get('/restaurants/:id', auth.authenticate, auth.authorize(['Admin']), getRestaurant);
+Router.get('/restaurants', auth.authenticate, getRestaurants);
+Router.get('/restaurants/:id', auth.authenticate, getRestaurant);
 
 Router.post('/restaurants', auth.authenticate, auth.authorize(['Admin']), createRestaurant);
 
