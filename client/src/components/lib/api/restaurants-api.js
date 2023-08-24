@@ -22,3 +22,29 @@ export async function getRestaurants() {
 
   return data.result;
 }
+
+export async function updateRestaurant(restaurant) {
+  const token = getJwt();
+
+  if (!token) throw new Error();
+
+  let url = `${SERVER_URL}/restaurants/${restaurant._id}`;
+  delete restaurant._id;
+
+  const response = await fetch(url, {
+    method: 'PUT',
+    body: JSON.stringify(restaurant),
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Could not update the restaurant.');
+  }
+
+  return data.result;
+}

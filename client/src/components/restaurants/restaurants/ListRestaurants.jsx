@@ -10,11 +10,16 @@ const ListRestaurants = () => {
   const { sendRequest, status, data: restaurantsData, error } = useHttp(getRestaurants, true);
   const [showModal, setShowModal] = useState(false);
   const [restaurantEdit, setRestaurantEdit] = useState(undefined);
-  let restaurants = <></>;
+  // let restaurants = <></>;
+  const [restaurants, setRestaurants] = useState([]);
 
   useEffect(() => {
     sendRequest();
   }, []);
+
+  useEffect(() => {
+    if (status === 'completed' && !error) setRestaurants(restaurantsData);
+  }, [status]);
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -31,25 +36,17 @@ const ListRestaurants = () => {
     setShowModal(true);
   };
 
-  if (status === 'completed' && !error)
-    restaurants = restaurantsData.map(restaurant => (
-      <tr key={restaurant._id}>
-        <td>{restaurant.name}</td>
-        <td>{restaurant.address.street}</td>
-        <td>{restaurant.address.city}</td>
-        <td>{restaurant.phone}</td>
-        <td>{restaurant.emails.global}</td>
-        <td>
-          <i
-            className='far fa-edit'
-            style={{ marginLeft: '8px' }}
-            onClick={() => {
-              handleEditModal(restaurant);
-            }}
-          ></i>
-        </td>
-      </tr>
-    ));
+  const onUpdateRestaurant = restaurant => {
+    const restaurantIndex = restaurants.findIndex(rest => rest._id === restaurant._id);
+
+    if (restaurantIndex !== -1) {
+      const restaurantsUpdated = [...restaurants];
+      restaurantsUpdated[restaurantIndex] = restaurant;
+
+      setRestaurants(restaurantsUpdated);
+    } else console.error('Error, cant find the restaurant by the _id');
+  };
+
   return (
     <>
       <Button onClick={handleOpenModal}>Crear nuevo restaurante</Button>
@@ -64,12 +61,32 @@ const ListRestaurants = () => {
             <th>Acciones</th>
           </tr>
         </thead>
-        <tbody>{restaurants}</tbody>
+        <tbody>
+          {restaurants.map(restaurant => (
+            <tr key={restaurant._id}>
+              <td>{restaurant.internalName || restaurant.name}</td>
+              <td>{restaurant.address.street}</td>
+              <td>{restaurant.address.city}</td>
+              <td>{restaurant.phone}</td>
+              <td>{restaurant.emails.global}</td>
+              <td>
+                <i
+                  className="far fa-edit"
+                  style={{ marginLeft: '8px' }}
+                  onClick={() => {
+                    handleEditModal(restaurant);
+                  }}
+                ></i>
+              </td>
+            </tr>
+          ))}
+        </tbody>
       </Table>
       <ModalRestaurant
         show={showModal}
         handleClose={handleCloseModal}
         restaurant={restaurantEdit}
+        onUpdateRestaurant={onUpdateRestaurant}
       />
     </>
   );

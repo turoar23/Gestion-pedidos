@@ -1,5 +1,7 @@
+const { ObjectId } = require('mongodb');
 const restaurantModel = require('../models/restaurant.model');
 const UserModel = require('../models/user');
+const BaseError = require('../errors/baseError');
 
 exports.getRestaurants = async (req, res, next) => {
   try {
@@ -8,11 +10,9 @@ exports.getRestaurants = async (req, res, next) => {
 
     const restaurants = [];
 
-    // if (user.role === 'Admin')
-    //   restaurants.push(...(await restaurantModel.find({ owner: user._id })));
-    // else restaurants.push(...(await restaurantModel.find({ _id: user.restaurants })));
-
-    restaurants.push(...(await restaurantModel.find()));
+    // FIXME: only works for admins
+    if (user.role === 'Admin')
+      restaurants.push(...(await restaurantModel.find({ owner: new ObjectId(user._id), removed: false })));
 
     res.send({ result: restaurants, err: null });
   } catch (err) {
@@ -31,6 +31,7 @@ exports.getRestaurant = async (req, res, next) => {
     const restaurant = await restaurantModel.findOne({
       _id: restaurantId,
       $or: [{ owner: user._id }, { restaurants: user.restaurants }],
+      removed: false,
     });
 
     res.send({ result: restaurant, err: null });
@@ -43,21 +44,24 @@ exports.getRestaurant = async (req, res, next) => {
 
 exports.createRestaurant = async (req, res, next) => {
   try {
+    const restaurantInfo = req.body;
+
     const restaurantToInsert = new restaurantModel({
-      name: req.body.name,
-      phone: req.body.phone,
+      name: restaurantInfo.name,
+      internalName: restaurantInfo.internalName,
+      phone: restaurantInfo.phone,
       address: {
-        street: req.body.address.street,
-        city: req.body.address.city,
-        zipcode: req.body.address.zipcode,
-        country: req.body.address.country,
+        street: restaurantInfo.address.street,
+        city: restaurantInfo.address.city,
+        zipcode: restaurantInfo.address.zipcode,
+        country: restaurantInfo.address.country,
       },
       emails: {
-        global: req.body.emails.global || undefined,
-        noreply: req.body.emails.noreply || undefined,
+        global: restaurantInfo.emails.global || undefined,
+        noreply: restaurantInfo.emails.noreply || undefined,
       },
-      colors: { mainColor: req.body.colors.mainColor },
-      integrations: req.body.integrations,
+      colors: { mainColor: restaurantInfo.colors.mainColor },
+      integrations: restaurantInfo.integrations,
     });
 
     const restaurant = await restaurantToInsert.save();
@@ -73,21 +77,25 @@ exports.createRestaurant = async (req, res, next) => {
 exports.updateRestaurant = async (req, res, next) => {
   try {
     const restaurant = await restaurantModel.findById(req.params.id);
+    if (!restaurant) throw new BaseError('Cant find this restaurant', 404);
 
-    restaurant.name = req.body.name;
-    restaurant.phone = req.body.phone;
+    const restaurantInfo = req.body;
+
+    restaurant.name = restaurantInfo.name;
+    restaurant.internalName = restaurantInfo.internalName;
+    restaurant.phone = restaurantInfo.phone;
     restaurant.address = {
-      street: req.body.address.street,
-      city: req.body.address.city,
-      zipcode: req.body.address.zipcode,
-      country: req.body.address.country,
+      street: restaurantInfo.address.street,
+      city: restaurantInfo.address.city,
+      zipcode: restaurantInfo.address.zipcode,
+      country: restaurantInfo.address.country,
     };
     restaurant.emails = {
-      global: req.body.emails.global || undefined,
-      noreply: req.body.emails.noreply || undefined,
+      global: restaurantInfo.emails.global || undefined,
+      noreply: restaurantInfo.emails.noreply || undefined,
     };
-    restaurant.colors = { mainColor: req.body.colors.mainColor };
-    restaurant.integrations = req.body.integrations;
+    restaurant.colors = { mainColor: restaurantInfo.colors.mainColor };
+    restaurant.integrations = restaurantInfo.integrations;
 
     const restaurantUpdated = await restaurant.save();
 
@@ -101,7 +109,8 @@ exports.updateRestaurant = async (req, res, next) => {
 
 exports.removeRestaurant = async (req, res, next) => {
   try {
-    await restaurantModel.deleteOne({ _id: req.params.id });
+    // await restaurantModel.deleteOne({ _id: req.params.id });
+    await restaurantModel.updateOne({ _id: req.params.id, removed: true });
 
     res.send({ result: null, err: null });
   } catch (err) {

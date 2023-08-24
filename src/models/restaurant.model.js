@@ -49,6 +49,7 @@ const restaurantSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
+    removed: { type: Boolean, default: false },
   },
   {
     versionKey: false,
