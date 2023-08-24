@@ -1,20 +1,15 @@
+const ErrorLogModel = require('../models/errorLog.model');
 const Order = require('../models/order');
-const {
-  createTask,
-  getInfoTask,
-  filterTimes,
-  getStatus,
-} = require('../services/integrations/tookan');
+const { createTask, getInfoTask, filterTimes, getStatus } = require('../services/integrations/tookan');
 const { findRestaurantByIntegrationKey } = require('../services/restaurant.service');
 const webSocket = require('../utils/socket');
 
 /**
  * Receive a new order from GloriaFood
- * @param {*} req
- * @param {*} res
- * @param {*} next
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
  */
-exports.postNewOrderGloriaFood = async (req, res, next) => {
+exports.postNewOrderGloriaFood = async (req, res) => {
   // check if the order have the authorization header
   const correct = req.headers['authorization'] == 'e7u2Z1e4SgNtY0jgci3aH5YJK9x1jZBSk';
 
@@ -25,11 +20,6 @@ exports.postNewOrderGloriaFood = async (req, res, next) => {
         try {
           let order = delivery_orders['orders'][i];
           if (!(await Order.findOne({ gloriaId: order['id'] }))) {
-            // if (order['restaurant_token'] == 'GmoV9inQJs7lyrqmBD') order['app'] = 'Tepuy Burger';
-            // else order['app'] = 'Umbrella';
-            // FIXME: Change this to the _id of the restaurant
-            // order['app'] = restaurant.name;
-
             // Check the status of the order
             let status = 'Active';
             if (order['status'] !== 'accepted') status = order['status'];
@@ -64,10 +54,8 @@ exports.postNewOrderGloriaFood = async (req, res, next) => {
               status: status,
               items: order['items'],
             });
-            const restaurant = await findRestaurantByIntegrationKey(
-              'GloriaFood',
-              order['restaurant_token']
-            );
+            const restaurant = await findRestaurantByIntegrationKey('GloriaFood', order['restaurant_token']);
+            // @ts-ignore
             ord.restaurant = restaurant;
             const orderInserted = await ord.save();
 
@@ -81,13 +69,22 @@ exports.postNewOrderGloriaFood = async (req, res, next) => {
             });
           }
         } catch (err) {
+          const error = new ErrorLogModel({ payload: JSON.stringify(err) });
+          error.save();
           console.error(err);
+
+          // TODO: this should continue, don't stop the petition.
           res.sendStatus(404);
         }
       }
     }
     res.sendStatus(200);
-  } else res.status(404).send('Error: authorization invalid');
+  } else {
+    const error = new ErrorLogModel({ payload: JSON.stringify(req) });
+    error.save();
+
+    res.status(404).send('Error: authorization invalid');
+  }
 };
 
 exports.getTookanTaskInfo = async (req, res, next) => {
