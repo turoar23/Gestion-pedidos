@@ -63,6 +63,7 @@ exports.createRestaurant = async (req, res, next) => {
       colors: { mainColor: restaurantInfo.colors.mainColor },
       integrations: restaurantInfo.integrations,
     });
+    restaurantToInsert.owner = req.user._id;
 
     const restaurant = await restaurantToInsert.save();
 

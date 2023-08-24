@@ -36,6 +36,12 @@ const ListRestaurants = () => {
     setShowModal(true);
   };
 
+  const onCreateRestaurant = restaurant => {
+    const restaurantsUpdated = [...restaurants, restaurant];
+
+    setRestaurants(restaurantsUpdated);
+  };
+
   const onUpdateRestaurant = restaurant => {
     const restaurantIndex = restaurants.findIndex(rest => rest._id === restaurant._id);
 
@@ -104,6 +110,7 @@ const ListRestaurants = () => {
         show={showModal}
         handleClose={handleCloseModal}
         restaurant={restaurantEdit}
+        onCreateRestaurant={onCreateRestaurant}
         onUpdateRestaurant={onUpdateRestaurant}
       />
     </>

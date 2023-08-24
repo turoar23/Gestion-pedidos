@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
-import { updateRestaurant } from '../../lib/api/restaurants-api';
+import { createRestaurant, updateRestaurant } from '../../lib/api/restaurants-api';
 
 export default function ModalRestaurant(props) {
   const restaurant = props.restaurant;
@@ -17,7 +17,9 @@ export default function ModalRestaurant(props) {
   const mainColorRef = useRef();
   const gloriaFoodRef = useRef();
 
-  const handleConfirm = () => {
+  const handleSubmit = event => {
+    event.preventDefault();
+
     const name = nameRef.current.value;
     const internalName = internalNameRef.current.value;
     const phone = phoneRef.current.value;
@@ -29,8 +31,7 @@ export default function ModalRestaurant(props) {
     const mainColor = mainColorRef.current.value;
     const gloriaFood = gloriaFoodRef.current.value;
 
-    const restaurantToUpdate = {
-      _id: restaurant._id,
+    const restaurantInfo = {
       name,
       internalName,
       phone,
@@ -46,25 +47,36 @@ export default function ModalRestaurant(props) {
       colors: {
         mainColor,
       },
-      integrations: [{ name: 'GloriaFood', key: gloriaFood }],
     };
 
-    updateRestaurant(restaurantToUpdate)
-      .then(restaurant => {
-        props.onUpdateRestaurant(restaurant);
-      })
-      .catch(err => console.error(err));
+    if (gloriaFood) restaurantInfo.integrations = [{ name: 'GloriaFood', key: gloriaFood }];
+
+    if (isEdit) {
+      restaurantInfo._id = restaurant._id;
+
+      updateRestaurant(restaurantInfo)
+        .then(restaurant => {
+          props.onUpdateRestaurant(restaurant);
+        })
+        .catch(err => console.error(err));
+    } else {
+      createRestaurant(restaurantInfo)
+        .then(restaurant => {
+          props.onCreateRestaurant(restaurant);
+        })
+        .catch(err => console.error(err));
+    }
 
     props.handleClose();
   };
 
   return (
     <Modal show={props.show} onHide={props.handleClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>{isEdit ? 'Editar' : 'Nuevo'} restaurante</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form>
+      <Form onSubmit={handleSubmit}>
+        <Modal.Header closeButton>
+          <Modal.Title>{isEdit ? 'Editar' : 'Nuevo'} restaurante</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
           <Row>
             <Form.Group as={Col}>
               <Form.Label>Nombre</Form.Label>
@@ -133,16 +145,16 @@ export default function ModalRestaurant(props) {
               />
             </Form.Group>
           </Row>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={props.handleClose}>
-          Cerrar
-        </Button>
-        <Button variant="primary" onClick={handleConfirm}>
-          {isEdit ? 'Guardar cambios' : 'Crear'}
-        </Button>
-      </Modal.Footer>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={props.handleClose}>
+            Cerrar
+          </Button>
+          <Button type="submit" variant="primary">
+            {isEdit ? 'Guardar cambios' : 'Crear'}
+          </Button>
+        </Modal.Footer>
+      </Form>
     </Modal>
   );
 }

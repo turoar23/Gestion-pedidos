@@ -23,6 +23,31 @@ export async function getRestaurants() {
   return data.result;
 }
 
+export async function createRestaurant(restaurant) {
+  const token = getJwt();
+
+  if (!token) throw new Error();
+
+  const url = `${SERVER_URL}/restaurants`;
+
+  const response = await fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(restaurant),
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Could not update the restaurant.');
+  }
+
+  return data.result;
+}
+
 export async function updateRestaurant(restaurant) {
   const token = getJwt();
 
