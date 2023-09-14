@@ -11,7 +11,10 @@ const ModalUser = props => {
   const usernameRef = useRef();
   const passwordRef = useRef();
   const roleRef = useRef();
-  const restaurants = props.restaurants || [];
+  const restaurants = (props.restaurants || []).map(restaurant => ({
+    _id: restaurant._id,
+    name: restaurant.internalName || restaurant.name,
+  }));
   let restaurantsSelected = (props.editUser?.restaurants || []).map(restaurant => {
     const restaurantInfo = restaurants.find(restaurantInfo => restaurantInfo._id === restaurant._id);
 
