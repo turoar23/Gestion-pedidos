@@ -3,7 +3,6 @@ import { SERVER_URL } from './config';
 
 export async function getRestaurants() {
   const token = getJwt();
-
   if (!token) throw new Error();
 
   const response = await fetch(`${SERVER_URL}/restaurants`, {

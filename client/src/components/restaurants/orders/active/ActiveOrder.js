@@ -87,7 +87,6 @@ const ActiveOrders = props => {
       </>
     );
   } else if (order.rider) rider = order.rider.name;
-  console.log(order);
 
   return (
     <Fragment>

@@ -1,31 +1,5 @@
 const SERVER_URL = `${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}${process.env.REACT_APP_API}`;
 
-export async function getAllActiveOrders() {
-  const response = await fetch(`${SERVER_URL}/ordersActive`);
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || 'Could not fetch orders.');
-  }
-
-  const transformedOrders = [];
-
-  for (const key in data.result) {
-    const quoteObj = {
-      // id: data.result[key]._id,
-      // data : data.result[key],
-      ...data.result[key],
-    };
-
-    transformedOrders.push({
-      ...quoteObj,
-      restaurant: quoteObj.restaurant.internalName || quoteObj.restaurant.name,
-    });
-  }
-
-  return transformedOrders;
-}
-
 export async function getAllOrders() {
   const response = await fetch(`${SERVER_URL}/orders`);
   const data = await response.json();

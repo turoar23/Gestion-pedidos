@@ -5,28 +5,24 @@ import ActiveOrder from './ActiveOrder';
 import useHttp from '../../../hooks/use-http';
 import { connectSocket } from '../../../lib/socket';
 
-import { getAllActiveOrders, getAllRiders, updateOrderStatus } from '../../../lib/api';
+import { getAllRiders, updateOrderStatus } from '../../../lib/api';
 import OrdersContext from '../../../../store/orders-context';
 import NewOrderModal from '../NewOrderModal';
 
 import classes from './ListActiveOrders.module.css';
 import { getRestaurants } from '../../../lib/api/restaurants-api';
+import { getAllActiveOrders } from '../../../lib/api/orders-api';
 // import ListStatusRiders from './ListStatusRiders';
 
 const ListActiveOrders = () => {
   const [showNewOrderModal, setShowNewOrderModal] = useState(false);
 
   // To get All riders
-  const {
-    sendRequest: sendRequestRiders,
-    status: statusRiders,
-    data: riders,
-  } = useHttp(getAllRiders, true);
+  const { sendRequest: sendRequestRiders, status: statusRiders, data: riders } = useHttp(getAllRiders, true);
   // To get all the active orders
   const { sendRequest, status, data: loadedOrders } = useHttp(getAllActiveOrders, true);
   // To cancel an order
-  const { sendRequest: sendRequestCancelOrder, status: statusCancelOrder } =
-    useHttp(updateOrderStatus);
+  const { sendRequest: sendRequestCancelOrder, status: statusCancelOrder } = useHttp(updateOrderStatus);
 
   const {
     sendRequest: sendRequestRestaurants,
@@ -64,14 +60,12 @@ const ListActiveOrders = () => {
   };
 
   if (statusRiders === 'pending') {
-    return <div className='centered'>Loading riders...</div>;
+    return <div className="centered">Loading riders...</div>;
   }
 
-  let listOrders = <div className='centered'>Loading orders...</div>;
+  let listOrders = <div className="centered">Loading orders...</div>;
   if (status === 'completed' && loadedOrders) {
-    listOrders = loadedOrders.map(order => (
-      <ActiveOrder key={order._id} order={order} riders={riders} />
-    ));
+    listOrders = loadedOrders.map(order => <ActiveOrder key={order._id} order={order} riders={riders} />);
   }
 
   return (
@@ -84,10 +78,10 @@ const ListActiveOrders = () => {
     >
       {/* <ListStatusRiders orders={loadedOrders} riders={riders} /> */}
       <Container fluid>
-        <div className='actions'>
+        <div className="actions">
           <Button onClick={handleShowNewOrder}>Nuevo pedido</Button>
         </div>
-        <Row className='order'>
+        <Row className="order">
           <Col className={classes.col}>ID</Col>
           <Col className={classes.col}>Dirección</Col>
           <Col className={classes.col}>Entrega</Col>
@@ -99,7 +93,7 @@ const ListActiveOrders = () => {
           <Col className={classes.col}>Actions</Col>
         </Row>
         {listOrders}
-        <NewOrderModal show={showNewOrderModal} handleClose={handleCloseNewOrder} restaurants={restaurants}/>
+        <NewOrderModal show={showNewOrderModal} handleClose={handleCloseNewOrder} restaurants={restaurants} />
       </Container>
     </OrdersContext.Provider>
   );

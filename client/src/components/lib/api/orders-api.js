@@ -1,4 +1,22 @@
-import { SERVER_URL } from './config';
+import { SERVER_URL, makeRequest } from './config';
+
+export async function getAllActiveOrders() {
+  const response = await makeRequest('ordersActive');
+  const transformedOrders = [];
+
+  for (const key in response) {
+    const quoteObj = {
+      ...response[key],
+    };
+
+    transformedOrders.push({
+      ...quoteObj,
+      restaurant: quoteObj.restaurant.internalName || quoteObj.restaurant.name,
+    });
+  }
+
+  return transformedOrders;
+}
 
 export const getOrderById = async orderId => {
   const response = await fetch(`${SERVER_URL}/orders/${orderId}`);

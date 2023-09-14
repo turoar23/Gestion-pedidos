@@ -10,6 +10,7 @@ const Moment = require('moment-timezone');
 const restaurantModel = require('../models/restaurant.model');
 const { createTask, updateOrderTookan } = require('../services/integrations/tookan');
 const BaseError = require('../errors/baseError');
+const { getActiveOrders } = require('../services/orders.service');
 // const group = require('../models/group');
 
 exports.getOrders = (req, res, next) => {
@@ -30,50 +31,18 @@ exports.getOrders = (req, res, next) => {
 };
 
 // TODO: Find a better way to make this request
+/**
+ * Receive a new order from GloriaFood
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
 exports.getActiveOrders = async (req, res, next) => {
   try {
-    const orders = await Order.find({
-      status: ['Active', 'Delivering', 'Arrived'],
-    })
-      .populate({
-        path: 'rider',
-        select: 'name',
-      })
-      .populate({
-        path: 'restaurant',
-        select: ['name', 'internalName'],
-      });
-    var ordersClients = await Order.aggregate([
-      {
-        $match: {
-          client: {
-            $in: orders.map(order => order.client),
-          },
-        },
-      },
-      {
-        $group: {
-          _id: '$client',
-          count: { $sum: 1 },
-        },
-      },
-    ]);
-    var result = orders.map(order => {
-      order = order.toJSON();
-      let amount = 0;
+    const userId = req?.user?._id;
+    if (!userId) throw new BaseError('User not logged', 404);
 
-      let client = ordersClients.find(client => {
-        const email = JSON.stringify(order.client.email) === JSON.stringify(client._id.email);
-        const phone = JSON.stringify(order.client.phone) === JSON.stringify(client._id.phone);
+    const result = await getActiveOrders(userId);
 
-        return email || phone;
-      });
-      amount = client.count;
-      return {
-        ...order,
-        totalOrdersClient: amount,
-      };
-    });
     res.send({ result: result, err: null });
   } catch (err) {
     next(err);
@@ -190,8 +159,7 @@ exports.modifyOrder = (req, res, next) => {
       order.client = req.body.client || order.client;
       order.address = req.body.address || order.address;
       order.total_price = req.body.total_price || order.total_price;
-      order.statusCorrect =
-        req.body.statusCorrect === undefined ? order.statusCorrect : req.body.statusCorrect;
+      order.statusCorrect = req.body.statusCorrect === undefined ? order.statusCorrect : req.body.statusCorrect;
 
       return order.save();
     })
@@ -318,9 +286,7 @@ exports.postNewOrder = async (req, res, next) => {
         latitue: undefined,
         longitude: undefined,
       },
-      total_price: req.body.total_price
-        ? parseFloat(req.body.total_price.replace(',', '.'))
-        : undefined,
+      total_price: req.body.total_price ? parseFloat(req.body.total_price.replace(',', '.')) : undefined,
       restaurant: restaurant._id,
       times: [
         {
