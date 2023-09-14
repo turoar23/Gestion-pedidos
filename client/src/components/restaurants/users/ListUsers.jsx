@@ -1,12 +1,17 @@
+import React from 'react';
 import { useEffect, useState } from 'react';
 import { Button, Table } from 'react-bootstrap';
 
 import { getUsers, removeUser } from '../../lib/api/users-api';
 import ItemUser from './ItemUser';
 import ModalUser from './ModalUser';
+import { getRestaurants } from '../../lib/api/restaurants-api';
 
 const ListUsers = props => {
+  /** @type any[] */
   const [users, setUsers] = useState([]);
+  /** @type any[] */
+  const [restaurants, setRestaurants] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editUser, setEditUser] = useState(null);
 
@@ -14,6 +19,14 @@ const ListUsers = props => {
     getUsers()
       .then(result => {
         setUsers(result);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+
+    getRestaurants()
+      .then(result => {
+        setRestaurants(result);
       })
       .catch(err => {
         console.error(err);
@@ -29,7 +42,7 @@ const ListUsers = props => {
   };
 
   const handleAddUserListUsers = user => {
-    const listUsers = users;
+    const listUsers = [...users];
     listUsers.push(user);
     setUsers(listUsers);
   };
@@ -77,6 +90,7 @@ const ListUsers = props => {
         onNewUser={handleAddUserListUsers}
         editUser={editUser}
         onUpdateUser={handleUpdateUser}
+        restaurants={restaurants}
       />
     </>
   );

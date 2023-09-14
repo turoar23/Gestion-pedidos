@@ -1,6 +1,11 @@
 const UserModel = require('../models/user');
 
-module.exports.getAllUsers = async (req, res, next) => {
+/**
+ * Receive a new order from GloriaFood
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
+module.exports.getAllUsers = async (req, res) => {
   try {
     const users = await UserModel.find();
 
@@ -10,31 +15,45 @@ module.exports.getAllUsers = async (req, res, next) => {
   }
 };
 
-module.exports.postNewUser = async (req, res, next) => {
+/**
+ * Receive a new order from GloriaFood
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
+module.exports.postNewUser = async (req, res) => {
   try {
-    const newUser = await UserModel.create(req.body);
-    newUser.password = undefined;
+    const newUser = (await UserModel.create(req.body)).toObject();
+    const userResult = { ...newUser, password: undefined };
 
-    res.send(newUser);
+    res.send(userResult);
   } catch (error) {
     res.status(400);
     res.send('That email is already used');
   }
 };
 
-module.exports.updateUser = async (req, res, next) => {
+/**
+ * Receive a new order from GloriaFood
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
+module.exports.updateUser = async (req, res) => {
   try {
     const userId = req.params.userId;
+    /**
+     * @type {import('../types/user').IUser | null}
+     */
     const user = await UserModel.findOne({ _id: userId });
 
     if (!user) res.status(400).send('Cant find that user');
     else {
       user.role = req.body.role || user.role;
       user.email = req.body.email || user.email;
-      const userUpdated = await user.save();
-      userUpdated.password = undefined;
+      user.restaurants = req.body.restaurants || user.restaurants;
+      const userUpdated = (await user.save()).toObject();
+      const userResult = { ...userUpdated, password: undefined };
 
-      res.send(userUpdated);
+      res.send(userResult);
     }
   } catch (err) {
     console.error(err);
@@ -43,7 +62,12 @@ module.exports.updateUser = async (req, res, next) => {
   }
 };
 
-module.exports.deleteUser = async (req, res, next) => {
+/**
+ * Receive a new order from GloriaFood
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
+module.exports.deleteUser = async (req, res) => {
   try {
     const userId = req.params.userId;
     const user = await UserModel.findOne({ _id: userId });

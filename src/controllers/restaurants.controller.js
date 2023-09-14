@@ -3,11 +3,19 @@ const restaurantModel = require('../models/restaurant.model');
 const UserModel = require('../models/user');
 const BaseError = require('../errors/baseError');
 
-exports.getRestaurants = async (req, res, next) => {
+/**
+ * Receive a new order from GloriaFood
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
+exports.getRestaurants = async (req, res) => {
   try {
     const user = await UserModel.findById(req.user._id);
     if (!user) throw new Error();
 
+    /**
+     * @type {import('../types/restaurant').IRestaurant []}
+     */
     const restaurants = [];
 
     // FIXME: only works for admins
