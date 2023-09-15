@@ -10,7 +10,7 @@ const Moment = require('moment-timezone');
 const restaurantModel = require('../models/restaurant.model');
 const { createTask, updateOrderTookan } = require('../services/integrations/tookan');
 const BaseError = require('../errors/baseError');
-const { getActiveOrders, getOrders } = require('../services/orders.service');
+const { getActiveOrders, getOrders, getOrdersBetweenDates } = require('../services/orders.service');
 // const group = require('../models/group');
 
 /**
@@ -101,38 +101,28 @@ exports.postOrdersFilter = (req, res, next) => {
       res.send({ result: null, err: err });
     });
 };
-exports.getOrdersByDate = (req, res, next) => {
-  // Convert it to number because the string dosent work :(
+
+/**
+ * Receive a new order from GloriaFood
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ */
+exports.getOrdersByDate = async (req, res, next) => {
+  const userId = req.user?._id;
+  if (!userId) throw new BaseError('User not logged', 404);
+
+  // Convert it to number because the string doesn't work :(
   const begin = parseInt(req.params.begin);
   const end = parseInt(req.params.end);
 
-  // Order.find({ status: "Completed" }).slice('times', -1).where('times.by').gte(begin).lte(end)
-  //TODO: hacerlo con el fulfill no me termina de convencer mucho, aun asi se basa en que nunca pondran un pedido para más tarde tipo dia siguiente a las 00:15
-  Order.find({
-    $expr: {
-      $and: [
-        {
-          $gte: [{ $arrayElemAt: ['$times.by', 1] }, begin],
-        },
-        {
-          $lte: [{ $arrayElemAt: ['$times.by', 1] }, end],
-        },
-      ],
-    },
-  })
-    .then(orders => {
-      return Order.populate(orders, {
-        path: 'rider',
-        select: 'name',
-      });
-    })
-    .then(orders => {
-      res.send({ result: orders, err: null });
-    })
-    .catch(err => {
-      console.log(err);
-      res.send({ result: null, err: "Can't get the orders" });
-    });
+  try {
+    const orders = await getOrdersBetweenDates(userId, begin, end);
+
+    res.send({ result: orders, err: null });
+  } catch (err) {
+    next(err);
+  }
 };
 
 //TODO: Make some check before try to update the order

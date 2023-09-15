@@ -100,3 +100,38 @@ exports.getActiveOrders = async userId => {
 
   return result;
 };
+
+/**
+ * Get the orders by user between the given dates
+ * @param {String} userId
+ * @param {Number} startDate
+ * @param {Number} endDate
+ * @returns {Promise<any[]>}
+ */
+exports.getOrdersBetweenDates = async (userId, startDate, endDate) => {
+  const user = await UserModel.findById(userId);
+  if (!user) throw new BaseError('Cant find this user', 404);
+
+  let query = {
+    'times.1.by': { $gte: startDate, $lte: endDate },
+  };
+
+  if (user.role === 'Admin') {
+    query.owner = mongoose.Types.ObjectId(user.owner);
+  } else {
+    query.restaurant = { $in: (user.restaurants || []).map(restaurant => mongoose.Types.ObjectId(restaurant._id)) };
+  }
+
+  //TODO: hacerlo con el fulfill no me termina de convencer mucho, aun asi se basa en que nunca pondran un pedido para más tarde tipo dia siguiente a las 00:15
+  const orders = await Order.find(query)
+    .populate({
+      path: 'rider',
+      select: 'name',
+    })
+    .populate({
+      path: 'restaurant',
+      select: ['internalName', 'name'],
+    });
+
+  return orders;
+};

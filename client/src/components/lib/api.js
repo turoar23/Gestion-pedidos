@@ -1,31 +1,19 @@
+import { makeRequest } from './api/config';
+
 const SERVER_URL = `${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}${process.env.REACT_APP_API}`;
 
 export async function getOrdersByDate(dateBody) {
-  let url = `${SERVER_URL}/orders/dates/${dateBody.begin}/${dateBody.end}`;
-
-  const response = await fetch(url, {
-    // method: 'POST',
-    // body: JSON.stringify(dateBody),
-    // headers: {
-    // 	'Content-Type': 'application/json',
-    // },
-  });
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || 'Could not fetch riders.');
-  }
+  const url = `orders/dates/${dateBody.begin}/${dateBody.end}`;
+  const response = await makeRequest(url);
 
   const transformedOrders = [];
 
-  for (const key in data.result) {
+  for (const key in response) {
     const quoteObj = {
-      // id: data.result[key]._id,
-      // data : data.result[key],
-      ...data.result[key],
+      ...response[key],
     };
 
-    transformedOrders.push({ ...quoteObj, restaurant: quoteObj.restaurant.name });
+    transformedOrders.push({ ...quoteObj, restaurant: quoteObj.restaurant.internalName || quoteObj.restaurant.name });
   }
 
   return transformedOrders;
