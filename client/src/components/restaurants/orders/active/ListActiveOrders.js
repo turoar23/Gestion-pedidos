@@ -1,17 +1,18 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 
 import ActiveOrder from './ActiveOrder';
 import useHttp from '../../../hooks/use-http';
 import { connectSocket } from '../../../lib/socket';
+import { getRestaurants } from '../../../lib/api/restaurants-api';
+import { getAllActiveOrders } from '../../../lib/api/orders-api';
 
 import { getAllRiders, updateOrderStatus } from '../../../lib/api';
 import OrdersContext from '../../../../store/orders-context';
 import NewOrderModal from '../NewOrderModal';
 
+// @ts-ignore
 import classes from './ListActiveOrders.module.css';
-import { getRestaurants } from '../../../lib/api/restaurants-api';
-import { getAllActiveOrders } from '../../../lib/api/orders-api';
 // import ListStatusRiders from './ListStatusRiders';
 
 const ListActiveOrders = () => {

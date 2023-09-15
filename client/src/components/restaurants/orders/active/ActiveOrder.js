@@ -1,4 +1,4 @@
-import { useState, Fragment, useEffect } from 'react';
+import React, { useState, Fragment, useEffect } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import moment from 'moment-timezone';
 
@@ -8,6 +8,7 @@ import useHttp from '../../../hooks/use-http';
 import { updateOrder, updateOrderStatus } from '../../../lib/api';
 import { getUrlGoogleMaps } from '../../../lib/utils';
 
+// @ts-ignore
 import classes from './ActiveOrder.module.css';
 
 const ActiveOrders = props => {
@@ -83,22 +84,21 @@ const ActiveOrders = props => {
     rider = (
       <>
         <span>EPA</span>
-        <img src='/img/partners/tookan.png' alt='tookan-logo' style={{ width: '20px' }} />
+        <img src="/img/partners/tookan.png" alt="tookan-logo" style={{ width: '20px' }} />
       </>
     );
   } else if (order.rider) rider = order.rider.name;
 
   return (
     <Fragment>
-      <Row className='order'>
+      <Row className="order">
         <Col className={classes.col}>{order.gloriaId || '--'}</Col>
         <Col className={classes.col}>
           {`${order.address.street} ${props.order.address.zipcode}`}
-          <sup className='for-later'>{order.totalOrdersClient}</sup>
+          <sup className="for-later">{order.totalOrdersClient}</sup>
         </Col>
         <Col className={classes.col}>
-          {fulfill.tz('Europe/Madrid').format('LT')}{' '}
-          {order.for_later && <sup className='for-later'>P</sup>}
+          {fulfill.tz('Europe/Madrid').format('LT')} {order.for_later && <sup className="for-later">P</sup>}
         </Col>
         <Col className={classes.col}>{duration}</Col>
         <Col className={`${classes.col} ${durationExtra > 0 ? 'danger' : ''}`}>{durationExtra}</Col>
@@ -106,37 +106,37 @@ const ActiveOrders = props => {
         <Col className={classes.col}>{rider}</Col>
         <Col className={`${classes.col} ${order.status.toLowerCase()}`}>{order.status}</Col>
         <Col className={classes.col}>
-          <i className='fas fa-motorcycle' onClick={handleShowRider}></i>
-          <i
-            className='far fa-edit'
-            style={{ marginLeft: '8px' }}
-            onClick={handleShowOrderInfoToEdit}
-          ></i>
-          <i
-            className='fas fa-info'
-            style={{ marginLeft: '8px' }}
-            onClick={handleShowOrderInfo}
-          ></i>
+          {order.permission === 'all' ? (
+            <>
+              <i className="fas fa-motorcycle" onClick={handleShowRider}></i>
+              <i className="far fa-edit" style={{ marginLeft: '8px' }} onClick={handleShowOrderInfoToEdit}></i>
+            </>
+          ) : null}
+          <i className="fas fa-info" style={{ marginLeft: '8px' }} onClick={handleShowOrderInfo}></i>
           <div onClick={openGoogleHandler}>
             <i className={'fas fa-map-marked-alt'}></i>
           </div>
         </Col>
       </Row>
-      <ModalRider
-        show={showRider}
-        handleClose={handleCloseRider}
-        riders={props.riders}
-        order={order}
-        unassignRider={unassignRiderHandler}
-        assignRider={assignRiderHandler}
-      />
-      <ModalOrder
-        show={showOrderInfoToEdit}
-        handleClose={handleCloseOrderInfoToEdit}
-        order={order}
-        edit={true}
-        updateOrder={updateOrderHandler}
-      />
+      {order.permission === 'all' ? (
+        <>
+          <ModalRider
+            show={showRider}
+            handleClose={handleCloseRider}
+            riders={props.riders}
+            order={order}
+            unassignRider={unassignRiderHandler}
+            assignRider={assignRiderHandler}
+          />
+          <ModalOrder
+            show={showOrderInfoToEdit}
+            handleClose={handleCloseOrderInfoToEdit}
+            order={order}
+            edit={true}
+            updateOrder={updateOrderHandler}
+          />
+        </>
+      ) : null}
       <ModalOrder
         show={showOrderInfo}
         handleClose={handleCloseOrderInfo}
