@@ -1,7 +1,7 @@
 import { SERVER_URL, makeRequest } from './config';
 
 export async function getAllActiveOrders() {
-  const response = await makeRequest('ordersActive');
+  const response = await makeRequest('orders?active=true');
   const transformedOrders = [];
 
   for (const key in response) {

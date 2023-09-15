@@ -7,8 +7,6 @@ const ordersController = require('../controllers/ordersController');
 
 // Getters
 Router.get('/orders', auth.authenticate, ordersController.getOrders);
-// FIXME: Think how change this name
-Router.get('/ordersActive', auth.authenticate, ordersController.getActiveOrders);
 Router.get('/orders/:orderId', ordersController.getOrder);
 Router.get('/orders/tracking/:orderId', ordersController.getOrderTracking);
 Router.get('/orders/dates/:begin/:end', ordersController.getOrdersByDate);

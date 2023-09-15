@@ -10,38 +10,25 @@ const Moment = require('moment-timezone');
 const restaurantModel = require('../models/restaurant.model');
 const { createTask, updateOrderTookan } = require('../services/integrations/tookan');
 const BaseError = require('../errors/baseError');
-const { getActiveOrders } = require('../services/orders.service');
+const { getActiveOrders, getOrders } = require('../services/orders.service');
 // const group = require('../models/group');
 
-exports.getOrders = (req, res, next) => {
-  Order.find()
-    .then(orders => {
-      return Order.populate(orders, {
-        path: 'rider',
-        select: 'name',
-      });
-    })
-    .then(orders => {
-      res.send({ result: orders, err: null });
-    })
-    .catch(err => {
-      res.status(500);
-      res.send({ result: null, err: "Can't get the orders" });
-    });
-};
-
-// TODO: Find a better way to make this request
 /**
  * Receive a new order from GloriaFood
  * @param {import('express').Request} req
  * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
  */
-exports.getActiveOrders = async (req, res, next) => {
+exports.getOrders = async (req, res, next) => {
   try {
-    const userId = req?.user?._id;
+    const userId = req.user?._id;
     if (!userId) throw new BaseError('User not logged', 404);
 
-    const result = await getActiveOrders(userId);
+    const onlyActive = req.query.active === 'true';
+    let result = [];
+
+    if (onlyActive) result = await getActiveOrders(userId);
+    else result = await getOrders(userId);
 
     res.send({ result: result, err: null });
   } catch (err) {

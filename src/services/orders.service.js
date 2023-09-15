@@ -1,8 +1,30 @@
 const BaseError = require('../errors/baseError');
 const Order = require('../models/order');
-const restaurantModel = require('../models/restaurant.model');
 const UserModel = require('../models/user');
 const mongoose = require('mongoose');
+
+/**
+ * Return the orders that a user can see
+ * @param {string} userId
+ */
+exports.getOrders = async userId => {
+  const user = await UserModel.findById(userId);
+  if (!user) throw new BaseError('Cant find this user', 404);
+
+  let query = {};
+  if (user.role === 'Admin') {
+    query.owner = mongoose.Types.ObjectId(user.owner);
+  } else {
+    query.restaurant = { $in: (user.restaurants || []).map(restaurant => mongoose.Types.ObjectId(restaurant._id)) };
+  }
+
+  const orders = await Order.find({ query }).populate({
+    path: 'rider',
+    select: 'name',
+  });
+
+  return orders;
+};
 
 /**
  * Return the orders that a user can see
@@ -12,15 +34,15 @@ exports.getActiveOrders = async userId => {
   const user = await UserModel.findById(userId);
   if (!user) throw new BaseError('Cant find this user', 404);
 
-  let restaurants = [];
+  let query = {};
   if (user.role === 'Admin') {
-    restaurants = await restaurantModel.find({ owner: mongoose.Types.ObjectId(user.owner) }).select({ _id: 1 });
-  } else restaurants = user.restaurants || [];
-
-  const restaurantsIds = restaurants.map(restaurant => mongoose.Types.ObjectId(restaurant._id));
+    query.owner = mongoose.Types.ObjectId(user.owner);
+  } else {
+    query.restaurant = { $in: (user.restaurants || []).map(restaurant => mongoose.Types.ObjectId(restaurant._id)) };
+  }
 
   const orders = await Order.find({
-    restaurant: { $in: restaurantsIds },
+    ...query,
     status: ['Active', 'Delivering', 'Arrived'],
   })
     .populate({

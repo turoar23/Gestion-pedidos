@@ -18,9 +18,12 @@ exports.getRestaurants = async (req, res) => {
      */
     const restaurants = [];
 
-    // FIXME: only works for admins
     if (user.role === 'Admin')
-      restaurants.push(...(await restaurantModel.find({ owner: new ObjectId(user._id), removed: false })));
+      restaurants.push(...(await restaurantModel.find({ owner: new ObjectId(user.owner), removed: false })));
+    else {
+      const restaurantsIds = (user.restaurants || []).map(restaurant => restaurant._id);
+      restaurants.push(...(await restaurantModel.find({ _id: { $in: restaurantsIds }, removed: false })));
+    }
 
     res.send({ result: restaurants, err: null });
   } catch (err) {

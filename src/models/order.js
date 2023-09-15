@@ -78,6 +78,10 @@ const orderSchema = new Schema(
       id: { type: String },
       original: { type: Schema.Types.Mixed },
     },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
   },
   { versionKey: false, timestamps: true }
 );
