@@ -57,6 +57,8 @@ exports.postNewOrderGloriaFood = async (req, res) => {
             const restaurant = await findRestaurantByIntegrationKey('GloriaFood', order['restaurant_token']);
             // @ts-ignore
             ord.restaurant = restaurant;
+            // @ts-ignore
+            ord.owner = restaurant.owner;
             const orderInserted = await ord.save();
 
             if (restaurant.settings?.automaticPartner === true) {

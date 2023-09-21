@@ -296,6 +296,7 @@ exports.postNewOrder = async (req, res) => {
         ],
         payment: req.body.payment,
         status: 'Active',
+        owner: restaurant.owner,
       });
 
       const orderSaved = await order.save();
