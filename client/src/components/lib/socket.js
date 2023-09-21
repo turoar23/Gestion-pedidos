@@ -1,9 +1,17 @@
 import socketIOClient from 'socket.io-client';
+import { getJwt } from './jwt';
 
 const ENDPOINT = `${process.env.REACT_APP_URL}:${process.env.REACT_APP_PORT}`;
 
 export const connectSocket = callback => {
-  const socket = socketIOClient(ENDPOINT);
+  const token = getJwt();
+  const socket = socketIOClient(ENDPOINT, { auth: { token } });
+
+  // Only for test
+  // socket.onAny((event, ...args) => {
+  //   console.log(event, args);
+  // });
+
   return socket.on('Orders', data => {
     callback();
   });

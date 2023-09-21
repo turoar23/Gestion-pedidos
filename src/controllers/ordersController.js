@@ -126,32 +126,37 @@ exports.getOrdersByDate = async (req, res, next) => {
 };
 
 //TODO: Make some check before try to update the order
-exports.modifyOrder = (req, res, next) => {
-  const orderId = req.params.orderId;
+/**
+ * Receive a new order from GloriaFood
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
+exports.modifyOrder = async (req, res) => {
+  try {
+    const orderId = req.params.orderId;
 
-  Order.findOne({ _id: orderId })
-    .then(order => {
-      order.status = req.body.status || order.status;
-      order.payment = req.body.payment || order.payment;
-      order.client = req.body.client || order.client;
-      order.address = req.body.address || order.address;
-      order.total_price = req.body.total_price || order.total_price;
-      order.statusCorrect = req.body.statusCorrect === undefined ? order.statusCorrect : req.body.statusCorrect;
+    const order = await Order.findOne({ _id: orderId });
 
-      return order.save();
-    })
-    .then(result => {
-      // console.log('Updated Order');
-      webSocket.getIO().emit('Orders', {
-        action: 'Order updated',
-        order: result,
-      });
-      res.send({ result: 'updated', err: null });
-    })
-    .catch(err => {
-      console.log(err);
-      res.send({ result: null, err: "Can't update the order" });
+    order.status = req.body.status || order.status;
+    order.payment = req.body.payment || order.payment;
+    order.client = req.body.client || order.client;
+    order.address = req.body.address || order.address;
+    order.total_price = req.body.total_price || order.total_price;
+    order.statusCorrect = req.body.statusCorrect === undefined ? order.statusCorrect : req.body.statusCorrect;
+
+    const orderSaved = await order.save();
+
+    res.send({ result: 'updated', err: null });
+
+    webSocket.getIO().to(orderSaved.restaurant).emit('Orders', {
+      action: 'Order updated',
+      order: orderSaved,
     });
+  } catch (err) {
+    console.error(err);
+
+    res.send({ result: null, err: "Can't update the order" });
+  }
 };
 exports.addAction = (req, res, next) => {
   //TODO: Esto se debe poder simplificar :/
@@ -227,14 +232,15 @@ exports.addAction = (req, res, next) => {
       return order.save();
     })
     .then(orderUpdated => {
-      webSocket.getIO().emit('Orders', {
+      webSocket.getIO().to(orderUpdated.restaurant.toString()).emit('Orders', {
         action: 'Order status updated',
         order: orderUpdated,
       });
-      webSocket.getIO().emit(`order-${orderUpdated._id}`, {
-        action: 'Order status updated',
-        status: orderUpdated.status,
-      });
+      // FIXME: make tracker goes by order id
+      // webSocket.getIO().emit(`order-${orderUpdated._id}`, {
+      //   action: 'Order status updated',
+      //   status: orderUpdated.status,
+      // });
       res.send({ result: 'Time added', err: null });
     })
     .catch(err => {
@@ -242,132 +248,114 @@ exports.addAction = (req, res, next) => {
     });
 };
 
-exports.postNewOrder = async (req, res, next) => {
-  const restaurant = await restaurantModel.findById(req.body.restaurant);
+/**
+ * Receive a new order from GloriaFood
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ */
+exports.postNewOrder = async (req, res) => {
+  try {
+    const restaurant = await restaurantModel.findById(req.body.restaurant);
 
-  if (!restaurant) {
-    res.status(401).send();
-  } else {
-    const order = new Order({
-      gloriaId: req.body.id,
-      client: {
-        name: req.body.client.name,
-        email: req.body.client.email || undefined,
-        phone: req.body.client.phone,
-      },
-      address: {
-        street: req.body.direction.street,
-        city: req.body.direction.city,
-        zipcode: req.body.direction.zipcode,
-        floor: req.body.direction.floor || undefined,
-        latitue: undefined,
-        longitude: undefined,
-      },
-      total_price: req.body.total_price ? parseFloat(req.body.total_price.replace(',', '.')) : undefined,
-      restaurant: restaurant._id,
-      times: [
-        {
-          by: Date.parse(new Date()),
-          action: 'accepted_at',
+    if (!restaurant) {
+      // FIXME
+      res.status(401).send();
+    } else {
+      const order = new Order({
+        gloriaId: req.body.id,
+        client: {
+          name: req.body.client.name,
+          email: req.body.client.email || undefined,
+          phone: req.body.client.phone,
         },
-        {
-          by:
-            Date.parse(req.body.fulfill_at) ||
-            Moment(new Date())
-              .tz('Europe/Madrid')
-              .add(req.body.time || 45, 'm')
-              .toDate()
-              .valueOf(),
-          action: 'fulfill_at',
+        address: {
+          street: req.body.direction.street,
+          city: req.body.direction.city,
+          zipcode: req.body.direction.zipcode,
+          floor: req.body.direction.floor || undefined,
+          latitue: undefined,
+          longitude: undefined,
         },
-      ],
-      payment: req.body.payment,
-      status: 'Active',
-    });
-    order
-      .save()
-      .then(result => {
-        webSocket.getIO().emit('Orders', {
-          action: 'New Order',
-          order: result,
-        });
-        res.send({ result: 'New order added', error: null });
-      })
-      .catch(err => {
-        console.log(err);
-        res.send({
-          result: null,
-          error: "An error ocurred, can't add the new order",
-        });
+        total_price: req.body.total_price ? parseFloat(req.body.total_price.replace(',', '.')) : undefined,
+        restaurant: restaurant._id,
+        times: [
+          {
+            by: Date.parse(new Date()),
+            action: 'accepted_at',
+          },
+          {
+            by:
+              Date.parse(req.body.fulfill_at) ||
+              Moment(new Date())
+                .tz('Europe/Madrid')
+                .add(req.body.time || 45, 'm')
+                .toDate()
+                .valueOf(),
+            action: 'fulfill_at',
+          },
+        ],
+        payment: req.body.payment,
+        status: 'Active',
       });
+
+      const orderSaved = await order.save();
+
+      res.send({ result: 'New order added', error: null });
+
+      webSocket.getIO().to(orderSaved.restaurant.toString()).emit('Orders', {
+        action: 'New Order',
+        order: orderSaved,
+      });
+    }
+  } catch (err) {
+    console.error(err);
+
+    res.send({
+      result: null,
+      error: "An error ocurred, can't add the new order",
+    });
   }
 };
 //TODO: Comprobar si se quiere agregar a al mismo rider no hacer nada
 // Se comprueba si el pedido tiene un grupo, y si tiene se borra de el.
 // Si el rider tiene un grupo valido, se mete el pedido, si no, se crea
-exports.addRider = (req, res, next) => {
-  const riderId = req.body.riderId;
-  const orderId = req.body.orderId;
+exports.addRider = async (req, res, next) => {
+  try {
+    const riderId = req.body.riderId;
+    const orderId = req.body.orderId;
 
-  Order.findById(orderId)
-    .then(order => {
-      // Si el pedido tiene un grupo, se borra de este
-      return (
-        Group.findById(order.group)
-          .then(group => {
-            if (group) {
-              group.orders.pull(order);
-              if (group.orders.length === 0) return group.remove();
-              return group.save();
-            }
-            return {};
-          })
-          .then(() => {
-            return order;
-          })
-          // .then(result => { })
-          .catch(err => {
-            throw err;
-          })
-      );
-    })
-    .then(order => {
-      // Comprobamos si el rider tiene un grupo valido, si no, se crea uno nuevo
-      Rider.findById(riderId)
-        .then(rider => {
-          Group.findOne({ rider: rider, status: 'Active' })
-            .then(group => {
-              if (!group) group = new Group();
-              group.orders.push(order);
-              group.rider = rider;
-              return group.save();
-            })
-            .then(group => {
-              order.group = group;
-              order.rider = rider;
+    const order = await Order.findById(orderId);
+    if (!order) throw new BaseError('Can`t find the oder', 404);
+    // Si el pedido tiene un grupo, se borra de este
+    // const group = await Group.findById(order.group);
+    // if (group) {
+    //   group.orders.pull(order);
+    //   if (group.orders.length === 0) return group.remove();
+    //   await group.save();
+    // }
+    // Comprobamos si el rider tiene un grupo valido, si no, se crea uno nuevo
+    const rider = await Rider.findById(riderId);
+    if (!rider) throw new BaseError('Can`t find the rider', 404);
 
-              return order.save();
-            })
-            .then(result => {
-              webSocket.getIO().emit('Orders', {
-                action: 'Rider assigned',
-                order: result,
-              });
-              res.send({ result: 'Rider assigned', err: null });
-            })
-            .catch(err => {
-              throw err;
-            });
-        })
-        .catch(err => {
-          console.log(err);
-          res.send({ result: null, err: err });
-        });
-    })
-    .catch(err => {
-      // console.log(err);
-      res.send({ result: null, err: err });
+    // const groupActive = await Group.findOne({ rider: rider, status: 'Active' });
+    // if (!groupActive) groupActive = new Group();
+    // groupActive.orders.push(order);
+    // groupActive.rider = rider;
+    // const groupUpdated = await groupActive.save();
+    // order.group = groupUpdated;
+    order.rider = rider;
+
+    const orderSaved = await order.save();
+    res.send({ result: 'Rider assigned', err: null });
+
+    webSocket.getIO().to(order.restaurant.toString()).emit('Orders', {
+      action: 'Rider assigned',
+      order: orderSaved,
     });
+  } catch (err) {
+    // console.log(err);
+    res.send({ result: null, err: err });
+  }
 };
 
 exports.removeRider = (req, res, next) => {
@@ -395,7 +383,7 @@ exports.removeRider = (req, res, next) => {
     })
     .then(result => {
       // console.log(result);
-      webSocket.getIO().emit('Orders', {
+      webSocket.getIO().to(result.restaurant.toString()).emit('Orders', {
         action: 'Rider dessasigned',
         order: result,
       });

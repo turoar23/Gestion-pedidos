@@ -1,4 +1,6 @@
 const passport = require('passport');
+// import * as jwtDecode from 'jwt-decode';
+const jwtDecode = require('jwt-decode');
 
 // FIXME: will be better to change this so make the routes more readeable
 module.exports.authenticate = passport.authenticate('jwt', {
@@ -21,3 +23,7 @@ module.exports.authorize =
       res.send(error.message);
     }
   };
+
+module.exports.decodeToken = jwtToken => {
+  return jwtDecode.default(jwtToken);
+};

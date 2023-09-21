@@ -44,6 +44,9 @@ if (process.env.NODE_ENV === 'production') {
 
 // For errors
 const { errorHandler } = require('./src/middlewares/error.middleware');
+const { decodeToken } = require('./src/middlewares/auth');
+const UserModel = require('./src/models/user');
+const { findRestaurantByUser } = require('./src/services/restaurant.service');
 app.use(errorHandler);
 
 mongoose
@@ -51,8 +54,20 @@ mongoose
   .then(result => {
     const server = app.listen(PORT || 3000);
     const io = webSocket.init(server);
-    io.on('connection', socket => {
-      // console.log("hola");
+
+    io.on('connection', async socket => {
+      const token = socket.handshake.auth.token;
+      const tokenDecoded = decodeToken(token);
+
+      const user = await UserModel.findById(tokenDecoded.user);
+      if (!user) throw new Error();
+
+      const restaurants = await findRestaurantByUser(user);
+      const restaurantsIds = restaurants.map(restaurant => restaurant._id);
+
+      restaurantsIds.forEach(id => {
+        socket.join(id.toString());
+      });
     });
   })
   .then(() => {
