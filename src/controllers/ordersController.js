@@ -10,7 +10,7 @@ const Moment = require('moment-timezone');
 const restaurantModel = require('../models/restaurant.model');
 const { createTask, updateOrderTookan } = require('../services/integrations/tookan');
 const BaseError = require('../errors/baseError');
-const { getActiveOrders, getOrders, getOrdersBetweenDates } = require('../services/orders.service');
+const { getActiveOrders, getOrders, getOrdersBetweenDates, orderAddAction } = require('../services/orders.service');
 // const group = require('../models/group');
 
 /**
@@ -158,94 +158,27 @@ exports.modifyOrder = async (req, res) => {
     res.send({ result: null, err: "Can't update the order" });
   }
 };
-exports.addAction = (req, res, next) => {
-  //TODO: Esto se debe poder simplificar :/
-  let id = req.body._id;
 
-  Order.findById(id)
-    .populate('restaurant')
-    // Actualizamos el pedido
-    .then(order => {
-      order.status = req.body.status || order.status;
-      order.times.push({
-        by: Date.parse(Date()),
-        action: req.body.action,
-      });
-      Group.findById(order.group)
-        .then(group => {
-          // Si la orden tiene grupo, se actualiza el grupo en base a si tiene pedidos en curso o no
-          if (group) {
-            return Order.find({
-              _id: { $in: group.orders },
-              status: { $ne: 'Completed' },
-            })
-              .then(ordersGroup => {
-                let newStatus = 'Delivering';
-                if (ordersGroup.length === 0) newStatus = 'Completed';
-                group.status = newStatus;
-                return group.save();
-              })
-              .catch(err => {
-                throw err;
-              });
-          }
-          // Si no tiene grupo, significa que el pedido se ha actualizado manualmente, entonces le creamos un grupo
-          else {
-            group = new Group();
-            group.status = order.status;
-            group.orders.push(order);
-            order.group = group;
-            return group.save();
-          }
-        })
-        .then(result => {
-          return result;
-        })
-        .catch(err => {
-          throw err;
-        });
-      // Si el pedido se acaba de completar, se envia la encuesta a los 60 minutos
-      console.log(order);
-      if (
-        order.status === 'Completed' &&
-        order.restaurant.name === 'Umbrella' &&
-        order.rider !== null &&
-        !order.surveySent
-      ) {
-        console.log('Enviando ...');
-        order.surveySent = true;
-        // Se coloca este tiempo para que la envia al instante en dev
-        let timeSurvey = 0.01; // segundos
-        // Si la app esta en produccion, se envia a la hora (60 minutos)
-        if (process.env.NODE_ENV === 'production') {
-          timeSurvey = 60;
-        }
-        setTimeout(() => {
-          emailUtils
-            .sendSurvey(order)
-            .then(order => {
-              console.log(order);
-            })
-            .catch(err => console.log(err));
-        }, timeSurvey * timeSurvey * 1000); // Se envia a los 60 minutos
-      }
-      return order.save();
-    })
-    .then(orderUpdated => {
-      webSocket.getIO().to(orderUpdated.restaurant.toString()).emit('Orders', {
-        action: 'Order status updated',
-        order: orderUpdated,
-      });
-      // FIXME: make tracker goes by order id
-      // webSocket.getIO().emit(`order-${orderUpdated._id}`, {
-      //   action: 'Order status updated',
-      //   status: orderUpdated.status,
-      // });
-      res.send({ result: 'Time added', err: null });
-    })
-    .catch(err => {
-      res.send({ result: null, err: "Can't add the time" });
-    });
+/**
+ * Receive a new order from GloriaFood
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ */
+exports.addAction = async (req, res, next) => {
+  try {
+    const orderId = req.body._id;
+    const newStatus = req.body.status;
+    const action = req.body.action;
+
+    if (!newStatus && !action) throw new BaseError('Need status or action to update the order', 400);
+
+    await orderAddAction(orderId, newStatus, action);
+
+    res.send({ result: null, err: "Can't add the time" });
+  } catch (err) {
+    next(err);
+  }
 };
 
 /**

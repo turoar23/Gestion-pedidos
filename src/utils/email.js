@@ -36,8 +36,7 @@ exports.sendSurvey = async (order, restaurant) => {
   const orderId = order.gloriaId;
   const mainColor = restaurantOrder?.colors?.mainColor || '#0d6efd';
   // Si el entorno es de produccion, enviar al correo del cliente
-  const sendTo =
-    process.env.NODE_ENV === 'production' ? order.client.email : 'turoar2006@gmail.com';
+  const sendTo = process.env.NODE_ENV === 'production' ? order.client.email : 'turoar2006@gmail.com';
 
   let content = fs.readFileSync(pathTemplate, 'utf-8');
 
@@ -60,8 +59,7 @@ exports.sendTrackerEmail = async (order, restaurant) => {
     : 'Azape <noresponder@azape.es>';
   const mainColor = restaurant.colors.mainColor || '#0d6efd';
   // Si el enterno es de produccion, enviar al correo del cliente
-  const sendTo =
-    process.env.NODE_ENV === 'production' ? order.client.email : 'turoar2006@gmail.com';
+  const sendTo = process.env.NODE_ENV === 'production' ? order.client.email : 'turoar2006@gmail.com';
 
   let content = fs.readFileSync(pathTemplate, 'utf-8');
 
@@ -70,7 +68,5 @@ exports.sendTrackerEmail = async (order, restaurant) => {
   content = content.replace(/{mainColor}/g, mainColor);
   content = content.replace(/{domain}/g, domain);
 
-  sendTo
-    ? this.sendEmail(content, sendTo, 'Sigue tu pedido', from)
-    : console.log('No se pudó enviar el correo');
+  sendTo ? this.sendEmail(content, sendTo, 'Sigue tu pedido', from) : console.log('No se pudó enviar el correo');
 };
